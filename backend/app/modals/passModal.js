@@ -20,7 +20,7 @@ module.exports.signUp = async (values) => {
 
     try {
       await data.save();
-      resolve({ ok: true, message: "Signup successed" });
+      resolve({ status: 201, ok: true, message: "Signup successed" });
     } catch (error) {
       return reject({
         ok: false,
@@ -28,4 +28,8 @@ module.exports.signUp = async (values) => {
       });
     }
   });
+};
+
+module.exports.login = async (values) => {
+  const { email, password } = values;
 };
