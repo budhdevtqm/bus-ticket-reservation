@@ -1,0 +1,27 @@
+:root {
+  --blackColor: #000000;
+  --bgGrey: #878787;
+  --primaryColor: #5c31f7;
+  --whiteColor: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  background: var(--bgGrey);
+  color: var(--blackColor);
+}
+
+/* input {
+  width: 80%;
+  padding: 4px;
+  outline: none;
+  border-radius: 5px;
+} */
