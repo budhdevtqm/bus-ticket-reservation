@@ -1,4 +1,8 @@
 const passSchema = require("../schemas/passSchema");
+require("dotenv").config({ path: "../../.env" });
+const jwt = require("jsonwebtoken");
+
+const secretKey = process.env.JWT_PRIVATE;
 
 module.exports.signUp = async (values) => {
   const data = new passSchema({
@@ -15,12 +19,20 @@ module.exports.signUp = async (values) => {
       return reject({
         status: 409,
         ok: false,
-        message: "This email already in use.",
+        message: "This email is already in use.",
       });
 
     try {
-      await data.save();
-      resolve({ status: 201, ok: true, message: "Signup successed" });
+      const saved = await data.save();
+      console.log(saved, "saved");
+      const userId = saved._id.toString();
+      const token = jwt.sign({ userId: userId }, secretKey);
+      resolve({
+        status: 201,
+        ok: true,
+        message: "SignUp successfully",
+        token: token,
+      });
     } catch (error) {
       return reject({
         ok: false,
@@ -32,4 +44,19 @@ module.exports.signUp = async (values) => {
 
 module.exports.login = async (values) => {
   const { email, password } = values;
+
+  return new Promise(async (resolve, reject) => {
+    const isExistingUser = await passSchema.findOne({ email });
+    if (isExistingUser == null)
+      return reject({ ok: false, message: "User not found" });
+
+    const isValidPassword = isExistingUser.password === password;
+
+    if (!isValidPassword)
+      return reject({ ok: false, message: "Invalid password" });
+
+    const userId = isExistingUser._id.toString();
+    const token = jwt.sign({ userId: userId }, secretKey);
+    resolve({ ok: true, token: token, message: "Login successfully" });
+  });
 };

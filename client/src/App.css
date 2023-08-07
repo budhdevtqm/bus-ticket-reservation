@@ -1,6 +1,6 @@
 :root {
   --blackColor: #000000;
-  --bgGrey: #878787;
+  --bgGrey: #8b8b8b1a;
   --primaryColor: #5c31f7;
   --whiteColor: #ffffff;
 }
@@ -18,10 +18,3 @@ body {
   background: var(--bgGrey);
   color: var(--blackColor);
 }
-
-/* input {
-  width: 80%;
-  padding: 4px;
-  outline: none;
-  border-radius: 5px;
-} */

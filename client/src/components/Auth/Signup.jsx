@@ -3,6 +3,9 @@ import { Button, Input } from "reactstrap";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL } from "../../../config";
+import { toast, Toaster } from "react-hot-toast";
 
 const signup = yup.object().shape({
   email: yup.string().email("Invalid Email").required("Required!"),
@@ -16,11 +19,12 @@ const signup = yup.object().shape({
   name: yup.string().required("Required!").min(3, "Name must be of 3 chars"),
 });
 
-const Signup = () => {
+const Signup = (props) => {
+  const { mode, modeHandler } = props;
   const navigate = useNavigate();
   return (
     <div
-      style={{ width: "100%" }}
+      style={{ width: "100%", height: "100vh", background: "#8b8b8b1a" }}
       className="d-flex align-items-center justify-content-center flex-column gap-4"
     >
       <div className="bg-white p-4 rounded" style={{ width: "30%" }}>
@@ -33,8 +37,18 @@ const Signup = () => {
             password: "",
           }}
           validationSchema={signup}
-          onSubmit={(values) => {
-            console.log(values);
+          onSubmit={async (values, { setSubmitting }) => {
+            setSubmitting(true);
+            try {
+              const response = await axios.post(
+                `${BASE_URL}/signup/new`,
+                values
+              );
+              localStorage.setItem("token", response.data.token);
+              toast.success(response.data.message, { position: "top-right" });
+            } catch (er) {
+              toast.error(er.response.data.message, { position: "top-right" });
+            }
           }}
         >
           {({ values, errors, touched, handleBlur, handleChange }) => (
@@ -117,10 +131,11 @@ const Signup = () => {
         </Formik>
       </div>
       <div>
-        <Button onClick={() => navigate("/login")} color="link">
+        <Button onClick={() => modeHandler(!mode)} color="link">
           Already have account ?.
         </Button>
       </div>
+      <Toaster />
     </div>
   );
 };

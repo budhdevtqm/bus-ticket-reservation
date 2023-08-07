@@ -4,7 +4,7 @@ const passengerSchema = new mongoose.Schema(
     name: String,
     email: String,
     password: String,
-    Permissions: String,
+    permissions: String,
     createdAt: Number,
     updatedAt: Number,
   },

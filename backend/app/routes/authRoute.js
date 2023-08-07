@@ -14,7 +14,7 @@ router.post(
 );
 
 router.post(
-  "/",
+  "/user",
   [
     body("email").notEmpty().withMessage("Email is Required"),
     body("password").notEmpty().withMessage("Password is Required"),
