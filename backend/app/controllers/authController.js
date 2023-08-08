@@ -1,5 +1,5 @@
 const { validationResult } = require("express-validator");
-const modal = require("../modals/passModal");
+const modal = require("../modals/userModal");
 
 module.exports.signup = async (req, res) => {
   const errors = validationResult(req);

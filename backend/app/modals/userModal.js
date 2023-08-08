@@ -1,19 +1,19 @@
-const passSchema = require("../schemas/passSchema");
+const userSchema = require("../schemas/userSchema");
 require("dotenv").config({ path: "../../.env" });
 const jwt = require("jsonwebtoken");
 
 const secretKey = process.env.JWT_PRIVATE;
 
 module.exports.signUp = async (values) => {
-  const data = new passSchema({
+  const data = new userSchema({
     ...values,
-    permissions: "traveller",
+    permissions: "user",
     createdAt: new Date().getTime(),
     updatedAt: 0,
   });
 
   return new Promise(async (resolve, reject) => {
-    const isAlready = await passSchema.findOne({ email: values.email });
+    const isAlready = await userSchema.findOne({ email: values.email });
 
     if (isAlready !== null)
       return reject({
@@ -24,7 +24,6 @@ module.exports.signUp = async (values) => {
 
     try {
       const saved = await data.save();
-      console.log(saved, "saved");
       const userId = saved._id.toString();
       const token = jwt.sign({ userId: userId }, secretKey);
       resolve({
@@ -46,7 +45,7 @@ module.exports.login = async (values) => {
   const { email, password } = values;
 
   return new Promise(async (resolve, reject) => {
-    const isExistingUser = await passSchema.findOne({ email });
+    const isExistingUser = await userSchema.findOne({ email });
     if (isExistingUser == null)
       return reject({ ok: false, message: "User not found" });
 
@@ -58,5 +57,45 @@ module.exports.login = async (values) => {
     const userId = isExistingUser._id.toString();
     const token = jwt.sign({ userId: userId }, secretKey);
     resolve({ ok: true, token: token, message: "Login successfully" });
+  });
+};
+
+module.exports.create = async (values) => {
+  return new Promise(async (resolve, reject) => {
+    const isAlready = await userSchema.findOne({ email: values.email });
+
+    if (isAlready !== null)
+      return reject({
+        status: 409,
+        ok: false,
+        message: "This email is already in use.",
+      });
+
+    const data = { ...values, createdAt: new Date().getTime(), updatedAt: 0 };
+    try {
+      const saving = await userSchema.create(data);
+
+      resolve({
+        status: 201,
+        ok: true,
+        message: "User Created successfully",
+      });
+    } catch (error) {
+      return reject({
+        ok: false,
+        message: "Something went wrong while Creating.",
+      });
+    }
+  });
+};
+
+module.exports.getAllUsers = async () => {
+  return new Promise(async (resolve, rejcet) => {
+    try {
+      const allUsers = await userSchema.find({});
+      resolve({ ok: true, data: allUsers });
+    } catch (error) {
+      rejcet({ ok: false, message: "Something went wrong." });
+    }
   });
 };

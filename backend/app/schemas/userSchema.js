@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const passengerSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     name: String,
     email: String,
@@ -9,8 +9,8 @@ const passengerSchema = new mongoose.Schema(
     updatedAt: Number,
   },
   {
-    collection: "pessangers",
+    collection: "users",
   }
 );
 
-module.exports = mongoose.model("passengers", passengerSchema);
+module.exports = mongoose.model("user", userSchema);

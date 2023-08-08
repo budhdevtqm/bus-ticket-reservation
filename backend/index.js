@@ -1,7 +1,7 @@
 const express = require("express");
 require("dotenv").config({ path: "./.env" });
 const connectDb = require("./app/config/db").connectDb;
-const passRoute = require("./app/routes/passRoutes");
+const userRoutes = require("./app/routes/userRoutes");
 const authRoute = require("./app/routes/authRoute");
 const busRoutes = require("./app/routes/busRoutes");
 
@@ -13,15 +13,19 @@ connectDb();
 //common middlewares
 var corsOptions = {
   origin: "*",
-  optionsSuccessStatus: 200, // For legacy browser support
+  optionsSuccessStatus: 200,
 };
+
 app.use(cors(corsOptions));
 
-//body-parsers
+// body-parsers
 app.use(express.json());
 
-//Passengers
-app.use("/passengers", passRoute);
+//users
+app.use("/user", userRoutes);
+// app.use("/user", userRoutes);
+// app.use("/delete", userRoutes);
+app.use("/get-all", userRoutes);
 
 //SignUp
 app.use("/signup", authRoute);
@@ -30,6 +34,6 @@ app.use("/signup", authRoute);
 app.use("/login", authRoute);
 
 //Buses
-app.use("/bus", busRoutes);
+// app.use("/bus", busRoutes);
 
 app.listen(process.env.PORT || 400, () => console.log("server Started"));
