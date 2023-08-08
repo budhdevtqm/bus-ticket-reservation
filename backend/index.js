@@ -23,7 +23,7 @@ app.use(express.json());
 
 //users
 app.use("/user", userRoutes);
-// app.use("/user", userRoutes);
+app.use("/get-user", userRoutes);
 // app.use("/delete", userRoutes);
 app.use("/get-all", userRoutes);
 
