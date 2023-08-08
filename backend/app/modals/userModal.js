@@ -99,3 +99,14 @@ module.exports.getAllUsers = async () => {
     }
   });
 };
+
+module.exports.getUser = async (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await userSchema.findOne({ _id: userId });
+      resolve({ ok: true, data: user });
+    } catch (er) {
+      reject({ ok: false, message: "User Not Found" });
+    }
+  });
+};

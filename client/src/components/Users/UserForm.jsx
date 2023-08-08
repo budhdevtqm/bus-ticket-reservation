@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Modal,
@@ -28,12 +28,21 @@ const UserScheam = yup.object().shape({
 
 const UserForm = (props) => {
   const { modal, toggler, mode } = props;
-
   const [formValues, setFormValues] = useState({
     name: "",
     email: "",
     password: "",
     permissions: "",
+  });
+
+  const getUserDetails = async () => {
+    const userId = localStorage.getItem("userId");
+    const response = await axios.get(`${BASE_URL}/get-response/${userId}`);
+    setFormValues(response.data.data);
+  };
+
+  useEffect(() => {
+    getUserDetails();
   });
 
   return (

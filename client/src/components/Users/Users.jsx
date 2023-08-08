@@ -4,15 +4,6 @@ import { MdMode, MdOutlineInfo, MdDelete } from "react-icons/md";
 import UserForm from "./UserForm";
 import axios from "axios";
 import { BASE_URL } from "../../../config";
-// const users = [
-//   { name: "user1", email: "user1@gmail.com", permissions: "user" },
-//   { name: "Admin", email: "Admin@gmail.com", permissions: "admin" },
-//   {
-//     name: "Super Admin",
-//     email: "superAdmin@gmail.com",
-//     permissions: "superAdmin",
-//   },
-// ];
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -31,7 +22,6 @@ const Users = () => {
     }
   };
 
-  console.log(users, "users");
   const createHandler = () => {
     setModal(true);
   };
@@ -43,6 +33,14 @@ const Users = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const viewUserHandler = (userId) => {};
+
+  const goToUpdate = (userId) => {
+    setModal(!modal);
+    setMode("UPDATE");
+    localStorage.setItem("userId", userId);
   };
 
   const toggler = () => setModal(!modal);
@@ -87,8 +85,8 @@ const Users = () => {
           </thead>
           <tbody>
             {users.map((user, index) => (
-              <tr key={index + 1}>
-                <td>{index}</td>
+              <tr key={index}>
+                <td>{index + 1}</td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{chip(user.permissions)}</td>
@@ -101,6 +99,7 @@ const Users = () => {
                         cursor: "pointer",
                       }}
                       title="Info"
+                      onClick={() => viewUserHandler(user._id)}
                     />
 
                     <MdMode
@@ -110,6 +109,7 @@ const Users = () => {
                         cursor: "pointer",
                       }}
                       title="Update"
+                      onClick={() => goToUpdate(user._id)}
                     />
                     <MdDelete
                       style={{
