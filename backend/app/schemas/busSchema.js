@@ -3,14 +3,10 @@ const mongoose = require("mongoose");
 const busSchema = new mongoose.Schema(
   {
     busNo: String,
-    from: String,
-    to: String,
-    time: Number,
-    totalSeats: Number,
-    bookedSeats: Number,
     createdAt: Number,
+    createdBy: String,
+    status: Boolean,
     updatedAt: Number,
-    isAvailableToday: Boolean,
   },
   {
     collection: "busses",

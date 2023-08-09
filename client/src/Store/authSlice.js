@@ -8,7 +8,7 @@ const initialState = {
   user: {},
 };
 
-export const login = createAsyncThunk("login", async (data) => {
+export const login = createAsyncThunk("auth/login", async (data) => {
   console.log(data, "values");
   try {
     const logging = await axios.post(`${BASE_URL}/login/user`, data);
@@ -18,7 +18,7 @@ export const login = createAsyncThunk("login", async (data) => {
   }
 });
 
-export const authSlice = createSlice({
+const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {},
@@ -36,4 +36,4 @@ export const authSlice = createSlice({
   },
 });
 
-export const authReducer = authSlice.reducer;
+export default authSlice.reducer;

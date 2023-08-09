@@ -25,7 +25,9 @@ module.exports.signUp = async (values) => {
     try {
       const saved = await data.save();
       const userId = saved._id.toString();
-      const token = jwt.sign({ userId: userId }, secretKey);
+      const token = jwt.sign({ userId: userId }, secretKey, {
+        expiresIn: "1h",
+      });
       resolve({
         status: 201,
         ok: true,
@@ -55,7 +57,9 @@ module.exports.login = async (values) => {
       return reject({ ok: false, message: "Invalid password" });
 
     const userId = isExistingUser._id.toString();
-    const token = jwt.sign({ userId: userId }, secretKey);
+    const token = jwt.sign({ userId: userId }, secretKey, {
+      expiresIn: "1h",
+    });
     resolve({ ok: true, token: token, message: "Login successfully" });
   });
 };
@@ -107,6 +111,31 @@ module.exports.getUser = async (userId) => {
       resolve({ ok: true, data: user });
     } catch (er) {
       reject({ ok: false, message: "User Not Found" });
+    }
+  });
+};
+
+module.exports.updateUser = async (userId, values) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await userSchema.findOneAndUpdate(
+        { _id: userId },
+        { ...values, updatedAt: new Date().getTime() }
+      );
+      resolve({ ok: true, message: "Updated Successfully." });
+    } catch (error) {
+      reject({ ok: false, message: "Somethng went wrong while updating" });
+    }
+  });
+};
+
+module.exports.delete = async (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await userSchema.findOneAndDelete({ _id: userId });
+      resolve({ ok: true, message: "User Deleted." });
+    } catch (er) {
+      reject({ ok: false, message: "Something went wrong while Deleting" });
     }
   });
 };

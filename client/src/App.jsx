@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -7,18 +7,29 @@ import Home from "./components/Home/Home";
 import Auth from "./components/Auth/Auth";
 import Users from "./components/Users/Users";
 import User from "./components/Users/User";
+import UserForm from "./components/Users/UserForm";
+import Buses from "./components/Buses/Buses";
 
 function App() {
+  useEffect(() => {}, []);
+  console.log("hello App");
   return (
     <Fragment>
       <Routes>
         <Route path="/auth" element={<Auth />} />
         <Route path="/" element={<Layout />}>
+          {/* Home */}
           <Route index element={<Home />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/users" element={<Users />}>
-            <Route path=":id" element={<User />} />
-          </Route>
+
+          {/* Bus Routes */}
+          <Route path="/buses" element={<Buses />} />
+
+          {/* User Routes */}
+          <Route path="/users" element={<Users />} />
+          <Route path="/create-user" element={<UserForm />} />
+          <Route path="/update-user" element={<UserForm />} />
+          <Route path="/view-user/:id" element={<User />} />
         </Route>
       </Routes>
     </Fragment>

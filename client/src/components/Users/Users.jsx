@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Badge } from "reactstrap";
 import { MdMode, MdOutlineInfo, MdDelete } from "react-icons/md";
-import UserForm from "./UserForm";
 import axios from "axios";
 import { BASE_URL } from "../../../config";
+import { useNavigate } from "react-router-dom";
+import { toast, Toaster } from "react-hot-toast";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
-  const [modal, setModal] = useState(false);
-  const [mode, setMode] = useState("CREATE");
+
+  const navigate = useNavigate();
 
   const chip = (permissions) => {
     if (permissions === "user") {
@@ -22,10 +23,6 @@ const Users = () => {
     }
   };
 
-  const createHandler = () => {
-    setModal(true);
-  };
-
   const getUsers = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/get-all/users`);
@@ -35,19 +32,27 @@ const Users = () => {
     }
   };
 
-  const viewUserHandler = (userId) => {};
-
-  const goToUpdate = (userId) => {
-    setModal(!modal);
-    setMode("UPDATE");
-    localStorage.setItem("userId", userId);
+  const goToUpdate = (id) => {
+    localStorage.setItem("userId", id);
+    navigate("/update-user");
   };
-
-  const toggler = () => setModal(!modal);
 
   useEffect(() => {
     getUsers();
+    localStorage.removeItem("userId");
   }, []);
+
+  const deleteHandler = async (userId) => {
+    try {
+      const response = await axios.delete(`${BASE_URL}/delete/${userId}`);
+      toast.success(response.data.message, { position: "top-right" });
+      getUsers();
+    } catch (error) {
+      toast.error(error.response.data.message, { position: "top-rights" });
+    }
+  };
+
+  const viewUserHandler = (id) => {};
 
   return (
     <section
@@ -59,16 +64,14 @@ const Users = () => {
       }}
       className="p-4"
     >
-      <UserForm
-        mode={mode}
-        modal={modal}
-        setModal={setModal}
-        setMode={setMode}
-        toggler={toggler}
-      />
       <div className="d-flex align-items-center justify-content-between my-4">
         <h4>Users</h4>
-        <Button color="info" outline size="sm" onClick={createHandler}>
+        <Button
+          color="info"
+          outline
+          size="sm"
+          onClick={() => navigate("/create-user")}
+        >
           Create
         </Button>
       </div>
@@ -99,7 +102,7 @@ const Users = () => {
                         cursor: "pointer",
                       }}
                       title="Info"
-                      onClick={() => viewUserHandler(user._id)}
+                      onClick={() => navigate(`/view-user/${user._id}`)}
                     />
 
                     <MdMode
@@ -118,6 +121,7 @@ const Users = () => {
                         cursor: "pointer",
                       }}
                       title="Delete"
+                      onClick={() => deleteHandler(user._id)}
                     />
                   </div>
                 </td>
@@ -126,6 +130,7 @@ const Users = () => {
           </tbody>
         </Table>
       </div>
+      <Toaster />
     </section>
   );
 };
