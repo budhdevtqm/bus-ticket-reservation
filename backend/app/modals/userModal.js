@@ -25,9 +25,7 @@ module.exports.signUp = async (values) => {
     try {
       const saved = await data.save();
       const userId = saved._id.toString();
-      const token = jwt.sign({ userId: userId }, secretKey, {
-        expiresIn: "1h",
-      });
+      const token = jwt.sign({ userId: userId }, secretKey);
       resolve({
         status: 201,
         ok: true,
@@ -57,9 +55,7 @@ module.exports.login = async (values) => {
       return reject({ ok: false, message: "Invalid password" });
 
     const userId = isExistingUser._id.toString();
-    const token = jwt.sign({ userId: userId }, secretKey, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign({ userId: userId }, secretKey);
     resolve({ ok: true, token: token, message: "Login successfully" });
   });
 };
@@ -129,13 +125,4 @@ module.exports.updateUser = async (userId, values) => {
   });
 };
 
-module.exports.delete = async (userId) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      await userSchema.findOneAndDelete({ _id: userId });
-      resolve({ ok: true, message: "User Deleted." });
-    } catch (er) {
-      reject({ ok: false, message: "Something went wrong while Deleting" });
-    }
-  });
-};
+// module.exports.
