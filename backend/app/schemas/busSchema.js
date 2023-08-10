@@ -4,9 +4,11 @@ const busSchema = new mongoose.Schema(
   {
     busNo: String,
     createdAt: Number,
+    model: String,
     createdBy: String,
     status: Boolean,
     updatedAt: Number,
+    manufacturer: String,
   },
   {
     collection: "busses",

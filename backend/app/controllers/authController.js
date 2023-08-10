@@ -28,3 +28,7 @@ module.exports.login = async (req, res) => {
     res.status(400).json(error);
   }
 };
+
+// module.exports.checkToken = async(res,res)=>{
+//   const authHeader =
+// }

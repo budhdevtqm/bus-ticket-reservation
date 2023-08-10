@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Badge } from "reactstrap";
 import { MdMode, MdOutlineInfo, MdDelete } from "react-icons/md";
 import axios from "axios";
-import { BASE_URL } from "../../../config";
+import { BASE_URL, headerConfig } from "../../../config";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
 
@@ -25,7 +25,10 @@ const Users = () => {
 
   const getUsers = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/get-all/users`);
+      const response = await axios.get(
+        `${BASE_URL}/get-all/users`,
+        headerConfig
+      );
       setUsers(response.data.data);
     } catch (error) {
       console.log(error);

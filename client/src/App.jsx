@@ -9,6 +9,7 @@ import Users from "./components/Users/Users";
 import User from "./components/Users/User";
 import UserForm from "./components/Users/UserForm";
 import Buses from "./components/Buses/Buses";
+import BusForm from "./components/Buses/BusForm";
 
 function App() {
   useEffect(() => {}, []);
@@ -24,6 +25,8 @@ function App() {
 
           {/* Bus Routes */}
           <Route path="/buses" element={<Buses />} />
+          <Route path="/add-bus" element={<BusForm />} />
+          <Route path="/update-bus" element={<BusForm />} />
 
           {/* User Routes */}
           <Route path="/users" element={<Users />} />

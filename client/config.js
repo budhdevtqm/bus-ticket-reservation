@@ -1,3 +1,9 @@
 const BASE_URL = "http://localhost:4000";
 
-export { BASE_URL };
+const authToken = localStorage.getItem("token");
+
+const headerConfig = {
+  headers: { authorization: `Bearer ${authToken}` },
+};
+
+export { BASE_URL, headerConfig };

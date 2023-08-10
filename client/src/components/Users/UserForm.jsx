@@ -3,7 +3,7 @@ import { Button, Input } from "reactstrap";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import axios from "axios";
-import { BASE_URL } from "../../../config";
+import { BASE_URL, headerConfig } from "../../../config";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -32,12 +32,17 @@ const UserForm = () => {
   const userId = localStorage.getItem("userId");
 
   const getUserDetails = async (id) => {
-    const response = await axios.get(`${BASE_URL}/get-user/${id}`);
+    const response = await axios.get(
+      `${BASE_URL}/get-user/${id}`,
+      headerConfig
+    );
+    console.log(response, "resp");
     setFormValues(response.data.data);
   };
 
   useEffect(() => {
     if (userId) {
+      console.log(userId);
       setFormMode("Update");
       getUserDetails(userId);
     }
@@ -66,7 +71,8 @@ const UserForm = () => {
               try {
                 const response = await axios.post(
                   `${BASE_URL}/user/create`,
-                  values
+                  values,
+                  headerConfig
                 );
                 toast.success(response.data.message, {
                   position: "top-right",
@@ -81,7 +87,8 @@ const UserForm = () => {
               try {
                 const response = await axios.put(
                   `${BASE_URL}/user/${userId}`,
-                  values
+                  values,
+                  headerConfig
                 );
 
                 toast.success(response.data.message, {

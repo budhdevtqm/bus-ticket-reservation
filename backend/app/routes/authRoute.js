@@ -22,4 +22,6 @@ router.post(
   controller.login
 );
 
+// router.post("/checkToken", controller.checkToken);
+
 module.exports = router;
