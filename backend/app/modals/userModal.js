@@ -125,4 +125,16 @@ module.exports.updateUser = async (userId, values) => {
   });
 };
 
-// module.exports.
+module.exports.delete = async (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await userSchema.deleteOne({ _id: userId });
+      resolve({ ok: true, message: "Deleted successfully" });
+    } catch (error) {
+      reject({
+        ok: false,
+        message: "Something went wrong",
+      });
+    }
+  });
+};

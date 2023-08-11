@@ -64,3 +64,31 @@ module.exports.deleteBus = async (busId) => {
     }
   });
 };
+
+module.exports.updateBus = async (busId, values) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const updated = await busSchema.findOneAndUpdate(
+        { _id: busId },
+        {
+          ...values,
+          updatedAt: new Date().getTime(),
+        }
+      );
+      resolve({ ok: true, message: "Bus Updated succesfully" });
+    } catch (error) {
+      reject({ ok: false, message: "Something went wrong" });
+    }
+  });
+};
+
+module.exports.getMyBuses = async (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const myBuses = await busSchema.find({ createdBy: userId });
+      resolve({ ok: true, data: myBuses });
+    } catch (error) {
+      reject({ ok: false, message: "Something went wrong" });
+    }
+  });
+};

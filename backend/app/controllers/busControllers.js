@@ -37,3 +37,23 @@ module.exports.delete = async (req, res) => {
     res.status(400).json(error);
   }
 };
+
+module.exports.update = async (req, res) => {
+  const busId = req.params.id;
+  try {
+    const response = await modal.updateBus(busId, req.body);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
+
+module.exports.getMyBuses = async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const response = await modal.getMyBuses(userId);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};

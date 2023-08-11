@@ -4,6 +4,7 @@ const connectDb = require("./app/config/db").connectDb;
 const userRoutes = require("./app/routes/userRoutes");
 const authRoute = require("./app/routes/authRoute");
 const busRoutes = require("./app/routes/busRoutes");
+const busRutes = require("./app/routes/busRutes");
 const { verifyToken } = require("./app/middlewares/verifyToken");
 
 const cors = require("cors");
@@ -42,5 +43,10 @@ app.use("/bus", busRoutes);
 app.use("/bus", busRoutes);
 app.use("/bus", busRoutes);
 app.use("/bus", busRoutes);
+app.use("/bus", busRoutes);
+app.use("/bus", busRoutes);
+
+//bus-rutes
+app.use("/bus-route", busRutes);
 
 app.listen(process.env.PORT || 400, () => console.log("server Started"));
