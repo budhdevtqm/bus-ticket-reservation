@@ -8,7 +8,7 @@ export default function Layout() {
       <header className="d-flex align-item-center justify-content-center bg-white">
         <Header />
       </header>
-      <main>
+      <main className="overflow-x-hidden overflow-y-scroll">
         <Outlet />
       </main>
       <footer>Footer</footer>

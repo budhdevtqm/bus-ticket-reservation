@@ -36,13 +36,11 @@ const UserForm = () => {
       `${BASE_URL}/get-user/${id}`,
       headerConfig
     );
-    console.log(response, "resp");
     setFormValues(response.data.data);
   };
 
   useEffect(() => {
     if (userId) {
-      console.log(userId);
       setFormMode("Update");
       getUserDetails(userId);
     }

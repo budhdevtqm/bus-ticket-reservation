@@ -24,15 +24,8 @@ const Users = () => {
   };
 
   const getUsers = async () => {
-    try {
-      const response = await axios.get(
-        `${BASE_URL}/get-all/users`,
-        headerConfig
-      );
-      setUsers(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
+    const response = await axios.get(`${BASE_URL}/get-all/users`, headerConfig);
+    setUsers(response.data.data);
   };
 
   const goToUpdate = (id) => {
@@ -47,7 +40,10 @@ const Users = () => {
 
   const deleteHandler = async (userId) => {
     try {
-      const response = await axios.delete(`${BASE_URL}/delete/${userId}`);
+      const response = await axios.delete(
+        `${BASE_URL}/delete/${userId}`,
+        headerConfig
+      );
       toast.success(response.data.message, { position: "top-right" });
       getUsers();
     } catch (error) {

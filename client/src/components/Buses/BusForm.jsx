@@ -23,11 +23,21 @@ const BusForm = (props) => {
     model: "",
   });
 
+  const busId = localStorage.getItem("busId");
+  console.log(busId);
+
   const getBusDetails = async (id) => {
-    const response = await axios.get(`${BASE_URL}/`);
+    const response = await axios
+      .get(`${BASE_URL}/bus/${id}`, headerConfig)
+      .then((rs) => setFormValues(rs.data.bus));
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (busId) {
+      setFormMode("Update");
+      getBusDetails(busId);
+    }
+  }, []);
 
   return (
     <section
@@ -70,20 +80,22 @@ const BusForm = (props) => {
               }
             }
             if (formMode === "Update") {
-              //   try {
-              //     const response = await axios.put(
-              //       `${BASE_URL}/user/${userId}`,
-              //       values,
-              // headerConfig;
-              //     );
-              //     toast.success(response.data.message, {
-              //       position: "top-right",
-              //     });
-              //   } catch (er) {
-              //     toast.error(er.response.data.message, {
-              //       position: "top-right",
-              //     });
-              //   }
+              try {
+                const response = await axios.put(
+                  `${BASE_URL}/bus/update/${busId}`,
+                  values,
+                  headerConfig
+                );
+                console.log(response, "rsp");
+                toast.success(response.data.message, {
+                  position: "top-right",
+                });
+              } catch (error) {
+                console.log(error, "er");
+                toast.error(error.response.data.message, {
+                  position: "top-right",
+                });
+              }
             }
           }}
         >

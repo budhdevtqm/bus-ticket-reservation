@@ -6,17 +6,29 @@ import axios from "axios";
 import { BASE_URL, headerConfig } from "../../../config";
 import { format } from "date-fns";
 import { toast, Toaster } from "react-hot-toast";
+import ViewBus from "./ViewBus";
 
 function AllBus() {
   const user = "superAdmin";
   const navigate = useNavigate();
   const [buses, setBuses] = useState([]);
-  const [creators, setCreators] = useState([]);
+  const [modal, setModal] = useState(false);
+  const [bus, setBus] = useState({});
 
   const getAllBuses = async () => {
     const allBuses = await axios
       .get(`${BASE_URL}/bus/allBuses`, headerConfig)
       .then((response) => setBuses(response.data.data));
+  };
+
+  const showModal = (bus) => {
+    setBus(bus);
+    setModal(true);
+  };
+
+  const closeModal = () => {
+    setModal(false);
+    setBus({});
   };
 
   const getRealDate = (timeStamp) => {
@@ -42,7 +54,6 @@ function AllBus() {
       toast.error(error.response.data.message, { position: "top-right" });
     }
   };
-  const viewHandler = () => {};
 
   useEffect(() => {
     if (user === "admin") {
@@ -50,10 +61,18 @@ function AllBus() {
     if (user === "superAdmin") {
       getAllBuses();
     }
+    localStorage.removeItem("busId");
   }, []);
 
   return (
     <div>
+      <ViewBus
+        modal={modal}
+        setModal={setModal}
+        showModal={showModal}
+        closeModal={closeModal}
+        bus={bus}
+      />
       <Table>
         <thead>
           <tr>
@@ -82,7 +101,7 @@ function AllBus() {
                       cursor: "pointer",
                     }}
                     title="Info"
-                    //   onClick={() => navigate(`/view-user/${user._id}`)}
+                    onClick={() => showModal(bus)}
                   />
 
                   <MdMode

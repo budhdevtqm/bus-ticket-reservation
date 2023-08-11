@@ -10,10 +10,11 @@ import User from "./components/Users/User";
 import UserForm from "./components/Users/UserForm";
 import Buses from "./components/Buses/Buses";
 import BusForm from "./components/Buses/BusForm";
+import ViewBus from "./components/Buses/ViewBus";
+import RouteForm from "./components/BusRoutes/RouteForm";
 
 function App() {
   useEffect(() => {}, []);
-  console.log("hello App");
   return (
     <Fragment>
       <Routes>
@@ -22,11 +23,14 @@ function App() {
           {/* Home */}
           <Route index element={<Home />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/add-route" element={<RouteForm />} />
+          <Route path="/update-route" element={<RouteForm />} />
 
           {/* Bus Routes */}
           <Route path="/buses" element={<Buses />} />
           <Route path="/add-bus" element={<BusForm />} />
           <Route path="/update-bus" element={<BusForm />} />
+          <Route path="view-bus" element={<ViewBus />} />
 
           {/* User Routes */}
           <Route path="/users" element={<Users />} />
