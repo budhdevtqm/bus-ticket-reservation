@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL, headerConfig } from "../../../config";
 import { format } from "date-fns";
+import { verifyStatus } from "../../common/utils";
 
 function BusRoutes() {
   const user = "admin";
@@ -17,9 +18,16 @@ function BusRoutes() {
   };
 
   const getAllRoutes = async () => {
-    const respnse = await axios
-      .get(`${BASE_URL}/bus-route/get-all`, headerConfig)
-      .then((res) => setRoutes(res.data.data));
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/bus-route/get-all`,
+        headerConfig
+      );
+      const data = response.data.data;
+      setRoutes(data);
+    } catch (error) {
+      verifyStatus(error.response.status, navigate);
+    }
   };
 
   useEffect(() => {
@@ -36,6 +44,7 @@ function BusRoutes() {
       toast.success(response.data.message, { position: "top-right" });
     } catch (error) {
       toast.error(error.response.data.message, { position: "top-right" });
+      verifyStatus(error.response.status, navigate);
     }
   };
 

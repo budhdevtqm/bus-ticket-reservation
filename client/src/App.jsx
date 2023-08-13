@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
 import Layout from "./components/layout/Layout";
 import Home from "./components/Home/Home";
 import Auth from "./components/Auth/Auth";
@@ -14,7 +14,6 @@ import ViewBus from "./components/Buses/ViewBus";
 import RouteForm from "./components/BusRoutes/RouteForm";
 
 function App() {
-  useEffect(() => {}, []);
   return (
     <Fragment>
       <Routes>

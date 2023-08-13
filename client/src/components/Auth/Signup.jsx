@@ -46,6 +46,7 @@ const Signup = (props) => {
               );
               localStorage.setItem("token", response.data.token);
               toast.success(response.data.message, { position: "top-right" });
+              navigate("/");
             } catch (er) {
               toast.error(er.response.data.message, { position: "top-right" });
             }

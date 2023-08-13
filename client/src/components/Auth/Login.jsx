@@ -42,6 +42,7 @@ const Login = (props) => {
               const res = await axios.post(`${BASE_URL}/login/user`, values);
               toast.success(res.data.message, { position: "top-right" });
               localStorage.setItem("token", res.data.token);
+              navigate("/");
             } catch (er) {
               toast.error(er.response.data.message, { position: "top-right" });
             }

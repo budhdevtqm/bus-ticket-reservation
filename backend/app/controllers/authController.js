@@ -9,7 +9,7 @@ module.exports.signup = async (req, res) => {
 
   try {
     const signingUp = await modal.signUp(req.body);
-    res.status(201).json({ ...signingUp });
+    res.status(201).json(signingUp);
   } catch (error) {
     res.status(400).json(error);
   }
