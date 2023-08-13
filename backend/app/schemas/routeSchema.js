@@ -10,7 +10,6 @@ const routeSchema = new mongoose.Schema(
     totalSeats: Number,
     ticketPrice: Number,
     date: Number,
-
     availableSeats: Number,
     updatedAt: Number,
     createdAt: Number,

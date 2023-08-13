@@ -1,13 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Button } from "reactstrap";
 import { Toaster, toast } from "react-hot-toast";
 import { MdMode, MdOutlineInfo, MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL, headerConfig } from "../../../config";
+import { format } from "date-fns";
 
 function BusRoutes() {
   const user = "admin";
   const [routes, setRoutes] = useState([]);
   const navigate = useNavigate();
+
+  const getRealDate = (timeStamp) => {
+    return format(timeStamp, "dd - MM - yyyy");
+  };
+
+  const getAllRoutes = async () => {
+    const respnse = await axios
+      .get(`${BASE_URL}/bus-route/get-all`, headerConfig)
+      .then((res) => setRoutes(res.data.data));
+  };
+
+  useEffect(() => {
+    getAllRoutes();
+  }, []);
+
+  const deleteHandler = async (id) => {
+    try {
+      const response = await axios.delete(
+        `${BASE_URL}/bus-route/${id}`,
+        headerConfig
+      );
+      getAllRoutes();
+      toast.success(response.data.message, { position: "top-right" });
+    } catch (error) {
+      toast.error(error.response.data.message, { position: "top-right" });
+    }
+  };
+
+  const goToUpdate = (id) => {
+    localStorage.setItem("routeId", id);
+    navigate("/update-route");
+  };
 
   return (
     <section
@@ -33,19 +68,17 @@ function BusRoutes() {
             <th>Bus No.</th>
             <th>From</th>
             <th>To</th>
-            <th>Total Seats</th>
-            <th>Available Seats</th>
+            <th>Seats</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {routes.map((bus, index) => (
+          {routes.map((route, index) => (
             <tr key={index}>
               <td>{index + 1}</td>
-              <td>{bus.busNo}</td>
-              <td>{bus.manufacturer}</td>
-              <td>{bus.model}</td>
-              <td>{getRealDate(bus.createdAt)}</td>
+              <td>{route.from}</td>
+              <td>{route.to}</td>
+              <td>{`${route.availableSeats} / ${route.totalSeats}`}</td>
               <td>
                 <div className="d-flex align-items-center justify-content-start gap-2">
                   <MdOutlineInfo
@@ -65,7 +98,7 @@ function BusRoutes() {
                       cursor: "pointer",
                     }}
                     title="Update"
-                    onClick={() => goToUpdate(bus._id)}
+                    onClick={() => goToUpdate(route._id)}
                   />
                   <MdDelete
                     style={{
@@ -74,7 +107,7 @@ function BusRoutes() {
                       cursor: "pointer",
                     }}
                     title="Delete"
-                    onClick={() => deleteHandler(bus._id)}
+                    onClick={() => deleteHandler(route._id)}
                   />
                 </div>
               </td>

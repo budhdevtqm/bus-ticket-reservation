@@ -4,14 +4,14 @@ import React, { useEffect, useState } from "react";
 import { Button, Input } from "reactstrap";
 import * as yup from "yup";
 import { BASE_URL, headerConfig } from "../../../config";
-import TimePicker from "react-time-picker";
+import { Toaster, toast } from "react-hot-toast";
 
 const routeSchema = yup.object().shape({
   busId: yup.string().required("Required"),
   from: yup.string().required("Required").min(3, "Must be of 3 letters!"),
   to: yup.string().required("Required").min(3, "Must be of 3 letters!"),
-  // startTime: yup.number().required("Required").min(1, "Must be > 0"),
-  // endTime: yup.number().required("Required").min(1, "Must be > 0"),
+  startTime: yup.string().required("Required"),
+  endTime: yup.string().required("Required"),
   totalSeats: yup.number().required("Required").min(1, "Must be > 0"),
   ticketPrice: yup.number().required("Required").min(1, "Must be > 0"),
   date: yup
@@ -23,19 +23,17 @@ const routeSchema = yup.object().shape({
 function RouteForm() {
   const [formMode, setFormMode] = useState("Create");
   const [buses, setBuses] = useState([]);
-  const [startTime, setStartTime] = useState(0);
-  const [endTime, setEndTime] = useState(0);
   const [formValues, setFormValues] = useState({
     busId: "",
     from: "",
     to: "",
     date: 0,
-    startTime: startTime,
-    endTime: endTime,
+    startTime: "",
+    endTime: "",
     totalSeats: 0,
     ticketPrice: 0,
   });
-
+  const routeId = localStorage.getItem("routeId");
   const userid = "64d355eadca759e4167989a9";
 
   const getMyBuses = async (id) => {
@@ -44,9 +42,20 @@ function RouteForm() {
       .then((resp) => setBuses(resp.data.data));
   };
 
+  const getRouteDetails = async (id) => {
+    await axios
+      .get(`${BASE_URL}/bus-route/get/${id}`)
+      .then((res) => console.log(res, "resp"));
+  };
+
   useEffect(() => {
     if (userid) {
       getMyBuses(userid);
+    }
+
+    if (routeId) {
+      getRouteDetails(routeId);
+      setFormMode("Update");
     }
   }, []);
 
@@ -60,7 +69,7 @@ function RouteForm() {
   return (
     <section style={{ width: "100%" }} className="d-flex  flex-column py-4">
       <h4 className="p-2 mx-4 my-2" color="info">
-        {`${formMode} User`}
+        {`${formMode} Route`}
       </h4>
 
       <div
@@ -72,7 +81,27 @@ function RouteForm() {
           enableReinitialize={true}
           validationSchema={routeSchema}
           onSubmit={async (values, { setSubmitting }) => {
-            console.log(values, "values");
+            const date = converDateToTimeStamp(values.date);
+            const startTime = convertHMtoTimeStamp(values.startTime) + date;
+            const endTime = convertHMtoTimeStamp(values.endTime) + date;
+            const modifiedValues = { ...values, startTime, endTime, date };
+            console.log(modifiedValues, "modifiedValuess");
+            if (formMode === "Create") {
+              try {
+                const response = await axios.post(
+                  `${BASE_URL}/bus-route/create`,
+                  modifiedValues,
+                  headerConfig
+                );
+                toast.success(response.data.message, { position: "top-right" });
+              } catch (error) {
+                toast.error(error.response.data.message, {
+                  position: "top-right",
+                });
+              }
+            }
+            if (formMode === "Update") {
+            }
           }}
         >
           {({ values, errors, touched, handleBlur, handleChange }) => (
@@ -294,6 +323,7 @@ function RouteForm() {
           )}
         </Formik>
       </div>
+      <Toaster />
     </section>
   );
 }

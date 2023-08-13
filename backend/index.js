@@ -47,6 +47,10 @@ app.use("/bus", busRoutes);
 app.use("/bus", busRoutes);
 
 //bus-rutes
+app.use("/bus-route", busRutes); //C
+app.use("/bus-route", busRutes); //
+app.use("/bus-route", busRutes);
+app.use("/bus-route", busRutes);
 app.use("/bus-route", busRutes);
 
 app.listen(process.env.PORT || 400, () => console.log("server Started"));
