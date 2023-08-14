@@ -7,14 +7,20 @@ import axios from "axios";
 import { BASE_URL, headerConfig } from "../../../config";
 import { format } from "date-fns";
 import { verifyStatus } from "../../common/utils";
+import { BsArrowUpRightSquareFill } from "react-icons/bs";
 
 function BusRoutes() {
-  const user = "admin";
+  const user = "user";
   const [routes, setRoutes] = useState([]);
   const navigate = useNavigate();
 
   const getRealDate = (timeStamp) => {
     return format(timeStamp, "dd - MM - yyyy");
+  };
+
+  const goToView = (id) => {
+    localStorage.setItem("busRouteId", id);
+    navigate("/view-Route");
   };
 
   const getAllRoutes = async () => {
@@ -32,12 +38,14 @@ function BusRoutes() {
 
   useEffect(() => {
     getAllRoutes();
+    localStorage.removeItem("routeId");
+    localStorage.removeItem("busRouteId");
   }, []);
 
   const deleteHandler = async (id) => {
     try {
       const response = await axios.delete(
-        `${BASE_URL}/bus-route/${id}`,
+        `${BASE_URL}/bus-route/get-route/${id}`,
         headerConfig
       );
       getAllRoutes();
@@ -54,10 +62,7 @@ function BusRoutes() {
   };
 
   return (
-    <section
-      style={{ width: "100%", height: "100" }}
-      className="overflow-x-hidden overflow-y-scroll "
-    >
+    <section style={{ width: "100%", height: "100" }}>
       <div className="d-flex align-items-center justify-content-between my-4">
         <h4>Bus Route</h4>
         {user !== "user" && (
@@ -78,6 +83,7 @@ function BusRoutes() {
             <th>From</th>
             <th>To</th>
             <th>Seats</th>
+            <th>Date</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -88,36 +94,50 @@ function BusRoutes() {
               <td>{route.from}</td>
               <td>{route.to}</td>
               <td>{`${route.availableSeats} / ${route.totalSeats}`}</td>
+              <td>{format(route.date, "dd - MM - yy")}</td>
               <td>
                 <div className="d-flex align-items-center justify-content-start gap-2">
-                  <MdOutlineInfo
-                    style={{
-                      fontSize: "22px",
-                      color: "#0dcaf0",
-                      cursor: "pointer",
-                    }}
-                    title="Info"
-                    onClick={() => showModal(bus)}
-                  />
+                  {user === "user" ? (
+                    <BsArrowUpRightSquareFill
+                      style={{
+                        fontSize: "22px",
+                        color: "#",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => goToView(route._id)}
+                    />
+                  ) : (
+                    <>
+                      <MdOutlineInfo
+                        style={{
+                          fontSize: "22px",
+                          color: "#1b1bb9;",
+                          cursor: "pointer",
+                        }}
+                        title="Info"
+                        onClick={() => showModal(bus)}
+                      />
 
-                  <MdMode
-                    style={{
-                      fontSize: "20px",
-                      color: "green",
-                      cursor: "pointer",
-                    }}
-                    title="Update"
-                    onClick={() => goToUpdate(route._id)}
-                  />
-                  <MdDelete
-                    style={{
-                      fontSize: "20px",
-                      color: "red",
-                      cursor: "pointer",
-                    }}
-                    title="Delete"
-                    onClick={() => deleteHandler(route._id)}
-                  />
+                      <MdMode
+                        style={{
+                          fontSize: "20px",
+                          color: "green",
+                          cursor: "pointer",
+                        }}
+                        title="Update"
+                        onClick={() => goToUpdate(route._id)}
+                      />
+                      <MdDelete
+                        style={{
+                          fontSize: "20px",
+                          color: "red",
+                          cursor: "pointer",
+                        }}
+                        title="Delete"
+                        onClick={() => deleteHandler(route._id)}
+                      />
+                    </>
+                  )}
                 </div>
               </td>
             </tr>

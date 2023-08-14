@@ -57,7 +57,7 @@ module.exports.login = async (values) => {
       return reject({ ok: false, message: "Invalid password" });
 
     const userId = isExistingUser._id.toString();
-    const token = jwt.sign({ userId: userId }, secretKey, { expiresIn: "5m" });
+    const token = jwt.sign({ userId: userId }, secretKey, { expiresIn: "1h" });
     resolve({ ok: true, token: token, message: "Login successfully" });
   });
 };

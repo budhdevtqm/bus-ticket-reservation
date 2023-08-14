@@ -12,6 +12,7 @@ import Buses from "./components/Buses/Buses";
 import BusForm from "./components/Buses/BusForm";
 import ViewBus from "./components/Buses/ViewBus";
 import RouteForm from "./components/BusRoutes/RouteForm";
+import ViewRoute from "./components/BusRoutes/ViewRoute";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/add-route" element={<RouteForm />} />
           <Route path="/update-route" element={<RouteForm />} />
+          <Route path="/view-route" element={<ViewRoute />} />
 
           {/* Bus Routes */}
           <Route path="/buses" element={<Buses />} />

@@ -4,7 +4,7 @@ const connectDb = require("./app/config/db").connectDb;
 const userRoutes = require("./app/routes/userRoutes");
 const authRoute = require("./app/routes/authRoute");
 const busRoutes = require("./app/routes/busRoutes");
-const busRutes = require("./app/routes/busRutes");
+const busRute = require("./app/routes/bus-Rutes");
 const { verifyToken } = require("./app/middlewares/verifyToken");
 
 const cors = require("cors");
@@ -47,10 +47,10 @@ app.use("/bus", busRoutes);
 app.use("/bus", busRoutes);
 
 //bus-rutes
-app.use("/bus-route", busRutes); //C
-app.use("/bus-route", busRutes); //
-app.use("/bus-route", busRutes);
-app.use("/bus-route", busRutes);
-app.use("/bus-route", busRutes);
+app.use("/bus-route", busRute); //create
+app.use("/bus-route", busRute); //update
+app.use("/bus-route", busRute); //get-all
+app.use("/bus-route", busRute); //delete
+app.use("/bus-route", busRute); //get-single
 
 app.listen(process.env.PORT || 400, () => console.log("server Started"));

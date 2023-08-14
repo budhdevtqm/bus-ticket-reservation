@@ -5,6 +5,9 @@ import { Button, Input } from "reactstrap";
 import * as yup from "yup";
 import { BASE_URL, headerConfig } from "../../../config";
 import { Toaster, toast } from "react-hot-toast";
+import { verifyStatus } from "../../common/utils";
+import { useNavigate } from "react-router-dom";
+import { format, parse } from "date-fns";
 
 const routeSchema = yup.object().shape({
   busId: yup.string().required("Required"),
@@ -23,6 +26,7 @@ const routeSchema = yup.object().shape({
 function RouteForm() {
   const [formMode, setFormMode] = useState("Create");
   const [buses, setBuses] = useState([]);
+  const navigate = useNavigate();
   const [formValues, setFormValues] = useState({
     busId: "",
     from: "",
@@ -33,26 +37,48 @@ function RouteForm() {
     totalSeats: 0,
     ticketPrice: 0,
   });
+
+  const stampToTimeString = (miliSeconds) => {
+    const [h, m] = new Date(miliSeconds).toString().split(" ")[4].split(":");
+    return `${h}:${m}`;
+  };
+
   const routeId = localStorage.getItem("routeId");
   const userid = "64d355eadca759e4167989a9";
 
   const getMyBuses = async (id) => {
-    const response = await axios
-      .get(`${BASE_URL}/bus/my-buses/${id}`, headerConfig)
-      .then((resp) => setBuses(resp.data.data));
+    try {
+      const response = await axios
+        .get(`${BASE_URL}/bus/my-buses/${id}`, headerConfig)
+        .then((resp) => setBuses(resp.data.data));
+    } catch (error) {
+      verifyStatus(error.response.status, navigate);
+    }
   };
 
   const getRouteDetails = async (id) => {
-    await axios
-      .get(`${BASE_URL}/bus-route/get/${id}`)
-      .then((res) => console.log(res, "resp"));
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/bus-route/get-route/${id}`,
+        headerConfig
+      );
+      const data = response.data.data;
+      const startTime = stampToTimeString(data.startTime);
+      const endTime = stampToTimeString(data.endTime);
+      const date = format(data.date, "yyyy-MM-dd");
+      setFormValues({ ...data, startTime, endTime, date });
+    } catch (error) {
+      verifyStatus(error.response.status, navigate);
+    }
   };
 
   useEffect(() => {
     if (userid) {
       getMyBuses(userid);
     }
+  }, []);
 
+  useEffect(() => {
     if (routeId) {
       getRouteDetails(routeId);
       setFormMode("Update");
@@ -85,7 +111,7 @@ function RouteForm() {
             const startTime = convertHMtoTimeStamp(values.startTime) + date;
             const endTime = convertHMtoTimeStamp(values.endTime) + date;
             const modifiedValues = { ...values, startTime, endTime, date };
-            console.log(modifiedValues, "modifiedValuess");
+
             if (formMode === "Create") {
               try {
                 const response = await axios.post(
@@ -100,7 +126,20 @@ function RouteForm() {
                 });
               }
             }
+
             if (formMode === "Update") {
+              try {
+                const response = await axios.put(
+                  `${BASE_URL}/bus-route/update/${routeId}`,
+                  modifiedValues,
+                  headerConfig
+                );
+                toast.success(response.data.message, { position: "top-right" });
+              } catch (error) {
+                toast.error(error.response.data.message, {
+                  position: "top-right",
+                });
+              }
             }
           }}
         >

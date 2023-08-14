@@ -32,8 +32,18 @@ module.exports.create = async (req) => {
 };
 
 module.exports.update = async (routeId, values) => {
-  console.log(routeId, "update");
-  console.log(values, "values");
+  return new Promise(async (resolve, reject) => {
+    try {
+      const updated = await schema.findOneAndUpdate(
+        { _id: routeId },
+        { ...values, updatedAt: new Date().getTime() }
+      );
+
+      resolve({ ok: true, message: "Route Updated succesfully" });
+    } catch (error) {
+      reject({ ok: false, message: "Something went wrong" });
+    }
+  });
 };
 
 module.exports.getAll = async () => {
@@ -62,10 +72,9 @@ module.exports.get = async (routeId) => {
   return new Promise(async (resolve, reject) => {
     try {
       const route = await schema.findOne({ _id: routeId });
-      console.log(route, "rout");
       resolve({ ok: true, data: route });
     } catch (error) {
-      reject({ ok: false, message: "Something went worng" });
+      reject({ ok: false, message: error.message });
     }
   });
 };
