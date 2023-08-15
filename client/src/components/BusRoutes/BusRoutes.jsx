@@ -45,7 +45,7 @@ function BusRoutes() {
   const deleteHandler = async (id) => {
     try {
       const response = await axios.delete(
-        `${BASE_URL}/bus-route/get-route/${id}`,
+        `${BASE_URL}/bus-route/${id}`,
         headerConfig
       );
       getAllRoutes();

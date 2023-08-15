@@ -9,18 +9,21 @@ import Seat from "./Seat";
 function ViewRoute() {
   const [route, setRoute] = useState({});
   const [busDeatils, setBusDetails] = useState({});
+  const [seletecdSeats, setSelectedSeats] = useState([]);
+  const [seats, setSeats] = useState([]);
+  const routeId = localStorage.getItem("busRouteId");
+  console.log(routeId, "routeid");
 
   const navigate = useNavigate();
 
   const getTotalSeats = (total) => {
     let array = [];
     for (let i = 1; i <= total; i++) {
-      array.push(i);
+      array.push({ seat: i, booked: false });
     }
+    console.log(array, "ar");
     return array;
   };
-
-  console.log(busDeatils);
 
   const getRouteDetails = async (id) => {
     try {
@@ -41,11 +44,16 @@ function ViewRoute() {
   };
 
   useEffect(() => {
-    const routeId = localStorage.getItem("busRouteId");
     if (routeId) {
       getRouteDetails(routeId);
     }
   }, []);
+
+  useEffect(() => {
+    if (route.totalSeats) {
+      getTotalSeats(route.totalSeats);
+    }
+  }, [route]);
 
   return (
     <section style={{ width: "100%", height: "100%" }}>
@@ -60,7 +68,9 @@ function ViewRoute() {
               <BiSolidBus style={{ fontSize: "300px", color: "dodgerblue" }} />
               <b className="rounded p-3 bg-warning"> {busDeatils.busNo}</b>
             </div>
-            <div style={{ width: "60%" }} className="right"></div>
+            <div style={{ width: "60%" }} className="right">
+              <Seat />
+            </div>
           </div>
         </div>
       </div>

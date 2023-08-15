@@ -1,4 +1,5 @@
 const schema = require("../schemas/routeSchema");
+const ticketSchema = require("../schemas/ticketSchema");
 require("dotenv").config({ path: "../../.env" });
 const jwt = require("jsonwebtoken");
 
@@ -7,6 +8,14 @@ module.exports.create = async (req) => {
   const token = authHeader && authHeader.split(" ")[1];
   const verify = await jwt.verify(token, process.env.JWT_PRIVATE);
   const { userId } = verify;
+
+  const ticket = {
+    assignedTo: "",
+    isCanceled: false,
+    booked: false,
+    seatNumber: 0,
+    bookedOn: 0,
+  };
 
   return new Promise(async (resolve, reject) => {
     const data = {
@@ -24,7 +33,21 @@ module.exports.create = async (req) => {
 
     try {
       const created = await schema.create(data);
-      resolve({ ok: true, message: "Route Created Successfully." });
+      console.log(created._id.toString(), "created");
+      const { busId, _id, totalSeats } = created;
+      for (let i = 1; i <= totalSeats; i++) {
+        await ticketSchema.create({
+          ...ticket,
+          busId,
+          routeId: _id,
+          seatNumber: i,
+        });
+      }
+
+      resolve({
+        ok: true,
+        message: "Route Created Successfully.",
+      });
     } catch (error) {
       reject({ ok: true, message: "Something went wrong." });
     }
