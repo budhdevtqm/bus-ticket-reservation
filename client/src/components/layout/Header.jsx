@@ -1,26 +1,80 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 
-const links = [
-  {
-    label: "Home",
-    path: "/home",
-  },
-  {
-    label: "Buses",
-    path: "/buses",
-  },
-  {
-    label: "My Profile",
-    path: "/profile",
-  },
-  {
-    label: "Users",
-    path: "/users",
-  },
-];
-
 const Header = () => {
+  const user = useSelector((state) => state.auth.user);
+
+  let links = [
+    {
+      label: "Home",
+      path: "/home",
+    },
+    {
+      label: "Buses",
+      path: "/buses",
+    },
+    {
+      label: "My Profile",
+      path: "/profile",
+    },
+    {
+      label: "Users",
+      path: "/users",
+    },
+  ];
+
+  // if (user && user.permissions === "superAdmin") {
+  //   links = [
+  //     {
+  //       label: "Home",
+  //       path: "/home",
+  //     },
+  //     {
+  //       label: "Buses",
+  //       path: "/buses",
+  //     },
+  //     {
+  //       label: "My Profile",
+  //       path: "/profile",
+  //     },
+  //     {
+  //       label: "Users",
+  //       path: "/users",
+  //     },
+  //   ];
+  // }
+
+  // if (user && user.permissions === "admin") {
+  //   links = [
+  //     {
+  //       label: "Buses",
+  //       path: "/buses",
+  //     },
+  //     {
+  //       label: "My Profile",
+  //       path: "/profile",
+  //     },
+  //     {
+  //       label: "Home",
+  //       path: "/home",
+  //     },
+  //   ];
+  // }
+
+  // if (user && user.permissions === "user") {
+  //   links = [
+  //     {
+  //       label: "My Profile",
+  //       path: "/profile",
+  //     },
+  //     {
+  //       label: "Home",
+  //       path: "/home",
+  //     },
+  //   ];
+  // }
+
   return (
     <div
       style={{ width: "100%" }}

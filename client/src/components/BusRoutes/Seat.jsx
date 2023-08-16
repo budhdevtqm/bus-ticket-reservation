@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import { BiCheck } from "react-icons/bi";
 
-function Seat({}) {
-  const [selected, setSelected] = useState(true);
-  const seatNumber = 1;
-  let booked = false;
+function Seat(props) {
+  const { setSelected, booked, seatNumber, _id: id } = props;
+  const [ticked, setTickets] = useState(false);
+
+  const selectTicket = (data) => {
+    setSelected(data);
+    console.log(data._id, "ticket-id");
+    setTickets(true);
+  };
 
   if (booked) {
     return (
@@ -18,26 +23,22 @@ function Seat({}) {
     );
   }
 
-  /*
-  
-  {
-      busId: busId,
-      routeId: "",
-      assignedTo: "",
-      isCanceled: false,
-      booked: false,
-      seatNumber: 0,
-      bookedOn: 0,
-    }
-  */
   return (
     <div
-      className="card rounded shadow d-flex align-items-center justify-content-center bg-success
-        fs-4 text-light"
+      className={
+        ticked
+          ? "bg-primary card rounded shadow d-flex align-items-center justify-content-center"
+          : "card rounded shadow d-flex align-items-center justify-content-center bg-secondary fs-4 text-light"
+      }
       style={{ width: "50px", height: "50px", cursor: "pointer" }}
-      title="Add Seat"
+      title="Book Seat"
+      onClick={ticked ? null : () => selectTicket(props)}
     >
-      {selected ? <BiCheck /> : seatNumber}
+      {ticked ? (
+        <BiCheck style={{ fontSize: "25px", color: "white" }} />
+      ) : (
+        seatNumber
+      )}
     </div>
   );
 }

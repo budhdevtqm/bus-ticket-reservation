@@ -9,7 +9,7 @@ const {
 
 router.post("/create", adminAndSuperadmin, controller.create);
 router.put("/update/:id", adminAndSuperadmin, controller.update);
-router.get("/get-all", adminAndSuperadmin, controller.getAll);
+router.get("/get-all", controller.getAll);
 router.delete("/:id", adminAndSuperadmin, controller.delete);
 router.get("/get-route/:id", controller.getRoute);
 

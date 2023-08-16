@@ -16,7 +16,7 @@ connectDb();
 //common middlewares
 var corsOptions = {
   origin: "*",
-  optionsSuccessStatus: 200,
+  // optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
@@ -41,20 +41,11 @@ app.use("/update", userRoutes);
 
 //Buses
 app.use("/bus", busRoutes);
-app.use("/bus", busRoutes);
-app.use("/bus", busRoutes);
-app.use("/bus", busRoutes);
-app.use("/bus", busRoutes);
-app.use("/bus", busRoutes);
 
 //bus-rutes
-app.use("/bus-route", busRute); //create
-app.use("/bus-route", busRute); //update
-app.use("/bus-route", busRute); //get-all
-app.use("/bus-route", busRute); //delete
-app.use("/bus-route", busRute); //get-single
+app.use("/bus-route", busRute);
 
 //tickets
-app.use("/tickets", ticketRoute); //get-all
+app.use("/tickets", ticketRoute);
 
-app.listen(process.env.PORT || 400, () => console.log("server Started"));
+app.listen(process.env.PORT || 4000, () => console.log("server Started"));

@@ -16,6 +16,7 @@ module.exports.signup = async (req, res) => {
 };
 
 module.exports.login = async (req, res) => {
+  console.log(req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ error: errors.array() });
@@ -29,6 +30,11 @@ module.exports.login = async (req, res) => {
   }
 };
 
-// module.exports.checkToken = async(res,res)=>{
-//   const authHeader =
-// }
+module.exports.checkToken = async (req, res) => {
+  try {
+    const response = await modal.checkToken(req);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};

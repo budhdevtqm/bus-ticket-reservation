@@ -33,15 +33,16 @@ module.exports.create = async (req) => {
 
     try {
       const created = await schema.create(data);
-      console.log(created._id.toString(), "created");
       const { busId, _id, totalSeats } = created;
+
       for (let i = 1; i <= totalSeats; i++) {
-        await ticketSchema.create({
+        const creatingTicket = await ticketSchema.create({
           ...ticket,
           busId,
           routeId: _id,
           seatNumber: i,
         });
+        console.log(creatingTicket, i);
       }
 
       resolve({

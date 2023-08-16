@@ -1,7 +1,6 @@
 const userSchema = require("../schemas/userSchema");
 require("dotenv").config({ path: "../../.env" });
 const jwt = require("jsonwebtoken");
-
 const secretKey = process.env.JWT_PRIVATE;
 
 module.exports.signUp = async (values) => {
@@ -137,6 +136,21 @@ module.exports.delete = async (userId) => {
         ok: false,
         message: "Something went wrong",
       });
+    }
+  });
+};
+
+module.exports.checkToken = async (req) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const authHeader = req.headers["authorization"];
+      const token = authHeader && authHeader.split(" ")[1];
+      const verify = await jwt.verify(token, process.env.JWT_PRIVATE);
+      const { userId } = verify;
+      const userDetails = await userSchema.findOne({ _id: userId });
+      resolve({ ok: true, data: userDetails });
+    } catch (error) {
+      reject({ ok: false, message: "Invalid Token" });
     }
   });
 };

@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "reactstrap";
 import { MdMode, MdOutlineInfo, MdDelete } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL, headerConfig } from "../../../config";
 import { format } from "date-fns";
 import { toast, Toaster } from "react-hot-toast";
 import ViewBus from "./ViewBus";
+import { useSelector } from "react-redux";
 
 function AllBus() {
-  const user = "superAdmin";
+  const user = useSelector((state) => state.auth.user.permissions);
   const navigate = useNavigate();
   const [buses, setBuses] = useState([]);
   const [modal, setModal] = useState(false);
@@ -20,6 +21,10 @@ function AllBus() {
       .get(`${BASE_URL}/bus/allBuses`, headerConfig)
       .then((response) => setBuses(response.data.data));
   };
+
+  if (user === "user") {
+    navigate("/");
+  }
 
   const showModal = (bus) => {
     setBus(bus);

@@ -8,19 +8,16 @@ import { BASE_URL, headerConfig } from "../../../config";
 import { format } from "date-fns";
 import { verifyStatus } from "../../common/utils";
 import { BsArrowUpRightSquareFill } from "react-icons/bs";
+import { useSelector } from "react-redux";
 
 function BusRoutes() {
-  const user = "user";
+  const user = useSelector((state) => state.auth.user.permissions);
   const [routes, setRoutes] = useState([]);
   const navigate = useNavigate();
 
-  const getRealDate = (timeStamp) => {
-    return format(timeStamp, "dd - MM - yyyy");
-  };
-
   const goToView = (id) => {
     localStorage.setItem("busRouteId", id);
-    navigate("/view-Route");
+    navigate("/view-route");
   };
 
   const getAllRoutes = async () => {
@@ -82,7 +79,6 @@ function BusRoutes() {
             <th>Bus No.</th>
             <th>From</th>
             <th>To</th>
-            <th>Seats</th>
             <th>Date</th>
             <th>Actions</th>
           </tr>
@@ -93,7 +89,6 @@ function BusRoutes() {
               <td>{index + 1}</td>
               <td>{route.from}</td>
               <td>{route.to}</td>
-              <td>{`${route.availableSeats} / ${route.totalSeats}`}</td>
               <td>{format(route.date, "dd - MM - yy")}</td>
               <td>
                 <div className="d-flex align-items-center justify-content-start gap-2">
@@ -101,7 +96,7 @@ function BusRoutes() {
                     <BsArrowUpRightSquareFill
                       style={{
                         fontSize: "22px",
-                        color: "#",
+                        color: "#1b1bb9",
                         cursor: "pointer",
                       }}
                       onClick={() => goToView(route._id)}

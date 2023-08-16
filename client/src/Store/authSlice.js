@@ -1,39 +1,24 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import { BASE_URL } from "../../config";
 
 const initialState = {
   isLoggedIn: false,
-  loading: false,
   user: {},
 };
-
-export const login = createAsyncThunk("auth/login", async (data) => {
-  console.log(data, "values");
-  try {
-    const logging = await axios.post(`${BASE_URL}/login/user`, data);
-    console.log(logging, "logging");
-  } catch (error) {
-    console.log(error, "loggin-err");
-  }
-});
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
-  extraReducers: {
-    [login.pending]: (state) => {
-      state.loading = true;
-    },
-    [login.fulfilled]: (state, { payload }) => {
-      state.loading = false;
+  reducers: {
+    setUser: (state, { payload }) => {
       state.user = payload;
+      state.isLoggedIn = true;
     },
-    [login.rejected]: (state) => {
-      state.loading = false;
+    logout: (state) => {
+      state.user = {};
+      state.isLoggedIn = false;
     },
   },
 });
 
 export default authSlice.reducer;
+export const { setUser, logout } = authSlice.actions;

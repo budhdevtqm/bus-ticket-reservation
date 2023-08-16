@@ -4,8 +4,10 @@ import { Formik, Form } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../config";
+import { setUser } from "../../Store/authSlice";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid Email").required("Required!"),
@@ -20,7 +22,9 @@ const loginSchema = yup.object().shape({
 
 const Login = (props) => {
   const { mode, modeHandler } = props;
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
 
   return (
     <div
@@ -40,8 +44,13 @@ const Login = (props) => {
             setSubmitting(true);
             try {
               const res = await axios.post(`${BASE_URL}/login/user`, values);
-              toast.success(res.data.message, { position: "top-right" });
               localStorage.setItem("token", res.data.token);
+
+              const user = await axios.get(`${BASE_URL}/auth/checkToken`, {
+                headers: { authorization: `Bearer ${res.data.token}` },
+              });
+              dispatch(setUser(user.data.data));
+              toast.success(res.data.message, { position: "top-right" });
               navigate("/");
             } catch (er) {
               toast.error(er.response.data.message, { position: "top-right" });
