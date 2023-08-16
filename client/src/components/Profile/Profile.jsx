@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { BASE_URL, headerConfig } from "../../../config";
+import UserProfile from "./UserProfile";
 
 function Profile() {
   const {
@@ -9,7 +10,6 @@ function Profile() {
     permissions,
     name,
   } = useSelector((state) => state.auth.user);
-  console.log(id, permissions);
 
   const getTickets = async () => {
     try {
@@ -17,8 +17,10 @@ function Profile() {
         `${BASE_URL}/tickets/get-my-tickets`,
         headerConfig
       );
-      console.log(response);
-    } catch (error) {}
+      console.log(response, "response");
+    } catch (error) {
+      console.log(error, "er");
+    }
   };
 
   useEffect(() => {
@@ -31,9 +33,7 @@ function Profile() {
         <h4>{`Hi, ${name}`}</h4>
       </div>
 
-      <div>
-        <h4>Tickets</h4>
-      </div>
+      <UserProfile />
     </section>
   );
 }

@@ -20,8 +20,9 @@ module.exports.bookTicket = async (req, res) => {
 };
 
 module.exports.getMyTickets = async (req, res) => {
+  const { userId } = req.params;
   try {
-    const response = await modal.myTickets(req);
+    const response = await modal.myTickets(userId);
     res.status(200).json(response);
   } catch (error) {
     res.status(400).json(error);

@@ -39,16 +39,15 @@ module.exports.book = async (req) => {
   });
 };
 
-module.exports.myTickets = async (req) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  const verify = await jwt.verify(token, process.env.JWT_PRIVATE);
-  const { userId } = verify;
+module.exports.myTickets = async (userId) => {
   try {
     const data = await schema.find({ assignedTo: userId });
-    console.log(data, "data");
     resolve({ ok: true, data: data });
+    console.log(
+      data,
+      "-------------------------------------------------------"
+    );
   } catch (error) {
-    reject({ ok: false, message: "something went wrong" });
+    reject({ ok: false, message: "something went wrong", error: error });
   }
 };
