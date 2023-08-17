@@ -8,9 +8,10 @@ import { format } from "date-fns";
 import { toast, Toaster } from "react-hot-toast";
 import ViewBus from "./ViewBus";
 import { useSelector } from "react-redux";
+import { verifyStatus } from "../../common/utils";
 
 function AllBus() {
-  const user = useSelector((state) => state.auth.user.permissions);
+  const { _id: userId, permissions } = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
   const [buses, setBuses] = useState([]);
   const [modal, setModal] = useState(false);
@@ -22,9 +23,18 @@ function AllBus() {
       .then((response) => setBuses(response.data.data));
   };
 
-  if (user === "user") {
-    navigate("/");
-  }
+  const getMyBusses = async (userId) => {
+    try {
+      const busesResponse = await axios.get(
+        `${BASE_URL}/bus/my-buses/${userId}`,
+        headerConfig
+      );
+      const busData = busesResponse.data.data;
+      setBuses(busData);
+    } catch (error) {
+      verifyStatus(error.response.status, navigate);
+    }
+  };
 
   const showModal = (bus) => {
     setBus(bus);
@@ -52,18 +62,22 @@ function AllBus() {
         headerConfig
       );
       toast.success(response.data.message, { position: "top-right" });
-      if (user === "superAdmin") {
+      if (permissions === "superAdmin") {
         getAllBuses();
+      } else {
+        getMyBusses();
       }
     } catch (error) {
       toast.error(error.response.data.message, { position: "top-right" });
+      verifyStatus(error.response.status, navigate);
     }
   };
 
   useEffect(() => {
-    if (user === "admin") {
+    if (permissions === "admin") {
+      getMyBusses(userId);
     }
-    if (user === "superAdmin") {
+    if (permissions === "superAdmin") {
       getAllBuses();
     }
     localStorage.removeItem("busId");

@@ -5,6 +5,8 @@ import { toast, Toaster } from "react-hot-toast";
 import { BASE_URL, headerConfig } from "../../../config";
 import * as yup from "yup";
 import axios from "axios";
+import { verifyStatus } from "../../common/utils";
+import { useNavigate } from "react-router-dom";
 
 const busValidationSchema = yup.object().shape({
   busNo: yup
@@ -17,6 +19,7 @@ const busValidationSchema = yup.object().shape({
 
 const BusForm = (props) => {
   const [formMode, setFormMode] = useState("Create");
+  const navigate = useNavigate();
   const [formValues, setFormValues] = useState({
     busNo: "",
     manufacturer: "",
@@ -24,12 +27,15 @@ const BusForm = (props) => {
   });
 
   const busId = localStorage.getItem("busId");
-  console.log(busId);
 
   const getBusDetails = async (id) => {
-    const response = await axios
-      .get(`${BASE_URL}/bus/${id}`, headerConfig)
-      .then((rs) => setFormValues(rs.data.bus));
+    try {
+      const response = await axios.get(`${BASE_URL}/bus/${id}`, headerConfig);
+      const data = response.data.bus;
+      setFormValues(response.data.bus);
+    } catch (error) {
+      verifyStatus(error.response.status, navigate);
+    }
   };
 
   useEffect(() => {
@@ -73,10 +79,12 @@ const BusForm = (props) => {
                 toast.success(response.data.message, {
                   position: "top-right",
                 });
+                navigate(-1);
               } catch (error) {
                 toast.error(error.response.data.message, {
                   position: "top-right",
                 });
+                verifyStatus(error.response.status, navigate);
               }
             }
             if (formMode === "Update") {
@@ -86,15 +94,15 @@ const BusForm = (props) => {
                   values,
                   headerConfig
                 );
-                console.log(response, "rsp");
                 toast.success(response.data.message, {
                   position: "top-right",
                 });
+                navigate(-1);
               } catch (error) {
-                console.log(error, "er");
                 toast.error(error.response.data.message, {
                   position: "top-right",
                 });
+                verifyStatus(error.response.status, navigate);
               }
             }
           }}

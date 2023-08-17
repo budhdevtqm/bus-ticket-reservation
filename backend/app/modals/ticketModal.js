@@ -40,14 +40,46 @@ module.exports.book = async (req) => {
 };
 
 module.exports.myTickets = async (userId) => {
-  try {
-    const data = await schema.find({ assignedTo: userId });
-    resolve({ ok: true, data: data });
-    console.log(
-      data,
-      "-------------------------------------------------------"
-    );
-  } catch (error) {
-    reject({ ok: false, message: "something went wrong", error: error });
-  }
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await schema.find({ assignedTo: userId });
+      resolve({ ok: true, data: data });
+    } catch (error) {
+      reject({ ok: false, message: "Something went worng" });
+    }
+  });
+};
+
+module.exports.getTicket = async (ticketId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const ticketData = await schema.findOne({ _id: ticketId });
+      resolve({ ok: true, data: ticketData });
+    } catch (error) {
+      reject({ ok: false, message: "Something went worng" });
+    }
+  });
+};
+
+module.exports.cancel = async (ticketId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const ticketData = await schema.findOne({ _id: ticketId });
+      const { busId, routeId } = ticketData;
+      const update = await schema.updateOne(
+        { _id: ticketId },
+        {
+          busId,
+          routeId,
+          booked: false,
+          bookedOn: 0,
+          assignedTo: "",
+          isCanceled: true,
+        }
+      );
+      resolve({ ok: true, message: "cancelled Successfully." });
+    } catch (error) {
+      reject({ ok: false, message: "Unable to cancel" });
+    }
+  });
 };

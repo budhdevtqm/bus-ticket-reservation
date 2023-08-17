@@ -1,9 +1,11 @@
 import React from "react";
 import { Modal, ModalBody, ModalHeader } from "reactstrap";
 import { format } from "date-fns";
+import { useSelector } from "react-redux";
 
 const ViewBus = ({ modal, bus, closeModal }) => {
   const { busNo, manufacturer, model, createdBy, createdAt, updatedAt } = bus;
+  const { permissions } = useSelector((state) => state.auth.user);
 
   const getRealDate = (timeStamp) => {
     return format(timeStamp, "dd - MM - yyyy");
@@ -43,12 +45,14 @@ const ViewBus = ({ modal, bus, closeModal }) => {
               </span>
             </div>
 
-            <div className="d-flex flex-nowrap align-item-center justify-content-evenly">
-              <span style={{ width: "50%" }}>Created By</span>
-              <span style={{ width: "50%", textAlign: "center" }}>
-                <b>{createdBy}</b>
-              </span>
-            </div>
+            {permissions === "superAdmin" && (
+              <div className="d-flex flex-nowrap align-item-center justify-content-evenly">
+                <span style={{ width: "50%" }}>Created By</span>
+                <span style={{ width: "50%", textAlign: "center" }}>
+                  <b>{createdBy}</b>
+                </span>
+              </div>
+            )}
           </div>
         </ModalBody>
       </Modal>

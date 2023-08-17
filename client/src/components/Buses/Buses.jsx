@@ -2,9 +2,10 @@ import React from "react";
 import AllBus from "./AllBus";
 import { Button } from "reactstrap";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Buses() {
-  const user = "admin";
+  const user = useSelector((state) => state.auth.user.permissions);
   const navigate = useNavigate();
 
   return (

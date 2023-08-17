@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { BASE_URL, headerConfig } from "../../../config";
 import UserProfile from "./UserProfile";
 
 function Profile() {
@@ -11,29 +10,18 @@ function Profile() {
     name,
   } = useSelector((state) => state.auth.user);
 
-  const getTickets = async () => {
-    try {
-      const response = await axios.get(
-        `${BASE_URL}/tickets/get-my-tickets`,
-        headerConfig
-      );
-      console.log(response, "response");
-    } catch (error) {
-      console.log(error, "er");
-    }
-  };
-
-  useEffect(() => {
-    getTickets();
-  }, []);
-
   return (
-    <section style={{ width: "100%", height: "100%" }}>
-      <div className="d-flex align-items-center justify-content-between my-4 p-4">
+    <section
+      style={{
+        width: "100%",
+        height: "100%",
+      }}
+    >
+      <div className="d-flex flex-col p-4">
         <h4>{`Hi, ${name}`}</h4>
       </div>
 
-      <UserProfile />
+      {permissions === "user" && <UserProfile userId={id} />}
     </section>
   );
 }

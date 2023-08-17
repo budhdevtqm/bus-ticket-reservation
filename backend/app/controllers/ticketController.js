@@ -25,6 +25,27 @@ module.exports.getMyTickets = async (req, res) => {
     const response = await modal.myTickets(userId);
     res.status(200).json(response);
   } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
+
+module.exports.getTicket = async (req, res) => {
+  const ticketId = req.params.id;
+  try {
+    const response = await modal.getTicket(ticketId);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
+
+module.exports.cancelTicket = async (req, res) => {
+  const ticketId = req.params.id;
+  try {
+    const response = await modal.cancel(ticketId);
+    console.log(response, "resp controller");
+    res.status(200).json(response);
+  } catch (error) {
     res.status(400).json(error);
   }
 };
