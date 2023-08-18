@@ -9,7 +9,7 @@ import { Button } from "reactstrap";
 import { toast, Toaster } from "react-hot-toast";
 
 function ViewRoute() {
-  const [route, setRoute] = useState({});
+  // const [route, setRoute] = useState({});
   const [busDeatils, setBusDetails] = useState({});
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [selected, setSelected] = useState({});
@@ -23,9 +23,6 @@ function ViewRoute() {
         `${BASE_URL}/bus-route/get-route/${id}`,
         headerConfig
       );
-      const data = response.data.data;
-      setRoute(data);
-
       const { busId } = response.data.data;
       const busInfo = await axios.get(`${BASE_URL}/bus/${busId}`, headerConfig);
       const busData = busInfo.data.bus;
@@ -48,24 +45,20 @@ function ViewRoute() {
     }
   }, []);
 
-  const makeBookFunction = (id) => {
-    return axios.put(`${BASE_URL}/tickets/book/${id}`, {}, headerConfig);
-  };
-
   const bookTickets = async () => {
     if (selectedSeats.length > 0) {
-      selectedSeats.map(async (ticket) => {
-        try {
-          const response = await axios.put(
-            `${BASE_URL}/tickets/book/${ticket._id}`,
-            {},
-            headerConfig
-          );
-          toast.success(response.data.message, { position: "top-right" });
-        } catch (error) {
-          toast.error(error.response.data.message, { position: "top-right" });
-        }
-      });
+      try {
+        const response = await axios.put(
+          `${BASE_URL}/tickets/booking`,
+          { tickets: selectedSeats },
+          headerConfig
+        );
+        console.log(response, "rep");
+        // toast.success(response.data.message, { position: "top-right" });
+      } catch (error) {
+        console.log(error, "er");
+        // toast.error(error.response.data.message, { position: "top-right" });
+      }
     }
     setSelectedSeats([]);
     const ticketResponse = await axios.get(

@@ -72,19 +72,22 @@ const BusForm = (props) => {
             if (formMode === "Create") {
               try {
                 const response = await axios.post(
-                  `${BASE_URL}/bus/add`,
+                  `${BASE_URL}/bus/add-bus`,
                   values,
                   headerConfig
                 );
-                toast.success(response.data.message, {
-                  position: "top-right",
-                });
-                navigate(-1);
+
+                console.log("create-resp", response);
+                // toast.success(response.data.message, {
+                //   position: "top-right",
+                // });
+                // navigate(-1);
               } catch (error) {
-                toast.error(error.response.data.message, {
-                  position: "top-right",
-                });
-                verifyStatus(error.response.status, navigate);
+                console.log("errrrr", error);
+                // toast.error(error.response.data.message, {
+                //   position: "top-right",
+                // });
+                // verifyStatus(error.response.status, navigate);
               }
             }
             if (formMode === "Update") {

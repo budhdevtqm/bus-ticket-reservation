@@ -6,7 +6,7 @@ const authRoute = require("./app/routes/authRoute");
 const busRoutes = require("./app/routes/busRoutes");
 const busRute = require("./app/routes/bus-Rutes");
 const ticketRoute = require("./app/routes/ticketRoute");
-const { verifyToken } = require("./app/middlewares/verifyToken");
+const { verifyToken } = require("./app/middlewares/authMiddleware");
 
 const cors = require("cors");
 
@@ -25,19 +25,20 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 //Auth
-app.use("/signup", authRoute);
-app.use("/login", authRoute);
 app.use("/auth", authRoute);
+// app.use("/auth", authRoute);
 
 //verify-token-middleware;
-app.use(verifyToken);
+// app.use(verifyToken);
+
+// app.use("/user", authRoute);
 
 //users
-app.use("/user", userRoutes);
-app.use("/get-user", userRoutes);
-app.use("/delete", userRoutes);
-app.use("/get-all", userRoutes);
-app.use("/update", userRoutes);
+// app.use("/user", userRoutes);
+// app.use("/get-user", userRoutes);
+// app.use("/delete", userRoutes);
+// app.use("/get-all", userRoutes);
+// app.use("/update", userRoutes);
 
 //Buses
 app.use("/bus", busRoutes);

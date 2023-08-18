@@ -35,6 +35,7 @@ const ViewTicket = (props) => {
         `${BASE_URL}/bus-route/get-route/${ticketData.routeId}`,
         headerConfig
       );
+      console.log(ruteResponse, "rute-rsponse");
       const ruteDetails = ruteResponse.data.data;
       setRute(ruteDetails);
     } catch (error) {
@@ -80,6 +81,10 @@ const ViewTicket = (props) => {
       console.log(error, "cancel-er");
     }
   };
+
+  console.log(bus, "bus");
+  console.log(ticket, "ticket");
+  console.log(rute, "rute");
 
   return (
     <>

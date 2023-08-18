@@ -14,27 +14,26 @@ module.exports.getAll = async (routeId) => {
   });
 };
 
-module.exports.book = async (req) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  const verify = await jwt.verify(token, process.env.JWT_PRIVATE);
-  const { userId } = verify;
-  const ticketId = req.params.id;
+module.exports.book = async (body) => {
+  const { tickets, userID } = body;
   return new Promise(async (resolve, reject) => {
     try {
-      const ticket = await schema.find({ _id: ticketId });
-      const booked = await schema.updateOne(
-        { _id: ticketId },
-        {
-          ...ticket,
-          bookedOn: new Date().getTime(),
-          booked: true,
-          assignedTo: userId,
-        }
+      tickets.map(
+        async (ticket) =>
+          await schema.updateOne(
+            { _id: ticket._id },
+            {
+              ...ticket,
+              bookedOn: new Date().getTime(),
+              booked: true,
+              assignedTo: userID,
+              isCanceled: false,
+            }
+          )
       );
-      resolve({ ok: true, message: "Booked successfully", response: booked });
+      resolve({ ok: true, message: "ticket booked" });
     } catch (error) {
-      reject({ ok: false, message: "Something went worng" });
+      reject({ ok: false, message: "Something went wrong" });
     }
   });
 };
@@ -83,3 +82,23 @@ module.exports.cancel = async (ticketId) => {
     }
   });
 };
+
+/*
+
+try {
+  //     const ticket = await schema.find({ _id: ticketId });
+  //     const booked = await schema.updateOne(
+  //       { _id: ticketId },
+  //       {
+  //         ...ticket,
+  //         bookedOn: new Date().getTime(),
+  //         booked: true,
+  //         assignedTo: userId,
+  //       }
+  //     );
+  //     resolve({ ok: true, message: "Booked successfully", response: booked });
+  //   } catch (error) {
+  //     reject({ ok: false, message: "Something went worng" });
+  //   }
+
+*/

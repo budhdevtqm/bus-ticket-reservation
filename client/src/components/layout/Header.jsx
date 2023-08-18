@@ -1,79 +1,56 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../Store/authSlice";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Button } from "reactstrap";
 
 const Header = () => {
-  const user = useSelector((state) => state.auth.user);
+  const [links, setLinks] = useState([]);
+  const dispatch = useDispatch();
+  const permissions = useSelector((state) => state.auth.permissions);
+  const navigate = useNavigate();
 
-  let links = [
-    {
-      label: "Home",
-      path: "/home",
-    },
-    {
-      label: "Buses",
-      path: "/buses",
-    },
-    {
-      label: "My Profile",
-      path: "/profile",
-    },
-    {
-      label: "Users",
-      path: "/users",
-    },
-  ];
+  const logoutUser = () => {
+    dispatch(logout());
+    localStorage.removeItem("token");
+    localStorage.removeItem("permissions");
+    navigate("/login");
+  };
 
-  // if (user && user.permissions === "superAdmin") {
-  //   links = [
-  //     {
-  //       label: "Home",
-  //       path: "/home",
-  //     },
-  //     {
-  //       label: "Buses",
-  //       path: "/buses",
-  //     },
-  //     {
-  //       label: "My Profile",
-  //       path: "/profile",
-  //     },
-  //     {
-  //       label: "Users",
-  //       path: "/users",
-  //     },
-  //   ];
-  // }
+  const ignoreRoutes = (userPermissions) => {
+    let array;
+    switch (userPermissions) {
+      case "admin":
+        setLinks([
+          { label: "My Profile", path: "/profile" },
+          { label: "My Bus", path: "/buses" },
+          { label: "My Routes", path: "/routes" },
+        ]);
+        break;
+      case "superAdmin":
+        setLinks([
+          { label: "My Profile", path: "/profile" },
+          { label: "All Bus", path: "/buses" },
+          { label: "All Routes", path: "/routes" },
+        ]);
+        break;
+      default:
+        setLinks([
+          { label: "Dashboard", path: "/home" },
+          { label: "Bookings", path: "/bookings" },
+          { label: "My Profile", path: "/profile" },
+        ]);
+        break;
+    }
+    return array;
+  };
 
-  // if (user && user.permissions === "admin") {
-  //   links = [
-  //     {
-  //       label: "Buses",
-  //       path: "/buses",
-  //     },
-  //     {
-  //       label: "My Profile",
-  //       path: "/profile",
-  //     },
-  //     {
-  //       label: "Home",
-  //       path: "/home",
-  //     },
-  //   ];
-  // }
-
-  // if (user && user.permissions === "user") {
-  //   links = [
-  //     {
-  //       label: "My Profile",
-  //       path: "/profile",
-  //     },
-  //     {
-  //       label: "Home",
-  //       path: "/home",
-  //     },
-  //   ];
-  // }
+  useEffect(() => {
+    const permissions = localStorage.getItem("permissions");
+    if (permissions) {
+      ignoreRoutes(permissions);
+    }
+  }, [permissions]);
 
   return (
     <div
@@ -87,18 +64,22 @@ const Header = () => {
           style={{ width: "65px" }}
         />
       </span>
-
-      <nav className=" d-flex align-items-center justify-content-between">
-        {links.map((link, index) => (
-          <NavLink
-            className="mx-4 text-decoration-none"
-            to={link.path}
-            key={index}
-          >
-            {link.label}
-          </NavLink>
-        ))}
-      </nav>
+      <div className=" d-flex align-items-center justify-content-between gap-8">
+        <nav className=" d-flex align-items-center justify-content-between">
+          {links.map((link, index) => (
+            <NavLink
+              className="mx-4 text-decoration-none"
+              to={link.path}
+              key={index}
+            >
+              {link.label}
+            </NavLink>
+          ))}
+        </nav>
+        <Button onClick={() => logoutUser()} color="primary" className="mx-4">
+          Logout
+        </Button>
+      </div>
     </div>
   );
 };

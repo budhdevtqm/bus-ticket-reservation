@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
   isLoggedIn: false,
-  user: {},
+  permissions: "",
 };
 
 const authSlice = createSlice({
@@ -10,11 +10,11 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, { payload }) => {
-      state.user = payload;
+      state.permissions = payload;
       state.isLoggedIn = true;
     },
     logout: (state) => {
-      state.user = {};
+      state.permissions = "";
       state.isLoggedIn = false;
     },
   },

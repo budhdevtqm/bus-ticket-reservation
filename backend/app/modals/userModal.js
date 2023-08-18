@@ -23,15 +23,10 @@ module.exports.signUp = async (values) => {
 
     try {
       const saved = await data.save();
-      const userId = saved._id.toString();
-      const token = jwt.sign({ userId: userId }, secretKey, {
-        expiresIn: "1h",
-      });
       resolve({
         status: 201,
         ok: true,
         message: "SignUp successfully",
-        token: token,
       });
     } catch (error) {
       return reject({
@@ -44,7 +39,6 @@ module.exports.signUp = async (values) => {
 
 module.exports.login = async (values) => {
   const { email, password } = values;
-
   return new Promise(async (resolve, reject) => {
     const isExistingUser = await userSchema.findOne({ email });
     if (isExistingUser == null)
@@ -56,8 +50,14 @@ module.exports.login = async (values) => {
       return reject({ ok: false, message: "Invalid password" });
 
     const userId = isExistingUser._id.toString();
-    const token = jwt.sign({ userId: userId }, secretKey, { expiresIn: "1h" });
-    resolve({ ok: true, token: token, message: "Login successfully" });
+    const { permissions } = isExistingUser;
+    const token = jwt.sign({ userId: userId }, secretKey, { expiresIn: "2h" });
+    resolve({
+      ok: true,
+      token: token,
+      message: "Login successfully",
+      permissions,
+    });
   });
 };
 

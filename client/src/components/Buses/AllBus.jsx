@@ -11,22 +11,16 @@ import { useSelector } from "react-redux";
 import { verifyStatus } from "../../common/utils";
 
 function AllBus() {
-  const { _id: userId, permissions } = useSelector((state) => state.auth.user);
+  const permissions = localStorage.getItem("permissions");
   const navigate = useNavigate();
   const [buses, setBuses] = useState([]);
   const [modal, setModal] = useState(false);
   const [bus, setBus] = useState({});
 
-  const getAllBuses = async () => {
-    const allBuses = await axios
-      .get(`${BASE_URL}/bus/allBuses`, headerConfig)
-      .then((response) => setBuses(response.data.data));
-  };
-
-  const getMyBusses = async (userId) => {
+  const getBusses = async () => {
     try {
       const busesResponse = await axios.get(
-        `${BASE_URL}/bus/my-buses/${userId}`,
+        `${BASE_URL}/bus/allBuses`,
         headerConfig
       );
       const busData = busesResponse.data.data;
@@ -74,13 +68,7 @@ function AllBus() {
   };
 
   useEffect(() => {
-    if (permissions === "admin") {
-      getMyBusses(userId);
-    }
-    if (permissions === "superAdmin") {
-      getAllBuses();
-    }
-    localStorage.removeItem("busId");
+    getBusses();
   }, []);
 
   return (

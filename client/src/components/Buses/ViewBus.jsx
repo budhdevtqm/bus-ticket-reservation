@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 const ViewBus = ({ modal, bus, closeModal }) => {
   const { busNo, manufacturer, model, createdBy, createdAt, updatedAt } = bus;
-  const { permissions } = useSelector((state) => state.auth.user);
+  const permissions = localStorage.getItem("permissions");
 
   const getRealDate = (timeStamp) => {
     return format(timeStamp, "dd - MM - yyyy");

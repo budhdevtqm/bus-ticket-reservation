@@ -5,15 +5,14 @@ import { MdMode, MdOutlineInfo, MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL, headerConfig } from "../../../config";
-import { format } from "date-fns";
+import { format, milliseconds } from "date-fns";
 import { verifyStatus } from "../../common/utils";
-import { BsArrowUpRightSquareFill } from "react-icons/bs";
-import { useSelector } from "react-redux";
+import { BsFillArrowRightSquareFill } from "react-icons/bs";
 
 function BusRoutes() {
-  const user = useSelector((state) => state.auth.user.permissions);
   const [routes, setRoutes] = useState([]);
   const navigate = useNavigate();
+  const permissions = localStorage.getItem("permissions");
 
   const goToView = (id) => {
     localStorage.setItem("busRouteId", id);
@@ -53,6 +52,11 @@ function BusRoutes() {
     }
   };
 
+  const getTime = (milliseconds) => {
+    const [h, m] = new Date(milliseconds).toString().split(" ")[4].split(":");
+    return `${h} : ${m}`;
+  };
+
   const goToUpdate = (id) => {
     localStorage.setItem("routeId", id);
     navigate("/update-route");
@@ -62,7 +66,7 @@ function BusRoutes() {
     <section style={{ width: "100%", height: "100" }}>
       <div className="d-flex align-items-center justify-content-between my-4">
         <h4>Bus Route</h4>
-        {user !== "user" && (
+        {permissions !== "user" && (
           <Button
             color="info"
             outline
@@ -76,46 +80,53 @@ function BusRoutes() {
       <Table>
         <thead>
           <tr>
-            <th>Bus No.</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Date</th>
-            <th>Actions</th>
+            {/* <th className="text-center">Bus No.</th> */}
+            <th className="text-center">From</th>
+            <th className="text-center">To</th>
+            <th className="text-center">Date</th>
+            <th className="text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
           {routes.map((route, index) => (
             <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{route.from}</td>
-              <td>{route.to}</td>
-              <td>{format(route.date, "dd - MM - yy")}</td>
+              {/* <td className="text-center">{index + 1}</td> */}
+              <td className="text-center">{`${route.from}  [${getTime(
+                route.startTime
+              )}]`}</td>
+              <td className="text-center">{`${route.to}  [${getTime(
+                route.endTime
+              )}]`}</td>
+              <td className="text-center">
+                {format(route.date, "dd  MMM  yy")}
+              </td>
               <td>
-                <div className="d-flex align-items-center justify-content-start gap-2">
-                  {user === "user" ? (
-                    <BsArrowUpRightSquareFill
+                <div className="d-flex align-items-center justify-content-center gap-2">
+                  {permissions === "user" ? (
+                    <BsFillArrowRightSquareFill
                       style={{
-                        fontSize: "22px",
+                        fontSize: "25px",
                         color: "#1b1bb9",
                         cursor: "pointer",
                       }}
+                      title="Book Ticket"
                       onClick={() => goToView(route._id)}
                     />
                   ) : (
                     <>
                       <MdOutlineInfo
                         style={{
-                          fontSize: "22px",
-                          color: "#1b1bb9;",
+                          fontSize: "25px",
+                          color: "#1b1bb9",
                           cursor: "pointer",
                         }}
                         title="Info"
-                        onClick={() => showModal(bus)}
+                        onClick={() => goToView(route._id)}
                       />
 
                       <MdMode
                         style={{
-                          fontSize: "20px",
+                          fontSize: "25px",
                           color: "green",
                           cursor: "pointer",
                         }}
@@ -124,7 +135,7 @@ function BusRoutes() {
                       />
                       <MdDelete
                         style={{
-                          fontSize: "20px",
+                          fontSize: "25px",
                           color: "red",
                           cursor: "pointer",
                         }}

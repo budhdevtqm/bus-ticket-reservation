@@ -13,14 +13,13 @@ const signup = yup.object().shape({
     .string()
     .required("Required!")
     .matches(
-      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-      "Minimun 8 Char, at least one letter, one number"
+      /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/,
+      "Length atleast 6 and inclues numbers, latters and special character"
     ),
   name: yup.string().required("Required!").min(3, "Name must be of 3 chars"),
 });
 
 const Signup = (props) => {
-  const { mode, modeHandler } = props;
   const navigate = useNavigate();
   return (
     <div
@@ -41,12 +40,11 @@ const Signup = (props) => {
             setSubmitting(true);
             try {
               const response = await axios.post(
-                `${BASE_URL}/signup/new`,
+                `${BASE_URL}/user/signup`,
                 values
               );
-              localStorage.setItem("token", response.data.token);
               toast.success(response.data.message, { position: "top-right" });
-              navigate("/");
+              navigate("/login");
             } catch (er) {
               toast.error(er.response.data.message, { position: "top-right" });
             }
@@ -132,8 +130,8 @@ const Signup = (props) => {
         </Formik>
       </div>
       <div>
-        <Button onClick={() => modeHandler(!mode)} color="link">
-          Already have account ?.
+        <Button onClick={() => navigate("/login")} color="link">
+          Log In ?.
         </Button>
       </div>
       <Toaster />

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 function Buses() {
-  const user = useSelector((state) => state.auth.user.permissions);
+  const user = localStorage.getItem("permissions");
   const navigate = useNavigate();
 
   return (

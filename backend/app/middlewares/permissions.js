@@ -5,7 +5,6 @@ const userSchema = require("../schemas/userSchema");
 module.exports.onlyAdmin = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
-
   const verify = await jwt.verify(token, process.env.JWT_PRIVATE);
   const { userId } = verify;
   const isAdmin = await userSchema.findOne({

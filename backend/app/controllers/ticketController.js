@@ -12,7 +12,7 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.bookTicket = async (req, res) => {
   try {
-    const response = await modal.book(req);
+    const response = await modal.book(req.body);
     res.status(200).json(response);
   } catch (er) {
     res.status(400).json(er);

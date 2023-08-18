@@ -11,20 +11,16 @@ import { useDispatch, useSelector } from "react-redux";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid Email").required("Required!"),
-  password: yup
-    .string()
-    .required("Required!")
-    .matches(
-      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-      "Minimun 8 Char, at least one letter, one number"
-    ),
+  password: yup.string().required("Required!"),
+  // .matches(
+  //   /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/,
+  //   "Length atleast 6 and inclues numbers, latters and special character"
+  // ),
 });
 
 const Login = (props) => {
-  const { mode, modeHandler } = props;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.auth.user);
 
   return (
     <div
@@ -43,13 +39,9 @@ const Login = (props) => {
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
             try {
-              const res = await axios.post(`${BASE_URL}/login/user`, values);
+              const res = await axios.post(`${BASE_URL}/auth/login`, values);
               localStorage.setItem("token", res.data.token);
-
-              const user = await axios.get(`${BASE_URL}/auth/checkToken`, {
-                headers: { authorization: `Bearer ${res.data.token}` },
-              });
-              dispatch(setUser(user.data.data));
+              localStorage.setItem("permissions", res.data.permissions);
               toast.success(res.data.message, { position: "top-right" });
               navigate("/");
             } catch (er) {
@@ -114,8 +106,8 @@ const Login = (props) => {
         </Formik>
       </div>
       <div>
-        <Button onClick={() => modeHandler(!mode)} color="link">
-          New User ?.
+        <Button onClick={() => navigate("/signup")} color="link">
+          Sign Up ?.
         </Button>
       </div>
       <Toaster />

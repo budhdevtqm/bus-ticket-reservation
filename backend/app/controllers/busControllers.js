@@ -2,16 +2,17 @@ const modal = require("../modals/busModal");
 
 module.exports.create = async (req, res) => {
   try {
-    const addBus = await modal.addBus(req);
-    res.status(201).json(addBus);
+    const response = await modal.addBus(req.body);
+    res.status(201).json(response);
   } catch (error) {
     res.status(400).json(error);
   }
 };
 
 module.exports.getAll = async (req, res) => {
+  console.log(req.body, "body");
   try {
-    const allBuses = await modal.getAllBuses(req);
+    const allBuses = await modal.getAllBuses(req.body);
     res.status(200).json(allBuses);
   } catch (error) {
     res.status(400).json(error);
@@ -42,16 +43,6 @@ module.exports.update = async (req, res) => {
   const busId = req.params.id;
   try {
     const response = await modal.updateBus(busId, req.body);
-    res.status(200).json(response);
-  } catch (error) {
-    res.status(400).json(error);
-  }
-};
-
-module.exports.getMyBuses = async (req, res) => {
-  const userId = req.params.userId;
-  try {
-    const response = await modal.getMyBuses(userId);
     res.status(200).json(response);
   } catch (error) {
     res.status(400).json(error);

@@ -2,41 +2,44 @@ const busSchema = require("../schemas/busSchema");
 const jwt = require("jsonwebtoken");
 require("dotenv").config({ path: "../../.env" });
 
-module.exports.addBus = async (req) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+module.exports.addBus = async (body) => {
+  console.log((body, "body-----------------------"));
+  // return new Promise(async (resolve, reject) => {
+  //   const data = {
+  //     ...req.body,
+  //     createdAt: new Date().getTime(),
+  //     createdBy: userId,
+  //     updatedAt: 0,
+  //     status: false,
+  //   };
 
-  const verify = await jwt.verify(token, process.env.JWT_PRIVATE);
-  const { userId } = verify;
-  return new Promise(async (resolve, reject) => {
-    const data = {
-      ...req.body,
-      createdAt: new Date().getTime(),
-      createdBy: userId,
-      updatedAt: 0,
-      status: false,
-    };
+  //   const isAlready = await busSchema.findOne({ busNo: req.body.busNo });
+  //   if (isAlready !== null) {
+  //     reject({ ok: false, message: "This bus already exist" });
+  //     return;
+  //   }
 
-    const isAlready = await busSchema.findOne({ busNo: req.body.busNo });
-    if (isAlready !== null) {
-      reject({ ok: false, message: "This bus already exist" });
-      return;
-    }
-
-    try {
-      const save = await busSchema.create(data);
-      resolve({ ok: true, message: "Bus added successfully" });
-    } catch (error) {
-      reject({ ok: false, message });
-    }
-  });
+  //   try {
+  //     const save = await busSchema.create(data);
+  //     resolve({ ok: true, message: "Bus added successfully" });
+  //   } catch (error) {
+  //     reject({ ok: false, message });
+  //   }
+  // });
 };
 
-module.exports.getAllBuses = async (req) => {
+module.exports.getAllBuses = async (body) => {
+  const { userID, permissions } = body;
   return new Promise(async (resolve, reject) => {
     try {
-      const allBuses = await busSchema.find({});
-      resolve({ ok: true, data: allBuses });
+      if (permissions === "admin") {
+        const myBuses = await busSchema.find({ createdBy: userID.toString() });
+        resolve({ ok: true, data: myBuses });
+      }
+      if (permissions === "superAdmin") {
+        const allBuses = await busSchema.find({});
+        resolve({ ok: true, data: allBuses });
+      }
     } catch (error) {
       reject({ ok: false, message: "Something went wrong!" });
     }
@@ -76,17 +79,6 @@ module.exports.updateBus = async (busId, values) => {
         }
       );
       resolve({ ok: true, message: "Bus Updated succesfully" });
-    } catch (error) {
-      reject({ ok: false, message: "Something went wrong" });
-    }
-  });
-};
-
-module.exports.getMyBuses = async (userId) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const myBuses = await busSchema.find({ createdBy: userId });
-      resolve({ ok: true, data: myBuses });
     } catch (error) {
       reject({ ok: false, message: "Something went wrong" });
     }

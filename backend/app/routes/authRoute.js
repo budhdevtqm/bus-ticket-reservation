@@ -4,7 +4,7 @@ const controller = require("../controllers/authController");
 const { body } = require("express-validator");
 
 router.post(
-  "/new",
+  "/signup",
   [
     body("name").notEmpty().withMessage("Name is Required"),
     body("email").notEmpty().withMessage("Email is Required"),
@@ -14,7 +14,7 @@ router.post(
 );
 
 router.post(
-  "/user",
+  "/login",
   [
     body("email").notEmpty().withMessage("Email is Required"),
     body("password").notEmpty().withMessage("Password is Required"),

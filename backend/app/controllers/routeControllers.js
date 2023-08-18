@@ -30,6 +30,7 @@ module.exports.delete = async (req, res) => {
 };
 
 module.exports.getAll = async (req, res) => {
+  console.log(req.body, "body");
   try {
     const response = await modal.getAll();
     res.status(200).json(response);
