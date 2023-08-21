@@ -38,10 +38,10 @@ module.exports.book = async (body) => {
   });
 };
 
-module.exports.myTickets = async (userId) => {
+module.exports.myTickets = async (body) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const data = await schema.find({ assignedTo: userId });
+      const data = await schema.find({ assignedTo: body.userID });
       resolve({ ok: true, data: data });
     } catch (error) {
       reject({ ok: false, message: "Something went worng" });

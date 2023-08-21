@@ -9,7 +9,6 @@ import { Button } from "reactstrap";
 import { toast, Toaster } from "react-hot-toast";
 
 function ViewRoute() {
-  // const [route, setRoute] = useState({});
   const [busDeatils, setBusDetails] = useState({});
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [selected, setSelected] = useState({});
@@ -42,6 +41,8 @@ function ViewRoute() {
   useEffect(() => {
     if (routeId) {
       getRouteDetails(routeId);
+    } else {
+      navigate("/");
     }
   }, []);
 

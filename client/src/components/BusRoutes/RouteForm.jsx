@@ -49,7 +49,7 @@ function RouteForm() {
   const getMyBuses = async (id) => {
     try {
       const response = await axios
-        .get(`${BASE_URL}/bus/my-buses/${id}`, headerConfig)
+        .get(`${BASE_URL}/bus/allBuses`, headerConfig)
         .then((resp) => setBuses(resp.data.data));
     } catch (error) {
       verifyStatus(error.response.status, navigate);
@@ -73,9 +73,7 @@ function RouteForm() {
   };
 
   useEffect(() => {
-    if (userid) {
-      getMyBuses(userid);
-    }
+    getMyBuses();
   }, []);
 
   useEffect(() => {

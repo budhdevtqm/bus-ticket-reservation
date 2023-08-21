@@ -9,7 +9,7 @@ const {
 const { route } = require("./userRoutes");
 
 router.post("/add-bus", authAdmins, controller.create);
-router.get("/allBuses", authAdmins, controller.getAll);
+router.get("/all-buses", authAdmins, controller.getAll);
 router.get("/:id", auth, controller.getBus);
 router.delete("/:id", adminAndSuperadmin, controller.delete);
 router.put("/update/:id", adminAndSuperadmin, controller.update);

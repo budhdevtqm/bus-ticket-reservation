@@ -19,6 +19,7 @@ import axios from "axios";
 import { setUser } from "./Store/authSlice";
 import Login from "./components/Auth/Login";
 import Signup from "./components/Auth/Signup";
+import Bookings from "./components/Bookings/Bookings";
 
 function App() {
   return (
@@ -49,6 +50,9 @@ function App() {
 
           {/* Profile */}
           <Route path="/profile" element={<Profile />} />
+
+          {/* Bookings */}
+          <Route path="/bookings" element={<Bookings />} />
         </Route>
       </Routes>
     </Fragment>

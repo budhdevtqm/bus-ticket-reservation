@@ -22,23 +22,24 @@ const Header = () => {
     switch (userPermissions) {
       case "admin":
         setLinks([
-          { label: "My Profile", path: "/profile" },
+          { label: "Dashboard", path: "/home" },
           { label: "My Bus", path: "/buses" },
-          { label: "My Routes", path: "/routes" },
+          { label: "Profile", path: "/profile" },
         ]);
         break;
       case "superAdmin":
         setLinks([
-          { label: "My Profile", path: "/profile" },
-          { label: "All Bus", path: "/buses" },
-          { label: "All Routes", path: "/routes" },
+          { label: "Routes", path: "/home" },
+          { label: "Buses", path: "/buses" },
+          { label: "Users", path: "/users" },
+          { label: "Profile", path: "/profile" },
         ]);
         break;
       default:
         setLinks([
-          { label: "Dashboard", path: "/home" },
+          { label: "Routes", path: "/home" },
           { label: "Bookings", path: "/bookings" },
-          { label: "My Profile", path: "/profile" },
+          { label: "Profile", path: "/profile" },
         ]);
         break;
     }

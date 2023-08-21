@@ -5,11 +5,15 @@ import axios from "axios";
 import { BASE_URL, headerConfig } from "../../../config";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
+import { verifyStatus } from "../../common/utils";
+import User from "./User";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
-
+  const [modal, setModal] = useState(false);
   const navigate = useNavigate();
+
+  const toggler = () => setModal(!modal);
 
   const chip = (permissions) => {
     if (permissions === "user") {
@@ -24,8 +28,15 @@ const Users = () => {
   };
 
   const getUsers = async () => {
-    const response = await axios.get(`${BASE_URL}/get-all/users`, headerConfig);
-    setUsers(response.data.data);
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/users/get-all`,
+        headerConfig
+      );
+      setUsers(response.data.data);
+    } catch (error) {
+      verifyStatus(error.response.status, navigate);
+    }
   };
 
   const goToUpdate = (id) => {
@@ -41,7 +52,7 @@ const Users = () => {
   const deleteHandler = async (userId) => {
     try {
       const response = await axios.delete(
-        `${BASE_URL}/delete/${userId}`,
+        `${BASE_URL}/users/${userId}`,
         headerConfig
       );
       toast.success(response.data.message, { position: "top-right" });
@@ -51,7 +62,10 @@ const Users = () => {
     }
   };
 
-  const viewUserHandler = (id) => {};
+  const viewUserHandler = (id) => {
+    localStorage.setItem("userId", id);
+    setModal(true);
+  };
 
   return (
     <section
@@ -63,6 +77,7 @@ const Users = () => {
       }}
       className="p-4"
     >
+      <User modal={modal} toggler={toggler} />
       <div className="d-flex align-items-center justify-content-between my-4">
         <h4>Users</h4>
         <Button
@@ -79,19 +94,19 @@ const Users = () => {
           <thead>
             <tr>
               <th>#</th>
-              <th>Full Name</th>
-              <th>Email</th>
-              <th>Permission</th>
+              <th className="text-center">Full Name</th>
+              <th className="text-center">Email</th>
+              <th className="text-center">Permission</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {users.map((user, index) => (
               <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{chip(user.permissions)}</td>
+                <td className="text-center">{index + 1}</td>
+                <td className="text-center">{user.name}</td>
+                <td className="text-center">{user.email}</td>
+                <td className="text-center">{chip(user.permissions)}</td>
                 <td>
                   <div className="d-flex align-items-center justify-content-start gap-2">
                     <MdOutlineInfo
@@ -101,7 +116,7 @@ const Users = () => {
                         cursor: "pointer",
                       }}
                       title="Info"
-                      onClick={() => navigate(`/view-user/${user._id}`)}
+                      onClick={() => viewUserHandler(user._id)}
                     />
 
                     <MdMode

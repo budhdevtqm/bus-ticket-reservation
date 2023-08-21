@@ -6,6 +6,7 @@ import axios from "axios";
 import { BASE_URL, headerConfig } from "../../../config";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { verifyStatus } from "../../common/utils";
 
 const UserScheam = yup.object().shape({
   email: yup.string().email("Invalid Email").required("Required!"),
@@ -13,8 +14,8 @@ const UserScheam = yup.object().shape({
     .string()
     .required("Required!")
     .matches(
-      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-      "Minimun 8 Char, at least one letter, one number"
+      /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/,
+      "Length atleast 6 and inclues numbers, latters and special character"
     ),
   name: yup.string().required("Required!").min(3, "Name must be of 3 chars"),
   permissions: yup.string().required("Required!"),
@@ -32,11 +33,15 @@ const UserForm = () => {
   const userId = localStorage.getItem("userId");
 
   const getUserDetails = async (id) => {
-    const response = await axios.get(
-      `${BASE_URL}/get-user/${id}`,
-      headerConfig
-    );
-    setFormValues(response.data.data);
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/users/get-user/${id}`,
+        headerConfig
+      );
+      setFormValues(response.data.data);
+    } catch (error) {
+      verifyStatus(error.response.status, navigate);
+    }
   };
 
   useEffect(() => {
@@ -68,7 +73,7 @@ const UserForm = () => {
             if (formMode === "Create") {
               try {
                 const response = await axios.post(
-                  `${BASE_URL}/user/create`,
+                  `${BASE_URL}/users/create`,
                   values,
                   headerConfig
                 );
@@ -84,7 +89,7 @@ const UserForm = () => {
             if (formMode === "Update") {
               try {
                 const response = await axios.put(
-                  `${BASE_URL}/user/${userId}`,
+                  `${BASE_URL}/users/${userId}`,
                   values,
                   headerConfig
                 );

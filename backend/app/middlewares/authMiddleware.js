@@ -25,11 +25,9 @@ module.exports.authAdmins = async (req, res, next) => {
 
   if (user.permissions === "user" || user === null) {
     return res.status(403).json({ ok: false, message: "Action Not Allowed" });
+  } else {
+    req.body.userID = user._id.toString();
+    req.body.permissions = user.permissions;
+    next();
   }
-
-  req.body.userID = user._id;
-  req.body.permissions = user.permissions;
-
-  console.log(req.body, "inside-middlewaaare");
-  next();
 };

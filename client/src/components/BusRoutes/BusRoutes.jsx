@@ -28,14 +28,22 @@ function BusRoutes() {
       const data = response.data.data;
       setRoutes(data);
     } catch (error) {
+      console.log(error, "error");
       verifyStatus(error.response.status, navigate);
     }
+  };
+
+  const decideHeading = (role) => {
+    if (role === "user") return "Bus Routes";
+    if (role === "admin") return "My Routes";
+    return "All Routes";
   };
 
   useEffect(() => {
     getAllRoutes();
     localStorage.removeItem("routeId");
     localStorage.removeItem("busRouteId");
+    decideHeading(permissions);
   }, []);
 
   const deleteHandler = async (id) => {
@@ -65,7 +73,7 @@ function BusRoutes() {
   return (
     <section style={{ width: "100%", height: "100" }}>
       <div className="d-flex align-items-center justify-content-between my-4">
-        <h4>Bus Route</h4>
+        <h4>{decideHeading(permissions)}</h4>
         {permissions !== "user" && (
           <Button
             color="info"
@@ -80,7 +88,6 @@ function BusRoutes() {
       <Table>
         <thead>
           <tr>
-            {/* <th className="text-center">Bus No.</th> */}
             <th className="text-center">From</th>
             <th className="text-center">To</th>
             <th className="text-center">Date</th>
@@ -90,7 +97,6 @@ function BusRoutes() {
         <tbody>
           {routes.map((route, index) => (
             <tr key={index}>
-              {/* <td className="text-center">{index + 1}</td> */}
               <td className="text-center">{`${route.from}  [${getTime(
                 route.startTime
               )}]`}</td>

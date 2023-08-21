@@ -37,6 +37,18 @@ module.exports.signUp = async (values) => {
   });
 };
 
+module.exports.myInfo = async (body) => {
+  return new Promise(async (resolve, reject) => {
+    const userInfo = await userSchema.findOne({ _id: body.userID });
+    if (userInfo !== null) {
+      const { name, email, createdAt, updatedAt } = userInfo;
+      resolve({ ok: true, data: { name, email, createdAt, updatedAt } });
+    } else {
+      reject({ ok: false, message: "Something went wrong" });
+    }
+  });
+};
+
 module.exports.login = async (values) => {
   const { email, password } = values;
   return new Promise(async (resolve, reject) => {
@@ -104,8 +116,12 @@ module.exports.getAllUsers = async () => {
 module.exports.getUser = async (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const user = await userSchema.findOne({ _id: userId });
-      resolve({ ok: true, data: user });
+      const { createdAt, updatedAt, name, email, permissions, _id } =
+        await userSchema.findOne({ _id: userId });
+      resolve({
+        ok: true,
+        data: { createdAt, updatedAt, name, email, permissions, _id },
+      });
     } catch (er) {
       reject({ ok: false, message: "User Not Found" });
     }

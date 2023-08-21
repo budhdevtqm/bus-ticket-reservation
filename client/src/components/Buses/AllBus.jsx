@@ -20,13 +20,14 @@ function AllBus() {
   const getBusses = async () => {
     try {
       const busesResponse = await axios.get(
-        `${BASE_URL}/bus/allBuses`,
+        `${BASE_URL}/bus/all-buses`,
         headerConfig
       );
       const busData = busesResponse.data.data;
       setBuses(busData);
     } catch (error) {
-      verifyStatus(error.response.status, navigate);
+      console.log(error, "err");
+      // verifyStatus(error.response.status, navigate);
     }
   };
 

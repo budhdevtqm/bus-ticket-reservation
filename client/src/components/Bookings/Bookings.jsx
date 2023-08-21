@@ -6,17 +6,16 @@ import { useNavigate } from "react-router-dom";
 import { Table } from "reactstrap";
 import ViewTicket from "./ViewTicket";
 import { BsFillInfoCircleFill } from "react-icons/bs";
-
-const UserProfile = (props) => {
+const Bookings = (props) => {
   const [tickets, setTickets] = useState([]);
   const navigate = useNavigate();
   const [modal, setModal] = useState(false);
   const toggler = () => setModal(!modal);
 
-  const getTickets = async (id) => {
+  const getMyTickets = async (id) => {
     try {
       const response = await axios.get(
-        `${BASE_URL}/tickets/get-my-tickets/${id}`,
+        `${BASE_URL}/tickets/get-my-tickets`,
         headerConfig
       );
       setTickets(response.data.data);
@@ -33,41 +32,38 @@ const UserProfile = (props) => {
   const getTimeString = (stamp) => new Date(stamp).toString().split(" ");
 
   useEffect(() => {
-    getTickets(props.userId);
+    getMyTickets();
     localStorage.removeItem("token-id");
   }, []);
-
-  console.log(modal, "modal");
-
   return (
-    <div className="p-4" style={{ width: "100%" }}>
+    <section className="p-4" style={{ width: "100%", height: "100%" }}>
       <ViewTicket toggler={toggler} setModal={setModal} modal={modal} />
       <h4 className="text-center bg-info p-2 rounded">Tickets</h4>
       <div className="my-4">
         <Table>
           <thead>
             <tr>
-              <th>#</th>
-              <th>Date</th>
-              <th>Cancelled</th>
-              <th> Seat No.</th>
-              <th>Booking Time</th>
-              <th>Actions</th>
+              <th className="text-center">#</th>
+              <th className="text-center">Date</th>
+              <th className="text-center"> Seat No.</th>
+              <th className="text-center">Booking Time</th>
+              <th className="text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
             {tickets.map((ticket, index) => (
               <tr key={ticket._id} style={{ cursor: "pointer" }}>
-                <td>{index + 1}</td>
-                <td>{`${getTimeString(ticket.bookedOn)[2]} ${
-                  getTimeString(ticket.bookedOn)[1]
-                } ${getTimeString(ticket.bookedOn)[3]}`}</td>
-                <td>{ticket.isCanceled ? "Yes" : "No"}</td>
-                <td>{ticket.seatNumber}</td>
-                <td>{`${getTimeString(ticket.bookedOn)[4].split(":")[0]} : ${
-                  getTimeString(ticket.bookedOn)[4].split(":")[1]
+                <td className="text-center">{index + 1}</td>
+                <td className="text-center">{`${
+                  getTimeString(ticket.bookedOn)[2]
+                } ${getTimeString(ticket.bookedOn)[1]} ${
+                  getTimeString(ticket.bookedOn)[3]
                 }`}</td>
-                <td>
+                <td className="text-center">{ticket.seatNumber}</td>
+                <td className="text-center">{`${
+                  getTimeString(ticket.bookedOn)[4].split(":")[0]
+                } : ${getTimeString(ticket.bookedOn)[4].split(":")[1]}`}</td>
+                <td className="text-center">
                   <BsFillInfoCircleFill
                     style={{ fontSize: "25px" }}
                     onClick={() => viewTicket(ticket._id)}
@@ -78,8 +74,8 @@ const UserProfile = (props) => {
           </tbody>
         </Table>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default UserProfile;
+export default Bookings;

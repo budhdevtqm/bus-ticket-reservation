@@ -1,15 +1,8 @@
-import axios from "axios";
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-import UserProfile from "./UserProfile";
+import React from "react";
+import ChangePasswordForm from "./ChangePasswordForm";
+import UserInfo from "./UserInfo";
 
 function Profile() {
-  const {
-    _id: id,
-    permissions,
-    name,
-  } = useSelector((state) => state.auth.user);
-
   return (
     <section
       style={{
@@ -17,11 +10,13 @@ function Profile() {
         height: "100%",
       }}
     >
-      <div className="d-flex flex-col p-4">
-        <h4>{`Hi, ${name}`}</h4>
+      <div
+        style={{ width: "100%" }}
+        className="d-flex align-items-center justify-content-center flex-column"
+      >
+        <UserInfo />
+        <ChangePasswordForm />
       </div>
-
-      {permissions === "user" && <UserProfile userId={id} />}
     </section>
   );
 }

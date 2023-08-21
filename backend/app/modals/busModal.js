@@ -3,29 +3,29 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config({ path: "../../.env" });
 
 module.exports.addBus = async (body) => {
-  console.log((body, "body-----------------------"));
-  // return new Promise(async (resolve, reject) => {
-  //   const data = {
-  //     ...req.body,
-  //     createdAt: new Date().getTime(),
-  //     createdBy: userId,
-  //     updatedAt: 0,
-  //     status: false,
-  //   };
-
-  //   const isAlready = await busSchema.findOne({ busNo: req.body.busNo });
-  //   if (isAlready !== null) {
-  //     reject({ ok: false, message: "This bus already exist" });
-  //     return;
-  //   }
-
-  //   try {
-  //     const save = await busSchema.create(data);
-  //     resolve({ ok: true, message: "Bus added successfully" });
-  //   } catch (error) {
-  //     reject({ ok: false, message });
-  //   }
-  // });
+  const { busNo, userID, manufacturer, model } = body;
+  return new Promise(async (resolve, reject) => {
+    const data = {
+      busNo,
+      manufacturer,
+      model,
+      createdAt: new Date().getTime(),
+      createdBy: userID,
+      updatedAt: 0,
+      status: false,
+    };
+    const isAlready = await busSchema.findOne({ busNo });
+    if (isAlready !== null) {
+      reject({ ok: false, message: "This bus already exist" });
+      return;
+    }
+    try {
+      const save = await busSchema.create(data);
+      resolve({ ok: true, message: "Bus added successfully" });
+    } catch (error) {
+      reject({ ok: false, message });
+    }
+  });
 };
 
 module.exports.getAllBuses = async (body) => {

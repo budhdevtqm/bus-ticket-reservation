@@ -77,17 +77,15 @@ const BusForm = (props) => {
                   headerConfig
                 );
 
-                console.log("create-resp", response);
-                // toast.success(response.data.message, {
-                //   position: "top-right",
-                // });
-                // navigate(-1);
+                toast.success(response.data.message, {
+                  position: "top-right",
+                });
+                navigate(-1);
               } catch (error) {
-                console.log("errrrr", error);
-                // toast.error(error.response.data.message, {
-                //   position: "top-right",
-                // });
-                // verifyStatus(error.response.status, navigate);
+                toast.error(error.response.data.message, {
+                  position: "top-right",
+                });
+                verifyStatus(error.response.status, navigate);
               }
             }
             if (formMode === "Update") {

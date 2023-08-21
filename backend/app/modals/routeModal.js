@@ -36,13 +36,12 @@ module.exports.create = async (req) => {
       const { busId, _id, totalSeats } = created;
 
       for (let i = 1; i <= totalSeats; i++) {
-        const creatingTicket = await ticketSchema.create({
+        await ticketSchema.create({
           ...ticket,
           busId,
           routeId: _id,
           seatNumber: i,
         });
-        console.log(creatingTicket, i);
       }
 
       resolve({

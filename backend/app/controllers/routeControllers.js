@@ -30,9 +30,8 @@ module.exports.delete = async (req, res) => {
 };
 
 module.exports.getAll = async (req, res) => {
-  console.log(req.body, "body");
   try {
-    const response = await modal.getAll();
+    const response = await modal.getAll(req.body);
     res.status(200).json(response);
   } catch (error) {
     res.status(400).json(error);
@@ -41,6 +40,7 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.getRoute = async (req, res) => {
   const id = req.params.id;
+  console.log(id, "controoler");
   try {
     const response = await modal.get(id);
     res.status(200).json(response);

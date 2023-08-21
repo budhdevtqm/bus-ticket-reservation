@@ -10,7 +10,6 @@ module.exports.create = async (req, res) => {
 };
 
 module.exports.getAll = async (req, res) => {
-  console.log(req.body, "body");
   try {
     const allBuses = await modal.getAllBuses(req.body);
     res.status(200).json(allBuses);

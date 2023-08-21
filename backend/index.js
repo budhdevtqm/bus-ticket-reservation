@@ -31,14 +31,10 @@ app.use("/auth", authRoute);
 //verify-token-middleware;
 // app.use(verifyToken);
 
-// app.use("/user", authRoute);
+app.use("/user", authRoute);
 
 //users
-// app.use("/user", userRoutes);
-// app.use("/get-user", userRoutes);
-// app.use("/delete", userRoutes);
-// app.use("/get-all", userRoutes);
-// app.use("/update", userRoutes);
+app.use("/users", userRoutes);
 
 //Buses
 app.use("/bus", busRoutes);
