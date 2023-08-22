@@ -10,6 +10,7 @@ const { route } = require("./userRoutes");
 
 router.post("/add-bus", authAdmins, controller.create);
 router.get("/all-buses", authAdmins, controller.getAll);
+router.get("/my-buses", authAdmins, controller.myBuses);
 router.get("/:id", auth, controller.getBus);
 router.delete("/:id", adminAndSuperadmin, controller.delete);
 router.put("/update/:id", adminAndSuperadmin, controller.update);

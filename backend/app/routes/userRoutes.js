@@ -7,6 +7,7 @@ const {
   onlySuperAdmin,
 } = require("../middlewares/permissions");
 
+router.put("/change-password", auth, controller.changePassword);
 router.post("/create", adminAndSuperadmin, controller.create);
 router.get("/my-info", auth, controller.getInfo);
 router.get("/get-all", onlySuperAdmin, controller.getAll);

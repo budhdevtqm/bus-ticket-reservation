@@ -54,11 +54,9 @@ function ViewRoute() {
           { tickets: selectedSeats },
           headerConfig
         );
-        console.log(response, "rep");
-        // toast.success(response.data.message, { position: "top-right" });
+        toast.success(response.data.message, { position: "top-right" });
       } catch (error) {
-        console.log(error, "er");
-        // toast.error(error.response.data.message, { position: "top-right" });
+        toast.error(error.response.data.message, { position: "top-right" });
       }
     }
     setSelectedSeats([]);

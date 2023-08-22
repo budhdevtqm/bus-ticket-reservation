@@ -35,10 +35,12 @@ module.exports.getAllBuses = async (body) => {
       if (permissions === "admin") {
         const myBuses = await busSchema.find({ createdBy: userID.toString() });
         resolve({ ok: true, data: myBuses });
+        return;
       }
       if (permissions === "superAdmin") {
         const allBuses = await busSchema.find({});
         resolve({ ok: true, data: allBuses });
+        return;
       }
     } catch (error) {
       reject({ ok: false, message: "Something went wrong!" });
@@ -79,6 +81,18 @@ module.exports.updateBus = async (busId, values) => {
         }
       );
       resolve({ ok: true, message: "Bus Updated succesfully" });
+    } catch (error) {
+      reject({ ok: false, message: "Something went wrong" });
+    }
+  });
+};
+
+module.exports.myBuses = async (body) => {
+  const { userID } = body;
+  return new Promise(async (resolve, reject) => {
+    try {
+      const myBuses = await busSchema.find({ createdBy: userID });
+      resolve({ ok: true, data: myBuses });
     } catch (error) {
       reject({ ok: false, message: "Something went wrong" });
     }

@@ -2,7 +2,7 @@ const modal = require("../modals/routeModal");
 
 module.exports.create = async (req, res) => {
   try {
-    const response = await modal.create(req);
+    const response = await modal.create(req.body);
     res.status(201).json(response);
   } catch (error) {
     res.status(400).json(error);

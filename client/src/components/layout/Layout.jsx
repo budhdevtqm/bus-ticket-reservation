@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import "./layout.css";
 import Header from "./Header";
+import Footer from "./Footer";
 
 export default function Layout() {
   return (
@@ -11,7 +12,7 @@ export default function Layout() {
       <main className="overflow-x-hidden overflow-y-scroll">
         <Outlet />
       </main>
-      <footer>Footer</footer>
+      <Footer />
     </div>
   );
 }

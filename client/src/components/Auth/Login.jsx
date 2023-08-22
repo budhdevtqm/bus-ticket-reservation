@@ -11,11 +11,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid Email").required("Required!"),
-  password: yup.string().required("Required!"),
-  // .matches(
-  //   /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/,
-  //   "Length atleast 6 and inclues numbers, latters and special character"
-  // ),
+  password: yup
+    .string()
+    .required("Required!")
+    .matches(
+      /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/,
+      "Length atleast 6 and inclues numbers, latters and special character"
+    ),
 });
 
 const Login = (props) => {
@@ -43,7 +45,7 @@ const Login = (props) => {
               localStorage.setItem("token", res.data.token);
               localStorage.setItem("permissions", res.data.permissions);
               toast.success(res.data.message, { position: "top-right" });
-              navigate("/");
+              navigate("/home");
             } catch (er) {
               toast.error(er.response.data.message, { position: "top-right" });
             }

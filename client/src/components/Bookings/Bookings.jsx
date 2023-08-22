@@ -12,7 +12,7 @@ const Bookings = (props) => {
   const [modal, setModal] = useState(false);
   const toggler = () => setModal(!modal);
 
-  const getMyTickets = async (id) => {
+  const getMyTickets = async () => {
     try {
       const response = await axios.get(
         `${BASE_URL}/tickets/get-my-tickets`,
@@ -29,6 +29,21 @@ const Bookings = (props) => {
     setModal(true);
   };
 
+  const cancelHandler = async (id) => {
+    try {
+      const response = await axios.put(
+        `${BASE_URL}/tickets/cancel-ticket/${id}`,
+        headerConfig
+      );
+      setModal(false);
+      getMyTickets();
+      toast.success(response.data.message, { position: "top-right" });
+    } catch (error) {
+      verifyStatus(error.response.status, navigate);
+      toast.error(error.response.data.message, { position: "top-right" });
+    }
+  };
+
   const getTimeString = (stamp) => new Date(stamp).toString().split(" ");
 
   useEffect(() => {
@@ -37,7 +52,12 @@ const Bookings = (props) => {
   }, []);
   return (
     <section className="p-4" style={{ width: "100%", height: "100%" }}>
-      <ViewTicket toggler={toggler} setModal={setModal} modal={modal} />
+      <ViewTicket
+        toggler={toggler}
+        setModal={setModal}
+        modal={modal}
+        cancelHandler={cancelHandler}
+      />
       <h4 className="text-center bg-info p-2 rounded">Tickets</h4>
       <div className="my-4">
         <Table>

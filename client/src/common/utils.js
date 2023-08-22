@@ -5,7 +5,7 @@ export const verifyStatus = (status, navigate) => {
   }
 
   if (status === 403) {
-    navigate("/");
+    navigate("/home");
     return;
   }
 };

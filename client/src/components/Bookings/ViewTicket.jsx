@@ -5,6 +5,7 @@ import { BASE_URL, headerConfig } from "../../../config";
 import { verifyStatus } from "../../common/utils";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { Toaster, toast } from "react-hot-toast";
 
 const ViewTicket = (props) => {
   const [ticket, setTicket] = useState("");
@@ -69,22 +70,9 @@ const ViewTicket = (props) => {
     return "";
   };
 
-  const cancelHandler = async (id) => {
-    try {
-      const response = await axios.put(
-        `${BASE_URL}/tickets/cancel-ticket/${id}`,
-        headerConfig
-      );
-      debugger;
-
-      console.log(response.data.message, "resp");
-    } catch (error) {
-      console.log(error, "cancel-er");
-    }
-  };
-
   return (
     <Modal isOpen={modal} toggle={toggler}>
+      <Toaster />
       <ModalHeader
         toggle={toggler}
       >{`${bus?.model} (${bus?.busNo})`}</ModalHeader>
@@ -119,7 +107,10 @@ const ViewTicket = (props) => {
       </ModalBody>
       <ModalFooter>
         {rute?.startTime > new Date().getTime() ? (
-          <Button color="danger" onClick={() => cancelHandler(ticket?._id)}>
+          <Button
+            color="danger"
+            onClick={() => props.cancelHandler(ticket?._id)}
+          >
             Cancel Ticket
           </Button>
         ) : (

@@ -7,7 +7,7 @@ import { BASE_URL, headerConfig } from "../../../config";
 import { Toaster, toast } from "react-hot-toast";
 import { verifyStatus } from "../../common/utils";
 import { useNavigate } from "react-router-dom";
-import { format, parse } from "date-fns";
+import { format } from "date-fns";
 
 const routeSchema = yup.object().shape({
   busId: yup.string().required("Required"),
@@ -44,13 +44,15 @@ function RouteForm() {
   };
 
   const routeId = localStorage.getItem("routeId");
-  const userid = "64d355eadca759e4167989a9";
 
-  const getMyBuses = async (id) => {
+  const getMyBuses = async () => {
     try {
-      const response = await axios
-        .get(`${BASE_URL}/bus/allBuses`, headerConfig)
-        .then((resp) => setBuses(resp.data.data));
+      const response = await axios.get(
+        `${BASE_URL}/bus/my-buses`,
+        headerConfig
+      );
+      const data = response.data.data;
+      setBuses(data);
     } catch (error) {
       verifyStatus(error.response.status, navigate);
     }

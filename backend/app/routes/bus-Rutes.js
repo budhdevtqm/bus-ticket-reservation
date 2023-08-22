@@ -9,7 +9,7 @@ const {
 } = require("../middlewares/permissions");
 
 router.get("/get-route/:id", auth, controller.getRoute);
-router.post("/create", adminAndSuperadmin, controller.create);
+router.post("/create", authAdmins, controller.create);
 router.put("/update/:id", adminAndSuperadmin, controller.update);
 router.get("/get-all", auth, controller.getAll);
 router.delete("/:id", adminAndSuperadmin, controller.delete);

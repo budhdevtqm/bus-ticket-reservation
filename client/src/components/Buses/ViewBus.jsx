@@ -41,7 +41,11 @@ const ViewBus = ({ modal, bus, closeModal }) => {
             <div className="d-flex flex-nowrap align-item-center justify-content-evenly">
               <span style={{ width: "50%" }}>Last Updated</span>
               <span style={{ width: "50%", textAlign: "center" }}>
-                <b>{updatedAt && getRealDate(updatedAt)}</b>
+                <b>
+                  {updatedAt === 0
+                    ? "N/A"
+                    : updatedAt && getRealDate(updatedAt)}
+                </b>
               </span>
             </div>
 

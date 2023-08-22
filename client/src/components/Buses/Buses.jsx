@@ -13,8 +13,6 @@ function Buses() {
       style={{
         width: "100%",
         height: "100%",
-        overflowX: "hidden",
-        overflowY: "scroll",
       }}
       className="p-4"
     >

@@ -57,7 +57,6 @@ module.exports.login = async (values) => {
       return reject({ ok: false, message: "User not found" });
 
     const isValidPassword = isExistingUser.password === password;
-
     if (!isValidPassword)
       return reject({ ok: false, message: "Invalid password" });
 
@@ -156,17 +155,26 @@ module.exports.delete = async (userId) => {
   });
 };
 
-module.exports.checkToken = async (req) => {
+module.exports.updatePassword = async (body) => {
+  const { userID, password } = body;
   return new Promise(async (resolve, reject) => {
     try {
-      const authHeader = req.headers["authorization"];
-      const token = authHeader && authHeader.split(" ")[1];
-      const verify = await jwt.verify(token, process.env.JWT_PRIVATE);
-      const { userId } = verify;
-      const userDetails = await userSchema.findOne({ _id: userId });
-      resolve({ ok: true, data: userDetails });
+      const { name, email, createdAt, updatedAt, permissions } =
+        await userSchema.findOne({ _id: userID });
+      const updated = await userSchema.updateOne(
+        { _id: userID },
+        {
+          name,
+          email,
+          password,
+          createdAt,
+          updatedAt: new Date().getTime(),
+          permissions,
+        }
+      );
+      resolve({ ok: true, message: "password changed successfully." });
     } catch (error) {
-      reject({ ok: false, message: "Invalid Token" });
+      reject({ ok: false, message: "Unable to update Password" });
     }
   });
 };

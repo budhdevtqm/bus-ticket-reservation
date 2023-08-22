@@ -3,55 +3,51 @@ const ticketSchema = require("../schemas/ticketSchema");
 require("dotenv").config({ path: "../../.env" });
 const jwt = require("jsonwebtoken");
 
-module.exports.create = async (req) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  const verify = await jwt.verify(token, process.env.JWT_PRIVATE);
-  const { userId } = verify;
+module.exports.create = async (body) => {
+  console.log(body, "body");
+  // const ticket = {
+  //   assignedTo: "",
+  //   isCanceled: false,
+  //   booked: false,
+  //   seatNumber: 0,
+  //   bookedOn: 0,
+  // };
 
-  const ticket = {
-    assignedTo: "",
-    isCanceled: false,
-    booked: false,
-    seatNumber: 0,
-    bookedOn: 0,
-  };
+  // return new Promise(async (resolve, reject) => {
+  //   const data = {
+  //     ...req.body,
+  //     createdAt: new Date().getTime(),
+  //     createdBy: userId,
+  //     availableSeats: req.body.totalSeats,
+  //   };
 
-  return new Promise(async (resolve, reject) => {
-    const data = {
-      ...req.body,
-      createdAt: new Date().getTime(),
-      createdBy: userId,
-      availableSeats: req.body.totalSeats,
-    };
+  //   const isAlreadyExists = await schema.findOne({ ...body });
+  //   if (isAlreadyExists !== null) {
+  //     reject({ ok: false, message: "This Route already exists" });
+  //     return;
+  //   }
 
-    const isAlreadyExists = await schema.findOne({ ...req.body });
-    if (isAlreadyExists !== null) {
-      reject({ ok: false, message: "This Route already exists" });
-      return;
-    }
+  //   try {
+  //     const created = await schema.create(data);
+  //     const { busId, _id, totalSeats } = created;
 
-    try {
-      const created = await schema.create(data);
-      const { busId, _id, totalSeats } = created;
+  //     for (let i = 1; i <= totalSeats; i++) {
+  //       await ticketSchema.create({
+  //         ...ticket,
+  //         busId,
+  //         routeId: _id,
+  //         seatNumber: i,
+  //       });
+  //     }
 
-      for (let i = 1; i <= totalSeats; i++) {
-        await ticketSchema.create({
-          ...ticket,
-          busId,
-          routeId: _id,
-          seatNumber: i,
-        });
-      }
-
-      resolve({
-        ok: true,
-        message: "Route Created Successfully.",
-      });
-    } catch (error) {
-      reject({ ok: true, message: "Something went wrong." });
-    }
-  });
+  //     resolve({
+  //       ok: true,
+  //       message: "Route Created Successfully.",
+  //     });
+  //   } catch (error) {
+  //     reject({ ok: true, message: "Something went wrong." });
+  //   }
+  // });
 };
 
 module.exports.update = async (routeId, values) => {

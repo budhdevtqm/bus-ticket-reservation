@@ -17,7 +17,7 @@ function AllBus() {
   const [modal, setModal] = useState(false);
   const [bus, setBus] = useState({});
 
-  const getBusses = async () => {
+  const getAllBuses = async () => {
     try {
       const busesResponse = await axios.get(
         `${BASE_URL}/bus/all-buses`,
@@ -26,8 +26,20 @@ function AllBus() {
       const busData = busesResponse.data.data;
       setBuses(busData);
     } catch (error) {
-      console.log(error, "err");
-      // verifyStatus(error.response.status, navigate);
+      verifyStatus(error.response.status, navigate);
+    }
+  };
+
+  const getMyBuses = async () => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/bus/my-buses`,
+        headerConfig
+      );
+      const data = response.data.data;
+      setBuses(data);
+    } catch (error) {
+      verifyStatus(error.response.status, navigate);
     }
   };
 
@@ -60,7 +72,7 @@ function AllBus() {
       if (permissions === "superAdmin") {
         getAllBuses();
       } else {
-        getMyBusses();
+        getMyBuses();
       }
     } catch (error) {
       toast.error(error.response.data.message, { position: "top-right" });
@@ -69,7 +81,12 @@ function AllBus() {
   };
 
   useEffect(() => {
-    getBusses();
+    if (permissions === "superAdmin") {
+      getAllBuses();
+    }
+    if (permissions === "admin") {
+      getMyBuses();
+    }
   }, []);
 
   return (

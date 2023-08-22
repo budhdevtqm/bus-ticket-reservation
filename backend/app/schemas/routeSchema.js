@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const routeSchema = new mongoose.Schema(
   {
     busId: String,
+    createdBy: String,
     from: String,
     to: String,
     startTime: Number,
