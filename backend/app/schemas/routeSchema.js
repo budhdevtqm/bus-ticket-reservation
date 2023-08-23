@@ -14,6 +14,7 @@ const routeSchema = new mongoose.Schema(
     availableSeats: Number,
     updatedAt: Number,
     createdAt: Number,
+    status: Boolean,
   },
   { collection: "routes" }
 );

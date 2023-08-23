@@ -20,6 +20,7 @@ import { setUser } from "./Store/authSlice";
 import Login from "./components/Auth/Login";
 import Signup from "./components/Auth/Signup";
 import Bookings from "./components/Bookings/Bookings";
+import Payment from "./components/Payment/Payment";
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
 
           {/* Bookings */}
           <Route path="/bookings" element={<Bookings />} />
+          <Route path="/confirm-booking" element={<Payment />} />
         </Route>
       </Routes>
     </Fragment>

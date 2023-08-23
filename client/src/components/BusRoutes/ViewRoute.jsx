@@ -7,6 +7,8 @@ import { BiSolidBus } from "react-icons/bi";
 import Seat from "./Seat";
 import { Button } from "reactstrap";
 import { toast, Toaster } from "react-hot-toast";
+import SeaterForm from "./SeaterForm";
+import ConfirmSeats from "./ConfirmSeats";
 
 function ViewRoute() {
   const [busDeatils, setBusDetails] = useState({});
@@ -15,6 +17,8 @@ function ViewRoute() {
   const [tickets, setTickets] = useState([]);
   const routeId = localStorage.getItem("busRouteId");
   const navigate = useNavigate();
+  const [modal, setModal] = useState(false);
+  const toggler = () => setModal(!modal);
 
   const getRouteDetails = async (id) => {
     try {
@@ -46,26 +50,10 @@ function ViewRoute() {
     }
   }, []);
 
-  const bookTickets = async () => {
+  const confirmSeats = async () => {
     if (selectedSeats.length > 0) {
-      try {
-        const response = await axios.put(
-          `${BASE_URL}/tickets/booking`,
-          { tickets: selectedSeats },
-          headerConfig
-        );
-        toast.success(response.data.message, { position: "top-right" });
-      } catch (error) {
-        toast.error(error.response.data.message, { position: "top-right" });
-      }
+      setModal(true);
     }
-    setSelectedSeats([]);
-    const ticketResponse = await axios.get(
-      `${BASE_URL}/tickets/${routeId}`,
-      headerConfig
-    );
-    const allTickets = ticketResponse.data.data;
-    setTickets(allTickets);
   };
 
   useEffect(() => {
@@ -77,6 +65,12 @@ function ViewRoute() {
 
   return (
     <section style={{ width: "100%", height: "100%" }}>
+      <ConfirmSeats
+        toggler={toggler}
+        modal={modal}
+        selectedSeats={selectedSeats}
+        setSelectedSeats={setSelectedSeats}
+      />
       <div className="d-flex flex-column p-4">
         <h4>Book Ticket</h4>
         <div style={{ width: "100%" }} className="my-4 card p-4 color-danger">
@@ -103,23 +97,12 @@ function ViewRoute() {
             </div>
           </div>
         </div>
-        <div className="d-flex align-items-center justify-content-between gap-4">
-          <div className="d-flex flex-wrap">
-            {selectedSeats.map((seat) => (
-              <div
-                key={seat._id}
-                className="bg-info card rounded shadow d-flex align-items-center justify-content-center m-2"
-                style={{ width: "50px", height: "50px", cursor: "pointer" }}
-              >
-                {seat.seatNumber}
-              </div>
-            ))}
-          </div>
+        <div className="d-flex align-items-center justify-content-end">
           <Button
-            onClick={bookTickets}
+            onClick={confirmSeats}
             color={selectedSeats.length > 0 ? "success" : "danger"}
           >
-            {selectedSeats.length > 0 ? "Confirm Booking" : "Select Ticket"}
+            {selectedSeats.length > 0 ? "Confirm Seats" : "Select"}
           </Button>
         </div>
       </div>
@@ -127,5 +110,25 @@ function ViewRoute() {
     </section>
   );
 }
+
+// navigate("/");
+// try {
+// const response = await axios.put(
+// `${BASE_URL}/tickets/booking`,
+// { tickets: selectedSeats },
+// headerConfig
+// );
+// toast.success(response.data.message, { position: "top-right" });
+// } catch (error) {
+// toast.error(error.response.data.message, { position: "top-right" });
+// }
+
+// setSelectedSeats([]);
+// const ticketResponse = await axios.get(
+//   `${BASE_URL}/tickets/${routeId}`,
+//   headerConfig
+// );
+// const allTickets = ticketResponse.data.data;
+// setTickets(allTickets);
 
 export default ViewRoute;

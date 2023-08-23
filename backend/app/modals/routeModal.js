@@ -4,50 +4,64 @@ require("dotenv").config({ path: "../../.env" });
 const jwt = require("jsonwebtoken");
 
 module.exports.create = async (body) => {
-  console.log(body, "body");
-  // const ticket = {
-  //   assignedTo: "",
-  //   isCanceled: false,
-  //   booked: false,
-  //   seatNumber: 0,
-  //   bookedOn: 0,
-  // };
+  const {
+    userID,
+    busId,
+    from,
+    to,
+    date,
+    startTime,
+    endTime,
+    totalSeats,
+    ticketPrice,
+    permissons,
+  } = body;
 
-  // return new Promise(async (resolve, reject) => {
-  //   const data = {
-  //     ...req.body,
-  //     createdAt: new Date().getTime(),
-  //     createdBy: userId,
-  //     availableSeats: req.body.totalSeats,
-  //   };
-
-  //   const isAlreadyExists = await schema.findOne({ ...body });
-  //   if (isAlreadyExists !== null) {
-  //     reject({ ok: false, message: "This Route already exists" });
-  //     return;
-  //   }
-
-  //   try {
-  //     const created = await schema.create(data);
-  //     const { busId, _id, totalSeats } = created;
-
-  //     for (let i = 1; i <= totalSeats; i++) {
-  //       await ticketSchema.create({
-  //         ...ticket,
-  //         busId,
-  //         routeId: _id,
-  //         seatNumber: i,
-  //       });
-  //     }
-
-  //     resolve({
-  //       ok: true,
-  //       message: "Route Created Successfully.",
-  //     });
-  //   } catch (error) {
-  //     reject({ ok: true, message: "Something went wrong." });
-  //   }
-  // });
+  return new Promise(async (resolve, reject) => {
+    const data = {
+      busId,
+      from,
+      to,
+      date,
+      startTime,
+      endTime,
+      totalSeats,
+      ticketPrice,
+      status: true,
+      createdAt: new Date().getTime(),
+      createdBy: userID,
+      availableSeats: totalSeats,
+      updatedAt: 0,
+    };
+    const isAlreadyExists = await schema.findOne({ ...data });
+    if (isAlreadyExists !== null) {
+      reject({ ok: false, message: "This Route already exists" });
+      return;
+    }
+    try {
+      const created = await schema.create(data);
+      const { busId, _id, totalSeats, ticketPrice } = created;
+      for (let i = 1; i <= totalSeats; i++) {
+        await ticketSchema.create({
+          busId,
+          routeId: _id,
+          seatNumber: i,
+          seaterName: "",
+          assignedTo: "",
+          isCanceled: false,
+          booked: false,
+          price: ticketPrice,
+          bookedOn: 0,
+        });
+      }
+      resolve({
+        ok: true,
+        message: "Route Created Successfully.",
+      });
+    } catch (error) {
+      reject({ ok: true, message: "Something went wrong." });
+    }
+  });
 };
 
 module.exports.update = async (routeId, values) => {

@@ -7,7 +7,6 @@ function Seat(props) {
 
   const selectTicket = (data) => {
     setSelected(data);
-    console.log(data._id, "ticket-id");
     setTickets(true);
   };
 
