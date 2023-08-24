@@ -1,85 +1,164 @@
 import React, { useState } from "react";
 import { Button, Input } from "reactstrap";
-import { Formik, Form } from "formik";
+import { Formik, Form, FieldArray } from "formik";
 import * as yup from "yup";
 
-const validationSchema = yup.object().shape({
-  seaterName: yup.string().required("Required").min(3, "must be of 3 latters"),
-  age: yup.number().required("Required!").min(3, "Age must be >= 3"),
-});
+const SeaterForm = ({
+  selectedSeats,
+  setSelectedSeats,
+  setModal,
+  setSeatConfirmed,
+}) => {
+  const valuesArray = selectedSeats.map((seat, index) => ({
+    [`seaterName${index}`]: "",
+    [`age${index}`]: "",
+  }));
+  const defalultValues = Object.assign({}, ...valuesArray);
+  const [values, setValues] = useState(defalultValues);
+  const [errors, setErrors] = useState(defalultValues);
 
-const SeaterForm = ({ ticket, selectedSeats, setSelectedSeats }) => {
-  const [confirm, setConfirm] = useState(false);
-  console.log(selectedSeats, "in the form");
+  const handleChange = (e) => {
+    const { value, name } = e.target;
+    setValues({ ...values, [name]: value });
+  };
+
+  const validate = (values) => {
+    let errors = {};
+    const keys = Object.keys(values);
+
+    keys.forEach((key, index) => {
+      if (key.includes("seaterName")) {
+        if (values[key] === "" || values[key].trim() === "") {
+          errors[`${keys[index]}`] = "Required";
+        }
+        if (values[key].length < 3) {
+          errors[`${keys[index]}`] = "Name should be of 3 characters";
+        }
+      } else if (key.includes("age")) {
+        if (
+          values[key] === 0 ||
+          values[key] === "" ||
+          values[key].trim() === ""
+        ) {
+          errors[`${keys[index]}`] = "Required";
+        }
+        if (isNaN(Number(values[key]))) {
+          errors[`${keys[index]}`] = "Please enter a valid age";
+        }
+        if (Number(values[key]) <= 3) {
+          errors[`${keys[index]}`] = "Age should be greater than 3";
+        }
+      }
+    });
+    return errors;
+  };
+
   const provideStyle = (obj) => {
     if (Object.keys(obj).length > 0) {
-      return "d-flex align-items-center justify-content-center";
+      return "d-flex align-items-baseline justify-content-center";
     }
     return "d-flex align-items-end justify-content-center";
   };
 
-  const removeHandler = (seatId) => {
-    const filtered = selectedSeats.filter((seat) => seat._id !== seatId);
-    setSelectedSeats(filtered);
+  const collectValues = (num, keys, obj) => {
+    const sameKeys = keys.filter((item) => item.includes(`${num}`));
+    const values = sameKeys.map((key) => ({
+      [`${key}`]: obj[key],
+    }));
+    const newObject = Object.assign({}, ...values);
+    return newObject;
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    setErrors(defalultValues);
+    const validationErros = validate(values);
+    if (Object.keys(validationErros).length > 0) {
+      setErrors(validationErros);
+      return;
+    }
+
+    const keys = Object.keys(values);
+    let newValues = [];
+    for (let i = 0; i < selectedSeats.length; i++) {
+      const newObj = collectValues(i, keys, values);
+      newValues.push(newObj);
+    }
+    const modifiedValues = selectedSeats.map((seat, index) => {
+      const modified = {
+        ...seat,
+        seaterName: newValues[index][`seaterName${index}`],
+        age: Number(newValues[index][`age${index}`]),
+      };
+      return modified;
+    });
+
+    setSelectedSeats(modifiedValues);
+    setModal(false);
+    setSeatConfirmed(true);
   };
 
   return (
-    <Formik
-      initialValues={{ seaterName: "", age: 0 }}
-      validationSchema={validationSchema}
-      onSubmit={({ values }) => {
-        console.log(values, "values");
-      }}
+    <form
+      style={{ width: "100%", margin: "8px 0" }}
+      className="d-flex flex-column gap-4"
+      onSubmit={submitHandler}
     >
-      {({ values, errors, touched, handleBlur, handleChange }) => (
-        <Form style={{ width: "100%", margin: "8px 0" }}>
-          <div className="d-flex gap-4  justify-content-center">
-            <div className={provideStyle(errors)}>
-              <h5 className="bg-info m-0 shadow px-4 py-2 rounded d-flex align-items-center justify-content-center">
-                {ticket.seatNumber}
-              </h5>
+      <div className="d-flex gap-4  justify-content-center flex-column gap-2">
+        {selectedSeats.map((seat, index) => {
+          return (
+            <div key={seat._id} className="d-flex justify-content-center gap-2">
+              <div className={provideStyle(errors)}>
+                <h5 className="bg-info m-0 shadow px-4 py-2 rounded d-flex align-items-center justify-content-center">
+                  {seat.seatNumber}
+                </h5>
+              </div>
+              <label>
+                <Input
+                  type="text"
+                  name={"seaterName" + index}
+                  value={values["seaterName" + index]}
+                  onChange={handleChange}
+                  onBlur={validate}
+                  placeholder="Enter name"
+                />
+                {errors[`seaterName${index}`] ? (
+                  <div
+                    style={{ fontSize: "13px", marginLeft: "5px" }}
+                    className="text-danger"
+                  >
+                    {errors[`seaterName${index}`]}
+                  </div>
+                ) : null}
+              </label>
+              <label>
+                <Input
+                  type="number"
+                  name={"age" + index}
+                  placeholder="Enter age"
+                  value={values["age" + index]}
+                  onBlur={validate}
+                  onChange={handleChange}
+                />
+                {errors[`age${index}`] ? (
+                  <div
+                    style={{ fontSize: "13px", marginLeft: "5px" }}
+                    className="text-danger"
+                  >
+                    {errors[`age${index}`]}
+                  </div>
+                ) : null}
+              </label>
             </div>
-            <label>
-              Passenger Name
-              <Input
-                type="text"
-                name="seaterName"
-                value={values.seaterName}
-                onChange={handleChange}
-              />
-              {errors.seaterName && (
-                <div className="text-danger">{errors.seaterName}</div>
-              )}
-            </label>
-            <label>
-              Passenger Age
-              <Input
-                type="number"
-                name="age"
-                placeholder="Age"
-                value={values.age}
-                onChange={handleChange}
-              />
-              {errors.age && <div className="text-danger">{errors.age}</div>}
-            </label>
-            <div className={provideStyle(errors)}>
-              <Button type="submit" color={confirm ? "success" : "primary"}>
-                {confirm ? "Confirmed" : "Confirm"}
-              </Button>
-            </div>
-            <div className={provideStyle(errors)}>
-              <Button
-                type="button"
-                onClick={() => removeHandler(ticket._id)}
-                color={confirm ? "success" : "danger"}
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </Form>
-      )}
-    </Formik>
+          );
+        })}
+      </div>
+      <div className="d-flex align-items-center justify-content-center">
+        <Button type="submit" color="primary">
+          Pay Now
+        </Button>
+      </div>
+    </form>
   );
 };
 
