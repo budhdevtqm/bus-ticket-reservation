@@ -47,3 +47,12 @@ module.exports.cancelTicket = async (req, res) => {
     res.status(400).json(error);
   }
 };
+
+module.exports.ticketPayment = async (req, res) => {
+  try {
+    const response = await modal.payment(req.body);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};

@@ -40,7 +40,6 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.getRoute = async (req, res) => {
   const id = req.params.id;
-  console.log(id, "controoler");
   try {
     const response = await modal.get(id);
     res.status(200).json(response);

@@ -2,6 +2,7 @@ const schema = require("../schemas/ticketSchema");
 const routeSchema = require("../schemas/routeSchema");
 const jwt = require("jsonwebtoken");
 require("dotenv").config({ path: "../../.env" });
+const stripe = require("stripe")(process.env.SECRET_KEY);
 
 module.exports.getAll = async (routeId) => {
   return new Promise(async (resolve, reject) => {
@@ -79,6 +80,30 @@ module.exports.cancel = async (ticketId) => {
       resolve({ ok: true, message: "cancelled Successfully." });
     } catch (error) {
       reject({ ok: false, message: "Unable to cancel" });
+    }
+  });
+};
+
+module.exports.payment = async (body) => {
+  const { amount } = body;
+  return new Promise(async (resolve, reject) => {
+    try {
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount,
+        currency: "INR",
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+
+      console.log(paymentIntent, "payment-intent");
+      // resolve({
+      //   ok: true,
+      //   message: "payment successfull",
+      //   clientSecret: paymentIntent.client_secret,
+      // });
+    } catch (error) {
+      reject({ ok: false, message: error.message });
     }
   });
 };

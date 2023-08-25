@@ -8,5 +8,6 @@ router.get("/get-my-tickets", auth, controller.getMyTickets);
 router.get("/:id", controller.getAll);
 router.put("/booking", auth, controller.bookTicket);
 router.put("/cancel-ticket/:id", controller.cancelTicket);
+router.post("/ticket-payment", auth, controller.ticketPayment);
 
 module.exports = router;

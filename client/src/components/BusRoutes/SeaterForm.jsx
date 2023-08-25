@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { Button, Input } from "reactstrap";
-import { Formik, Form, FieldArray } from "formik";
-import * as yup from "yup";
 
 const SeaterForm = ({
   selectedSeats,
   setSelectedSeats,
-  setModal,
   setSeatConfirmed,
+  setAmount,
 }) => {
   const valuesArray = selectedSeats.map((seat, index) => ({
     [`seaterName${index}`]: "",
@@ -72,6 +70,7 @@ const SeaterForm = ({
   const submitHandler = (e) => {
     e.preventDefault();
     setErrors(defalultValues);
+
     const validationErros = validate(values);
     if (Object.keys(validationErros).length > 0) {
       setErrors(validationErros);
@@ -92,9 +91,10 @@ const SeaterForm = ({
       };
       return modified;
     });
-
+    const priceArray = modifiedValues.map((items) => items.price);
+    const totalAmount = priceArray.reduce((a, b) => a + b, 0);
+    localStorage.setItem("totalAmount", totalAmount);
     setSelectedSeats(modifiedValues);
-    setModal(false);
     setSeatConfirmed(true);
   };
 
@@ -155,7 +155,7 @@ const SeaterForm = ({
       </div>
       <div className="d-flex align-items-center justify-content-center">
         <Button type="submit" color="primary">
-          Pay Now
+          Confirm
         </Button>
       </div>
     </form>

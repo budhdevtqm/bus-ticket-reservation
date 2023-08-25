@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import { Route, Routes, useNavigate } from "react-router-dom";
@@ -12,15 +12,10 @@ import BusForm from "./components/Buses/BusForm";
 import ViewBus from "./components/Buses/ViewBus";
 import RouteForm from "./components/BusRoutes/RouteForm";
 import ViewRoute from "./components/BusRoutes/ViewRoute";
-import { useDispatch, useSelector } from "react-redux";
-import { BASE_URL, headerConfig } from "../config";
-import Profile from "./components/Profile/Profile";
-import axios from "axios";
-import { setUser } from "./Store/authSlice";
 import Login from "./components/Auth/Login";
 import Signup from "./components/Auth/Signup";
 import Bookings from "./components/Bookings/Bookings";
-import Payment from "./components/Payment/Payment";
+import Profile from "./components/Profile/Profile";
 
 function App() {
   return (
@@ -54,7 +49,6 @@ function App() {
 
           {/* Bookings */}
           <Route path="/bookings" element={<Bookings />} />
-          <Route path="/confirm-booking" element={<Payment />} />
         </Route>
       </Routes>
     </Fragment>

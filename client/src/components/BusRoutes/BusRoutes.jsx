@@ -28,7 +28,6 @@ function BusRoutes() {
       const data = response.data.data;
       setRoutes(data);
     } catch (error) {
-      console.log(error, "error");
       verifyStatus(error.response.status, navigate);
     }
   };
