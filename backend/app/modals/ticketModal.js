@@ -1,8 +1,13 @@
 const schema = require("../schemas/ticketSchema");
 const routeSchema = require("../schemas/routeSchema");
 const jwt = require("jsonwebtoken");
+const paymentSchema = require("../schemas/paymentSchema");
+const ticketSchema = require("../schemas/ticketSchema");
 require("dotenv").config({ path: "../../.env" });
 const stripe = require("stripe")(process.env.SECRET_KEY);
+const mailer = require("nodemailer");
+const userSchema = require("../schemas/userSchema");
+const busSchema = require("../schemas/busSchema");
 
 module.exports.getAll = async (routeId) => {
   return new Promise(async (resolve, reject) => {
@@ -85,45 +90,104 @@ module.exports.cancel = async (ticketId) => {
 };
 
 module.exports.payment = async (body) => {
-  const { amount } = body;
+  const { amount, userID, tickets } = body;
+
   return new Promise(async (resolve, reject) => {
     try {
       const paymentIntent = await stripe.paymentIntents.create({
         amount,
-        currency: "INR",
+        currency: "inr",
         automatic_payment_methods: {
           enabled: true,
         },
       });
+      const { email, name } = await userSchema.findOne({ _id: userID });
+      const ticketIds = tickets.map((ticket) => ticket._id);
+      const seatNumber = tickets.map((ticket) => ticket.seatNumber);
 
-      console.log(paymentIntent, "payment-intent");
-      // resolve({
-      //   ok: true,
-      //   message: "payment successfull",
-      //   clientSecret: paymentIntent.client_secret,
-      // });
+      const savePayment = await paymentSchema.create({
+        ticketIds,
+        createdBy: userID,
+        createdAt: new Date().getTime(),
+        updatedAt: 0,
+        status: true,
+        payment: paymentIntent,
+      });
+
+      const { routeId } = tickets[0];
+      const { startTime, date, busId } = await routeSchema.findOne({
+        _id: routeId,
+      });
+
+      const { busNo } = await busSchema.findOne({ _id: busId });
+
+      const updateTickets = await tickets.map(async (ticket) => {
+        const updating = await ticketSchema.findOneAndUpdate(
+          { _id: ticket._id },
+          {
+            ...ticket,
+            bookedOn: new Date().getTime(),
+            booked: true,
+            assignedTo: userID,
+          }
+        );
+      });
+
+      const mailTransporter = mailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.MY_EMAIL,
+          pass: process.env.MY_EMAIL_PASSWORD,
+        },
+      });
+
+      const mailDetails = {
+        from: process.env.MY_EMAIL,
+        to: email,
+        subject: "Ticket Confirmation!",
+        text: `Dear ${name},
+
+        We are excited to confirm your ticket. Here are the details of your booking:
+        
+        Date: ${new Date(date).toDateString()}
+        Time: ${new Date(startTime).getHours()} : ${new Date(
+          startTime
+        ).getMinutes()}
+        
+        Ticket Details: 
+        Quantity: ${ticketIds.length}
+        Ticket ID: ${ticketIds}
+        Bus No. : ${busNo}
+        Seats: ${seatNumber.join(" ,")}
+        
+        Billing Information:
+        Total Amount: ${amount}
+        Payment Method: ${paymentIntent["payment_method_types"][0]}
+        Transaction ID: ${savePayment._id.toString()}
+        
+        Please ensure that you bring a copy of this confirmation email or your ticket ID to the event. Your ticket ID is a unique identifier and will be used for verification during entry.
+        
+        If you have any questions or need further assistance, feel free to reply to this email or contact our customer support at ticketreservation@gmail.com or +91 **********.
+        
+        
+        Best regards,
+        Bus Ticket Reservation
+        `,
+      };
+
+      await mailTransporter.sendMail(mailDetails, (error, info) => {
+        if (error) console.log(error, "mail-error");
+      });
+
+      resolve({
+        ok: true,
+        message: "payment and booking is successfull",
+        clientSecret: paymentIntent.client_secret,
+      });
     } catch (error) {
       reject({ ok: false, message: error.message });
     }
   });
 };
-
-/*
-
-try {
-  //     const ticket = await schema.find({ _id: ticketId });
-  //     const booked = await schema.updateOne(
-  //       { _id: ticketId },
-  //       {
-  //         ...ticket,
-  //         bookedOn: new Date().getTime(),
-  //         booked: true,
-  //         assignedTo: userId,
-  //       }
-  //     );
-  //     resolve({ ok: true, message: "Booked successfully", response: booked });
-  //   } catch (error) {
-  //     reject({ ok: false, message: "Something went worng" });
-  //   }
-
-*/

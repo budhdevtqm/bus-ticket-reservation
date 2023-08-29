@@ -11,7 +11,7 @@ const ticketSchema = new mongoose.Schema(
     seatNumber: Number,
     bookedOn: Number,
     seaterName: String,
-    payment: mongoose.Schema.Types.Mixed,
+    age: Number,
   },
   {
     collection: "tickets",

@@ -14,6 +14,8 @@ const Header = () => {
     dispatch(logout());
     localStorage.removeItem("token");
     localStorage.removeItem("permissions");
+    localStorage.removeItem("totalAmount");
+    localStorage.removeItem("busRouteId");
     navigate("/login");
   };
 

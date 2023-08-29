@@ -64,8 +64,9 @@ const CheckoutForm = ({ selectedSeats }) => {
 
     if (error) {
       setErrorMessage(error.message);
+      toast.success(error.message, { position: "top-right" });
     } else {
-      toast.success("Ticket Booked Successfully.");
+      toast.success("Ticket Booked Successfully.", { position: "top-right" });
     }
   };
 

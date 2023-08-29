@@ -111,6 +111,8 @@ function ViewRoute() {
           <div className="d-flex align-items-center justify-content-end">
             <Button
               onClick={confirmSeats}
+              disabled={selectedSeats.length <= 0 ? true : false}
+              style={{ cursor: selectedSeats.length <= 0 ? "not-allowed" : "" }}
               color={selectedSeats.length > 0 ? "success" : "danger"}
             >
               {selectedSeats.length > 0 ? "Book" : "Select"}
@@ -122,25 +124,5 @@ function ViewRoute() {
     </section>
   );
 }
-
-// navigate("/");
-// try {
-// const response = await axios.put(
-// `${BASE_URL}/tickets/booking`,
-// { tickets: selectedSeats },
-// headerConfig
-// );
-// toast.success(response.data.message, { position: "top-right" });
-// } catch (error) {
-// toast.error(error.response.data.message, { position: "top-right" });
-// }
-
-// setSelectedSeats([]);
-// const ticketResponse = await axios.get(
-//   `${BASE_URL}/tickets/${routeId}`,
-//   headerConfig
-// );
-// const allTickets = ticketResponse.data.data;
-// setTickets(allTickets);
 
 export default ViewRoute;
