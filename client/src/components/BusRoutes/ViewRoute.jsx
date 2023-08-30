@@ -66,7 +66,7 @@ function ViewRoute() {
   }, [selected]);
 
   return (
-    <section style={{ width: "100%", height: "100%" }}>
+    <section style={{ width: "100%", height: "100%", overflowY: "scroll" }}>
       <ConfirmSeats
         toggler={toggler}
         modal={modal}

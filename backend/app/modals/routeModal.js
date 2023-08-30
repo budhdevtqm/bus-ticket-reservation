@@ -66,10 +66,56 @@ module.exports.create = async (body) => {
 
 module.exports.update = async (routeId, values) => {
   return new Promise(async (resolve, reject) => {
+    const { totalSeats: previousSeats } = await schema.findOne({
+      _id: routeId,
+    });
+
+    const { totalSeats: currentSeats, ticketPrice, busId } = values;
+
     try {
+      if (currentSeats > previousSeats) {
+        const total = currentSeats - previousSeats;
+        for (let i = 1; i <= total; i++) {
+          await ticketSchema.create({
+            busId,
+            routeId: routeId,
+            seatNumber: i + previousSeats,
+            seaterName: "",
+            assignedTo: "",
+            isCanceled: false,
+            booked: false,
+            price: ticketPrice,
+            bookedOn: 0,
+          });
+        }
+      }
+
+      if (currentSeats < previousSeats) {
+        const difference = previousSeats - currentSeats;
+        const extraSeats = [];
+
+        for (let i = 0; i < difference; i++) {
+          extraSeats.push(previousSeats - i);
+        }
+
+        const deleteExtra = extraSeats.map(
+          async (seatNumber) =>
+            await ticketSchema.findOneAndDelete({
+              busId,
+              routeId,
+              ticketPrice,
+              seatNumber,
+            })
+        );
+      }
+
       const updated = await schema.findOneAndUpdate(
         { _id: routeId },
-        { ...values, updatedAt: new Date().getTime() }
+        {
+          ...values,
+          updatedAt: new Date().getTime(),
+          availableSeats: values.totalSeats,
+        }
       );
 
       resolve({ ok: true, message: "Route Updated succesfully" });

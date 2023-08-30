@@ -315,6 +315,7 @@ function RouteForm() {
                   name="totalSeats"
                   value={values.totalSeats}
                   onBlur={handleBlur}
+                  disabled={formMode === "Update" ? true : false}
                   onChange={handleChange}
                 />
                 {errors.totalSeats && touched.totalSeats ? (

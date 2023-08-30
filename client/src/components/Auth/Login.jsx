@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Input } from "reactstrap";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
@@ -21,6 +21,13 @@ const loginSchema = yup.object().shape({
 
 const Login = (props) => {
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (token) {
+      window.location.assign("http://localhost:5173/");
+    }
+  }, [token]);
 
   return (
     <div
@@ -43,10 +50,8 @@ const Login = (props) => {
               toast.success(res.data.message, { position: "top-right" });
               localStorage.setItem("token", res.data.token);
               localStorage.setItem("permissions", res.data.permissions);
-              console.log("logged In successfully");
               navigate("/home");
             } catch (er) {
-              console.log("login error");
               toast.error(er.response.data.message, { position: "top-right" });
             }
           }}

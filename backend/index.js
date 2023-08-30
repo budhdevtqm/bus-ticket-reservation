@@ -26,10 +26,6 @@ app.use(express.json());
 
 //Auth
 app.use("/auth", authRoute);
-// app.use("/auth", authRoute);
-
-//verify-token-middleware;
-// app.use(verifyToken);
 
 app.use("/user", authRoute);
 
