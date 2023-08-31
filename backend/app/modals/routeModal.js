@@ -1,3 +1,4 @@
+const busSchema = require("../schemas/busSchema");
 const schema = require("../schemas/routeSchema");
 const ticketSchema = require("../schemas/ticketSchema");
 require("dotenv").config({ path: "../../.env" });
@@ -12,7 +13,6 @@ module.exports.create = async (body) => {
     date,
     startTime,
     endTime,
-    totalSeats,
     ticketPrice,
     permissons,
   } = body;
@@ -25,34 +25,38 @@ module.exports.create = async (body) => {
       date,
       startTime,
       endTime,
-      totalSeats,
       ticketPrice,
       status: true,
       createdAt: new Date().getTime(),
       createdBy: userID,
-      availableSeats: totalSeats,
       updatedAt: 0,
     };
+
     const isAlreadyExists = await schema.findOne({ ...data });
     if (isAlreadyExists !== null) {
       reject({ ok: false, message: "This Route already exists" });
       return;
     }
+
     try {
-      const created = await schema.create(data);
-      const { busId, _id, totalSeats, ticketPrice } = created;
+      const { totalSeats } = await busSchema.findOne({ _id: busId });
+
+      const created = await new schema({ ...data, totalSeats }).save();
+      const { _id } = created;
       for (let i = 1; i <= totalSeats; i++) {
-        await ticketSchema.create({
+        await new ticketSchema({
           busId,
           routeId: _id,
           seatNumber: i,
           seaterName: "",
+          age: "",
+          isAvailable: true,
           assignedTo: "",
           isCanceled: false,
           booked: false,
           price: ticketPrice,
           bookedOn: 0,
-        });
+        }).save();
       }
       resolve({
         ok: true,

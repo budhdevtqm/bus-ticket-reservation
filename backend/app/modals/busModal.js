@@ -3,11 +3,13 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config({ path: "../../.env" });
 
 module.exports.addBus = async (body) => {
-  const { busNo, userID, manufacturer, model } = body;
+  const { busNo, userID, manufacturer, model, totalSeats } = body;
+  console.log(body, "body");
   return new Promise(async (resolve, reject) => {
     const data = {
       busNo,
       manufacturer,
+      totalSeats,
       model,
       createdAt: new Date().getTime(),
       createdBy: userID,
@@ -19,8 +21,9 @@ module.exports.addBus = async (body) => {
       reject({ ok: false, message: "This bus already exist" });
       return;
     }
+
     try {
-      const save = await busSchema.create(data);
+      await new busSchema(data).save();
       resolve({ ok: true, message: "Bus added successfully" });
     } catch (error) {
       reject({ ok: false, message });

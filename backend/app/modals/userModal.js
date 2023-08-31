@@ -1,15 +1,11 @@
 const userSchema = require("../schemas/userSchema");
 require("dotenv").config({ path: "../../.env" });
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const secretKey = process.env.JWT_PRIVATE;
 
 module.exports.signUp = async (values) => {
-  const data = new userSchema({
-    ...values,
-    permissions: "user",
-    createdAt: new Date().getTime(),
-    updatedAt: 0,
-  });
+  const { name, email, password } = values;
 
   return new Promise(async (resolve, reject) => {
     const isAlready = await userSchema.findOne({ email: values.email });
@@ -22,11 +18,23 @@ module.exports.signUp = async (values) => {
       });
 
     try {
-      const saved = await data.save();
+      await bcrypt.genSalt(10, async (err, salt) => {
+        bcrypt.hash(password, salt, async (err, hash) => {
+          await new userSchema({
+            name,
+            email,
+            password: hash,
+            permissions: "user",
+            createdAt: new Date().getTime(),
+            updatedAt: 0,
+          }).save();
+        });
+      });
+
       resolve({
         status: 201,
         ok: true,
-        message: "SignUp successfully",
+        message: "Signup successfully, please login.",
       });
     } catch (error) {
       return reject({
@@ -52,17 +60,19 @@ module.exports.myInfo = async (body) => {
 module.exports.login = async (values) => {
   const { email, password } = values;
   return new Promise(async (resolve, reject) => {
-    const isExistingUser = await userSchema.findOne({ email });
-    if (isExistingUser == null)
-      return reject({ ok: false, message: "User not found" });
+    const isUser = await userSchema.findOne({ email });
+    if (isUser == null) return reject({ ok: false, message: "Invalid email" });
 
-    const isValidPassword = isExistingUser.password === password;
-    if (!isValidPassword)
+    const userId = isUser._id.toString();
+    const { permissions, password: passwordHash } = isUser;
+
+    const matchPassword = await bcrypt.compare(password, passwordHash);
+
+    if (!matchPassword)
       return reject({ ok: false, message: "Invalid password" });
 
-    const userId = isExistingUser._id.toString();
-    const { permissions } = isExistingUser;
     const token = jwt.sign({ userId: userId }, secretKey, { expiresIn: "2h" });
+
     resolve({
       ok: true,
       token: token,
@@ -83,9 +93,21 @@ module.exports.create = async (values) => {
         message: "This email is already in use.",
       });
 
-    const data = { ...values, createdAt: new Date().getTime(), updatedAt: 0 };
+    const { name, email, password, permissions } = values;
+
     try {
-      const saving = await userSchema.create(data);
+      await bcrypt.genSalt(10, async (err, salt) => {
+        bcrypt.hash(password, salt, async (err, hash) => {
+          await new userSchema({
+            name,
+            email,
+            password: hash,
+            permissions,
+            createdAt: new Date().getTime(),
+            updatedAt: 0,
+          }).save();
+        });
+      });
 
       resolve({
         status: 201,
@@ -95,7 +117,7 @@ module.exports.create = async (values) => {
     } catch (error) {
       return reject({
         ok: false,
-        message: "Something went wrong while Creating.",
+        message: "Error occurred while adding user",
       });
     }
   });
@@ -159,19 +181,26 @@ module.exports.updatePassword = async (body) => {
   const { userID, password } = body;
   return new Promise(async (resolve, reject) => {
     try {
-      const { name, email, createdAt, updatedAt, permissions } =
-        await userSchema.findOne({ _id: userID });
-      const updated = await userSchema.updateOne(
-        { _id: userID },
-        {
-          name,
-          email,
-          password,
-          createdAt,
-          updatedAt: new Date().getTime(),
-          permissions,
-        }
-      );
+      const { name, email, createdAt, permissions } = await userSchema.findOne({
+        _id: userID,
+      });
+
+      await bcrypt.genSalt(10, async (err, salt) => {
+        bcrypt.hash(password, salt, async (err, hash) => {
+          await userSchema.findOneAndUpdate(
+            { _id: userID },
+            {
+              name,
+              email,
+              password: hash,
+              permissions,
+              createdAt,
+              updatedAt: new Date().getTime(),
+            }
+          );
+        });
+      });
+
       resolve({ ok: true, message: "password changed successfully." });
     } catch (error) {
       reject({ ok: false, message: "Unable to update Password" });

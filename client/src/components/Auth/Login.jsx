@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, Input } from "reactstrap";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
@@ -6,13 +6,19 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../config";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-import { useDispatch } from "react-redux";
 
 const loginSchema = yup.object().shape({
-  email: yup.string().email("Invalid Email").required("Required!"),
+  email: yup
+    .string()
+    .email("Invalid Email")
+    .trim("Space is not allowed")
+    .strict(true)
+    .required("Required!"),
   password: yup
     .string()
+
     .required("Required!")
+    .strict(true)
     .matches(
       /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/,
       "Length atleast 6 and inclues numbers, latters and special character"
@@ -21,13 +27,6 @@ const loginSchema = yup.object().shape({
 
 const Login = (props) => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-
-  useEffect(() => {
-    if (token) {
-      window.location.assign("http://localhost:5173/");
-    }
-  }, [token]);
 
   return (
     <div
@@ -50,7 +49,7 @@ const Login = (props) => {
               toast.success(res.data.message, { position: "top-right" });
               localStorage.setItem("token", res.data.token);
               localStorage.setItem("permissions", res.data.permissions);
-              navigate("/home");
+              window.location.assign("http://localhost:5173/");
             } catch (er) {
               toast.error(er.response.data.message, { position: "top-right" });
             }

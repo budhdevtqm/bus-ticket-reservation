@@ -143,6 +143,14 @@ module.exports.payment = async (body) => {
         },
       });
 
+      const getTime = (milliseconds) => {
+        const [h, m] = new Date(milliseconds - 19800000)
+          .toString()
+          .split(" ")[4]
+          .split(":");
+        return `${h} : ${m}`;
+      };
+
       const mailDetails = {
         from: process.env.MY_EMAIL,
         to: email,
@@ -152,9 +160,7 @@ module.exports.payment = async (body) => {
         We are excited to confirm your ticket. Here are the details of your booking:
         
         Date: ${new Date(date).toDateString()}
-        Time: ${new Date(startTime).getHours()} : ${new Date(
-          startTime
-        ).getMinutes()}
+        Time: ${getTime(startTime)} : ${getTime(startTime)}
         
         Ticket Details: 
         Quantity: ${ticketIds.length}

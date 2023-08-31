@@ -4,9 +4,10 @@ import { MdMode, MdOutlineInfo, MdDelete } from "react-icons/md";
 import axios from "axios";
 import { BASE_URL, headerConfig } from "../../../config";
 import { useNavigate } from "react-router-dom";
-import { toast, Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { verifyStatus } from "../../common/utils";
 import User from "./User";
+import Swal from "sweetalert2";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -50,16 +51,28 @@ const Users = () => {
   }, []);
 
   const deleteHandler = async (userId) => {
-    try {
-      const response = await axios.delete(
-        `${BASE_URL}/users/${userId}`,
-        headerConfig
-      );
-      toast.success(response.data.message, { position: "top-right" });
-      getUsers();
-    } catch (error) {
-      toast.error(error.response.data.message, { position: "top-rights" });
-    }
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.delete(
+            `${BASE_URL}/users/${userId}`,
+            headerConfig
+          );
+          Swal.fire("Deleted!", "user successfully deleted.", "success");
+          getUsers();
+        } catch (error) {
+          Swal.fire("Oops!", "Something went wrong.", "error");
+        }
+      }
+    });
   };
 
   const viewUserHandler = (id) => {

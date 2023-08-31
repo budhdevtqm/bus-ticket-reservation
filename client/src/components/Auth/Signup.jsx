@@ -8,15 +8,27 @@ import { BASE_URL } from "../../../config";
 import { toast, Toaster } from "react-hot-toast";
 
 const signup = yup.object().shape({
-  email: yup.string().email("Invalid Email").required("Required!"),
+  email: yup
+    .string()
+    .email("Invalid Email")
+    .required("Required!")
+    .trim("Space is not allowed")
+    .strict(true),
   password: yup
     .string()
     .required("Required!")
+    .trim("Space is not allowed")
+    .strict(true)
     .matches(
       /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/,
       "Length atleast 6 and inclues numbers, latters and special character"
     ),
-  name: yup.string().required("Required!").min(3, "Name must be of 3 chars"),
+  name: yup
+    .string()
+    .required("Required!")
+    .min(3, "Name must be of 3 chars")
+    .trim("Space is not allowed")
+    .strict(true),
 });
 
 const Signup = (props) => {
@@ -40,11 +52,13 @@ const Signup = (props) => {
             setSubmitting(true);
             try {
               const response = await axios.post(
-                `${BASE_URL}/user/signup`,
+                `${BASE_URL}/auth/signup`,
                 values
               );
-              toast.success(response.data.message, { position: "top-right" });
-              navigate("/login");
+              toast.success("Signup successfully Please Login now", {
+                position: "top-right",
+              });
+              setTimeout(() => navigate("/login"), 2000);
             } catch (er) {
               toast.error(er.response.data.message, { position: "top-right" });
             }

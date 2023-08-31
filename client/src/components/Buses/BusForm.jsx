@@ -12,9 +12,22 @@ const busValidationSchema = yup.object().shape({
   busNo: yup
     .string()
     .matches(/^[a-zA-Z0-9_.-]*$/, "Only number and letter allowed")
+    .trim("Space is not allowed")
+    .strict(true)
     .min(9, "Please enter a valid bus number. (IN)")
     .required("Required!"),
-  manufacturer: yup.string().required("Required!"),
+  totalSeats: yup.number().required("Required").min(1, "Must be > 0"),
+  manufacturer: yup
+    .string()
+    .required("Required!")
+    .trim("Space is not allowed")
+    .strict(true),
+  model: yup
+    .string()
+    .required("Required")
+    .min(3, "Must be of 3 Characters")
+    .trim("Space is not allowed")
+    .strict(true),
 });
 
 const BusForm = (props) => {
@@ -24,6 +37,7 @@ const BusForm = (props) => {
     busNo: "",
     manufacturer: "",
     model: "",
+    totalSeats: "",
   });
 
   const busId = localStorage.getItem("busId");
@@ -177,6 +191,29 @@ const BusForm = (props) => {
                     className="text-danger text-start  m-0"
                   >
                     {errors.model}
+                  </p>
+                ) : null}
+              </label>
+              <label
+                style={{ width: "100%" }}
+                className="d-flex flex-column gap-1"
+              >
+                Total Seats
+                <Input
+                  bsSize="sm"
+                  type="number"
+                  name="totalSeats"
+                  value={values.totalSeats}
+                  onBlur={handleBlur}
+                  disabled={formMode === "Update" ? true : false}
+                  onChange={handleChange}
+                />
+                {errors.totalSeats && touched.totalSeats ? (
+                  <p
+                    style={{ width: "100%", fontSize: "12px" }}
+                    className="text-danger text-start m-0"
+                  >
+                    {errors.totalSeats}
                   </p>
                 ) : null}
               </label>

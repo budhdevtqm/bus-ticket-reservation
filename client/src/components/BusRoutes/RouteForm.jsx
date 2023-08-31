@@ -15,7 +15,6 @@ const routeSchema = yup.object().shape({
   to: yup.string().required("Required").min(3, "Must be of 3 letters!"),
   startTime: yup.string().required("Required"),
   endTime: yup.string().required("Required"),
-  totalSeats: yup.number().required("Required").min(1, "Must be > 0"),
   ticketPrice: yup.number().required("Required").min(1, "Must be > 0"),
   date: yup
     .date()
@@ -120,6 +119,7 @@ function RouteForm() {
                   headerConfig
                 );
                 toast.success(response.data.message, { position: "top-right" });
+                navigate(-1);
               } catch (error) {
                 toast.error(error.response.data.message, {
                   position: "top-right",
@@ -135,6 +135,7 @@ function RouteForm() {
                   headerConfig
                 );
                 toast.success(response.data.message, { position: "top-right" });
+                navigate(-1);
               } catch (error) {
                 toast.error(error.response.data.message, {
                   position: "top-right",
@@ -303,30 +304,6 @@ function RouteForm() {
                   ) : null}
                 </label>
               </div>
-
-              <label
-                style={{ width: "100%" }}
-                className="d-flex flex-column gap-1"
-              >
-                Total Seats
-                <Input
-                  bsSize="sm"
-                  type="number"
-                  name="totalSeats"
-                  value={values.totalSeats}
-                  onBlur={handleBlur}
-                  disabled={formMode === "Update" ? true : false}
-                  onChange={handleChange}
-                />
-                {errors.totalSeats && touched.totalSeats ? (
-                  <p
-                    style={{ width: "100%", fontSize: "12px" }}
-                    className="text-danger text-start m-0"
-                  >
-                    {errors.totalSeats}
-                  </p>
-                ) : null}
-              </label>
 
               <label
                 style={{ width: "100%" }}

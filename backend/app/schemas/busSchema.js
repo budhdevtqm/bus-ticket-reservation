@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const busSchema = new mongoose.Schema(
   {
     busNo: String,
+    totalSeats: Number,
     createdAt: Number,
     model: String,
     createdBy: String,

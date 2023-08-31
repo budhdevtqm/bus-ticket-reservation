@@ -8,6 +8,7 @@ import ViewTicket from "./ViewTicket";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 const Bookings = (props) => {
   const [tickets, setTickets] = useState([]);
+  const [showTicket, setShowTicket] = useState(null);
   const navigate = useNavigate();
   const [modal, setModal] = useState(false);
   const toggler = () => setModal(!modal);
@@ -24,8 +25,8 @@ const Bookings = (props) => {
     }
   };
 
-  const viewTicket = (id) => {
-    localStorage.setItem("ticket-id", id);
+  const viewTicket = (ticketData) => {
+    setShowTicket(ticketData);
     setModal(true);
   };
 
@@ -48,13 +49,15 @@ const Bookings = (props) => {
 
   useEffect(() => {
     getMyTickets();
-    localStorage.removeItem("token-id");
+    localStorage.removeItem("ticket-id");
   }, []);
+
   return (
     <section className="p-4" style={{ width: "100%", height: "100%" }}>
       <ViewTicket
         toggler={toggler}
         setModal={setModal}
+        ticket={showTicket}
         modal={modal}
         cancelHandler={cancelHandler}
       />
@@ -86,7 +89,7 @@ const Bookings = (props) => {
                 <td className="text-center">
                   <BsFillInfoCircleFill
                     style={{ fontSize: "25px" }}
-                    onClick={() => viewTicket(ticket._id)}
+                    onClick={() => viewTicket(ticket)}
                   />
                 </td>
               </tr>

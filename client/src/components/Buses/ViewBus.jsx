@@ -1,14 +1,21 @@
 import React from "react";
 import { Modal, ModalBody, ModalHeader } from "reactstrap";
 import { format } from "date-fns";
-import { useSelector } from "react-redux";
 
 const ViewBus = ({ modal, bus, closeModal }) => {
-  const { busNo, manufacturer, model, createdBy, createdAt, updatedAt } = bus;
+  const {
+    busNo,
+    manufacturer,
+    model,
+    createdBy,
+    createdAt,
+    updatedAt,
+    totalSeats,
+  } = bus;
   const permissions = localStorage.getItem("permissions");
 
   const getRealDate = (timeStamp) => {
-    return format(timeStamp, "dd - MM - yyyy");
+    return format(timeStamp, "dd  MMM  yyyy");
   };
 
   return (
@@ -57,6 +64,13 @@ const ViewBus = ({ modal, bus, closeModal }) => {
                 </span>
               </div>
             )}
+
+            <div className="d-flex flex-nowrap align-item-center justify-content-evenly">
+              <span style={{ width: "50%" }}>Total Seats</span>
+              <span style={{ width: "50%", textAlign: "center" }}>
+                <b>{totalSeats}</b>
+              </span>
+            </div>
           </div>
         </ModalBody>
       </Modal>

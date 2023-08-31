@@ -53,7 +53,9 @@ const User = ({ modal, toggler }) => {
         </div>
         <div className="d-flex flex-row my-4">
           <span style={{ width: "50%" }}>Last Updated</span>
-          <b style={{ width: "50%" }}>{getDate(user.updatedAt)}</b>
+          <b style={{ width: "50%" }}>
+            {user.updatedAt ? getDate(user.updatedAt) : "N/A"}
+          </b>
         </div>
       </ModalBody>
     </Modal>

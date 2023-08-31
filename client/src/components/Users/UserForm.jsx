@@ -8,7 +8,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { verifyStatus } from "../../common/utils";
 
-const UserScheam = yup.object().shape({
+const createSchema = yup.object().shape({
   email: yup.string().email("Invalid Email").required("Required!"),
   password: yup
     .string()
@@ -17,6 +17,12 @@ const UserScheam = yup.object().shape({
       /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/,
       "Length atleast 6 and inclues numbers, latters and special character"
     ),
+  name: yup.string().required("Required!").min(3, "Name must be of 3 chars"),
+  permissions: yup.string().required("Required!"),
+});
+
+const updateSchema = yup.object().shape({
+  email: yup.string().email("Invalid Email").required("Required!"),
   name: yup.string().required("Required!").min(3, "Name must be of 3 chars"),
   permissions: yup.string().required("Required!"),
 });
@@ -67,7 +73,7 @@ const UserForm = () => {
         <Formik
           initialValues={formValues}
           enableReinitialize={true}
-          validationSchema={UserScheam}
+          validationSchema={formMode === "Create" ? createSchema : updateSchema}
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
             if (formMode === "Create") {
@@ -80,6 +86,7 @@ const UserForm = () => {
                 toast.success(response.data.message, {
                   position: "top-right",
                 });
+                navigate(-1);
               } catch (error) {
                 toast.error(error.response.data.message, {
                   position: "top-right",
@@ -97,6 +104,7 @@ const UserForm = () => {
                 toast.success(response.data.message, {
                   position: "top-right",
                 });
+                navigate(-1);
               } catch (er) {
                 toast.error(er.response.data.message, {
                   position: "top-right",
@@ -143,6 +151,7 @@ const UserForm = () => {
                   type="text"
                   name="email"
                   value={values.email}
+                  disabled={formMode === "Update" ? true : false}
                   onBlur={handleBlur}
                   onChange={handleChange}
                 />
@@ -156,28 +165,30 @@ const UserForm = () => {
                 ) : null}
               </label>
 
-              <label
-                style={{ width: "100%" }}
-                className="d-flex flex-column gap-1  "
-              >
-                Password
-                <Input
-                  bsSize="sm"
-                  type="password"
-                  name="password"
-                  value={values.password}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-                {errors.password && touched.password ? (
-                  <p
-                    style={{ width: "100%", fontSize: "12px" }}
-                    className="text-danger text-start text-wrap  m-0"
-                  >
-                    {errors.password}
-                  </p>
-                ) : null}
-              </label>
+              {formMode === "Create" && (
+                <label
+                  style={{ width: "100%" }}
+                  className="d-flex flex-column gap-1  "
+                >
+                  Password
+                  <Input
+                    bsSize="sm"
+                    type="password"
+                    name="password"
+                    value={values.password}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {errors.password && touched.password ? (
+                    <p
+                      style={{ width: "100%", fontSize: "12px" }}
+                      className="text-danger text-start text-wrap  m-0"
+                    >
+                      {errors.password}
+                    </p>
+                  ) : null}
+                </label>
+              )}
 
               <label
                 style={{ width: "100%" }}

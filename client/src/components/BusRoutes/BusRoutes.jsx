@@ -5,9 +5,10 @@ import { MdMode, MdOutlineInfo, MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL, headerConfig } from "../../../config";
-import { format, milliseconds } from "date-fns";
+import { format } from "date-fns";
 import { verifyStatus } from "../../common/utils";
 import { BsFillArrowRightSquareFill } from "react-icons/bs";
+import Swal from "sweetalert2";
 
 function BusRoutes() {
   const [routes, setRoutes] = useState([]);
@@ -46,21 +47,36 @@ function BusRoutes() {
   }, []);
 
   const deleteHandler = async (id) => {
-    try {
-      const response = await axios.delete(
-        `${BASE_URL}/bus-route/${id}`,
-        headerConfig
-      );
-      getAllRoutes();
-      toast.success(response.data.message, { position: "top-right" });
-    } catch (error) {
-      toast.error(error.response.data.message, { position: "top-right" });
-      verifyStatus(error.response.status, navigate);
-    }
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.delete(
+            `${BASE_URL}/bus-route/${id}`,
+            headerConfig
+          );
+          getAllRoutes();
+          Swal.fire("Deleted!", "Deleted.", "success");
+        } catch (error) {
+          Swal.fire("Unable to delete!", "Something went wrong.", "error");
+          verifyStatus(error.response.status, navigate);
+        }
+      }
+    });
   };
 
   const getTime = (milliseconds) => {
-    const [h, m] = new Date(milliseconds).toString().split(" ")[4].split(":");
+    const [h, m] = new Date(milliseconds - 19800000)
+      .toString()
+      .split(" ")[4]
+      .split(":");
     return `${h} : ${m}`;
   };
 

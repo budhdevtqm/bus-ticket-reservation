@@ -22,12 +22,15 @@ const ViewTicket = (props) => {
     );
     verifyStatus(response.status, navigate);
     setTicket(response.data.data);
+    console.log(response.data.data, "----ticket-res");
     return response.data.data;
   };
 
   const getBus = async (id) => {
     const response = await axios.get(`${BASE_URL}/bus/${id}`, headerConfig);
     verifyStatus(response.status, navigate);
+    console.log(response.data.data, "----bus-res");
+
     setBus(response.data.bus);
   };
 
@@ -37,6 +40,7 @@ const ViewTicket = (props) => {
       headerConfig
     );
     verifyStatus(response.status, navigate);
+    console.log(response.data.data, "----rute-res");
     setRute(response.data.data);
   };
 

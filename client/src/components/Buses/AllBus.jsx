@@ -7,8 +7,8 @@ import { BASE_URL, headerConfig } from "../../../config";
 import { format } from "date-fns";
 import { toast, Toaster } from "react-hot-toast";
 import ViewBus from "./ViewBus";
-import { useSelector } from "react-redux";
 import { verifyStatus } from "../../common/utils";
+import Swal from "sweetalert2";
 
 function AllBus() {
   const permissions = localStorage.getItem("permissions");
@@ -63,29 +63,43 @@ function AllBus() {
   };
 
   const deleteHandler = async (id) => {
-    try {
-      const response = await axios.delete(
-        `${BASE_URL}/bus/${id}`,
-        headerConfig
-      );
-      toast.success(response.data.message, { position: "top-right" });
-      if (permissions === "superAdmin") {
-        getAllBuses();
-      } else {
-        getMyBuses();
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.delete(
+            `${BASE_URL}/bus/${id}`,
+            headerConfig
+          );
+          Swal.fire("Deleted!", "deleted successfully.", "success");
+          if (permissions === "superAdmin") {
+            getAllBuses();
+          } else {
+            getMyBuses();
+          }
+        } catch (error) {
+          Swal.fire("Unable to delete!", "Something went wrong.", "error");
+          verifyStatus(error.response.status, navigate);
+        }
       }
-    } catch (error) {
-      toast.error(error.response.data.message, { position: "top-right" });
-      verifyStatus(error.response.status, navigate);
-    }
+    });
   };
 
   useEffect(() => {
     if (permissions === "superAdmin") {
       getAllBuses();
+      localStorage.removeItem("busId");
     }
     if (permissions === "admin") {
       getMyBuses();
+      localStorage.removeItem("busId");
     }
   }, []);
 
