@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader } from "reactstrap";
 import { BASE_URL, headerConfig } from "../../../config";
 import { useNavigate } from "react-router-dom";
@@ -10,18 +10,6 @@ const User = ({ modal, toggler }) => {
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
 
-  const getUser = async (id) => {
-    try {
-      const response = await axios.get(
-        `${BASE_URL}/users/get-user/${id}`,
-        headerConfig
-      );
-      setUser(response.data.data);
-    } catch (error) {
-      verifyStatus(error.response.status, navigate);
-    }
-  };
-
   const getDate = (timestamp) => {
     if (timestamp) {
       const string = new Date(timestamp).toString().split(" ");
@@ -30,11 +18,25 @@ const User = ({ modal, toggler }) => {
     return "";
   };
 
+  const navigateCb = useCallback(navigate, []);
+
   useEffect(() => {
+    const getUser = async (id) => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/users/get-user/${id}`,
+          headerConfig
+        );
+        setUser(response.data.data);
+      } catch (error) {
+        verifyStatus(error.response.status, navigateCb);
+      }
+    };
+
     if (userId) {
       getUser(userId);
     }
-  }, [userId]);
+  }, [userId, navigateCb]);
   return (
     <Modal isOpen={modal} toggle={toggler}>
       <ModalHeader toggle={toggler}>User Information</ModalHeader>

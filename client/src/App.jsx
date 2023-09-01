@@ -1,7 +1,7 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import Home from "./components/Home/Home";
 import Users from "./components/Users/Users";

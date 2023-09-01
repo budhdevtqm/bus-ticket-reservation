@@ -4,8 +4,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { BASE_URL, headerConfig } from "../../../config";
 import { verifyStatus } from "../../common/utils";
 import { useNavigate } from "react-router-dom";
-import { format } from "date-fns";
-import { Toaster, toast } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 const ViewTicket = (props) => {
   const { modal, toggler, ticketId } = props;
@@ -14,7 +13,8 @@ const ViewTicket = (props) => {
   const getTicketData = async (id) => {
     try {
       const response = await axios.get(
-        `${BASE_URL}/tickets/ticket-details/${id}`
+        `${BASE_URL}/tickets/ticket-details/${id}`,
+        headerConfig
       );
       const {
         _doc,

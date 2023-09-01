@@ -62,10 +62,7 @@ const Users = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await axios.delete(
-            `${BASE_URL}/users/${userId}`,
-            headerConfig
-          );
+          await axios.delete(`${BASE_URL}/users/${userId}`, headerConfig);
           Swal.fire("Deleted!", "user successfully deleted.", "success");
           getUsers();
         } catch (error) {

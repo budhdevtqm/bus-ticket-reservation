@@ -8,19 +8,19 @@ function UserInfo() {
   const [user, setUser] = useState("");
   const navigate = useNavigate();
 
-  const getUserInfo = async () => {
-    try {
-      const response = await axios.get(
-        `${BASE_URL}/users/my-info`,
-        headerConfig
-      );
-      setUser(response.data.data);
-    } catch (error) {
-      verifyStatus(error.response.status, navigate);
-    }
-  };
-
   useEffect(() => {
+    const getUserInfo = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/users/my-info`,
+          headerConfig
+        );
+        setUser(response.data.data);
+      } catch (error) {
+        verifyStatus(error.response.status, navigate);
+      }
+    };
+
     getUserInfo();
   }, []);
 

@@ -1,6 +1,5 @@
 import React from "react";
 import BusRoutes from "../BusRoutes/BusRoutes";
-import { useSelector } from "react-redux";
 
 const Home = () => {
   return (

@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { BiSolidBus } from "react-icons/bi";
 import Seat from "./Seat";
 import { Button } from "reactstrap";
-import { toast, Toaster } from "react-hot-toast";
 import ConfirmSeats from "./ConfirmSeats";
 
 function ViewRoute() {
@@ -120,7 +119,6 @@ function ViewRoute() {
           </div>
         )}
       </div>
-      <Toaster />
     </section>
   );
 }

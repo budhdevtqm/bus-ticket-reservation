@@ -96,6 +96,7 @@ module.exports.cancel = async (ticketId) => {
   return new Promise(async (resolve, reject) => {
     try {
       const ticketData = await schema.findOne({ _id: ticketId });
+
       const { busId, routeId } = ticketData;
       const update = await schema.updateOne(
         { _id: ticketId },
@@ -106,8 +107,11 @@ module.exports.cancel = async (ticketId) => {
           bookedOn: 0,
           assignedTo: "",
           isCanceled: true,
+          seaterName: "",
+          age: 0,
         }
       );
+
       resolve({ ok: true, message: "cancelled Successfully." });
     } catch (error) {
       reject({ ok: false, message: "Unable to cancel" });
@@ -143,7 +147,7 @@ module.exports.payment = async (body) => {
       const { _id: paymentId } = savePayment;
 
       const { routeId } = tickets[0];
-      const { startTime, date, busId } = await routeSchema.findOne({
+      const { startTime, date, busId, endTime } = await routeSchema.findOne({
         _id: routeId,
       });
 
@@ -189,7 +193,7 @@ module.exports.payment = async (body) => {
         We are excited to confirm your ticket. Here are the details of your booking:
         
         Date: ${new Date(date).toDateString()}
-        Time: ${getTime(startTime)} : ${getTime(startTime)}
+        Time: ${getTime(startTime)} : ${getTime(endTime)}
         
         Ticket Details: 
         Quantity: ${ticketIds.length}

@@ -6,7 +6,6 @@ const authRoute = require("./app/routes/authRoute");
 const busRoutes = require("./app/routes/busRoutes");
 const busRute = require("./app/routes/bus-Rutes");
 const ticketRoute = require("./app/routes/ticketRoute");
-const { verifyToken } = require("./app/middlewares/authMiddleware");
 
 const cors = require("cors");
 

@@ -2,7 +2,6 @@ import React from "react";
 import AllBus from "./AllBus";
 import { Button } from "reactstrap";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 function Buses() {
   const user = localStorage.getItem("permissions");

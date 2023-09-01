@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Table } from "reactstrap";
 import ViewTicket from "./ViewTicket";
 import { BsFillInfoCircleFill } from "react-icons/bs";
+import { toast, Toaster } from "react-hot-toast";
 
 const Bookings = (props) => {
   const [tickets, setTickets] = useState([]);
@@ -33,8 +34,11 @@ const Bookings = (props) => {
 
   const cancelHandler = async (id) => {
     try {
-      const response = await axios.put(
-        `${BASE_URL}/tickets/cancel-ticket/${id}`,
+      const response = await axios.post(
+        `${BASE_URL}/tickets/cancel/${id}`,
+        {
+          isCanceled: true,
+        },
         headerConfig
       );
       setModal(false);
@@ -55,6 +59,7 @@ const Bookings = (props) => {
 
   return (
     <section className="p-4" style={{ width: "100%", height: "100%" }}>
+      <Toaster />
       <ViewTicket
         toggler={toggler}
         setModal={setModal}
