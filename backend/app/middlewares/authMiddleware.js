@@ -31,3 +31,23 @@ module.exports.authAdmins = async (req, res, next) => {
     next();
   }
 };
+
+module.exports.authSuperAdmin = async (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  const verify = await jwt.verify(token, process.env.JWT_PRIVATE);
+  const { userId } = verify;
+  const user = await userSchema.findOne({ _id: userId });
+
+  if (
+    user.permissions === "user" ||
+    user.permissions === "admin" ||
+    user === null
+  ) {
+    return res.status(403).json({ ok: false, message: "Action Not Allowed" });
+  } else {
+    req.body.userID = user._id.toString();
+    req.body.permissions = user.permissions;
+    next();
+  }
+};

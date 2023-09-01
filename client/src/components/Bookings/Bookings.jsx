@@ -6,9 +6,10 @@ import { useNavigate } from "react-router-dom";
 import { Table } from "reactstrap";
 import ViewTicket from "./ViewTicket";
 import { BsFillInfoCircleFill } from "react-icons/bs";
+
 const Bookings = (props) => {
   const [tickets, setTickets] = useState([]);
-  const [showTicket, setShowTicket] = useState(null);
+  const [ticketId, setTicketId] = useState(null);
   const navigate = useNavigate();
   const [modal, setModal] = useState(false);
   const toggler = () => setModal(!modal);
@@ -25,8 +26,8 @@ const Bookings = (props) => {
     }
   };
 
-  const viewTicket = (ticketData) => {
-    setShowTicket(ticketData);
+  const viewTicket = (id) => {
+    setTicketId(id);
     setModal(true);
   };
 
@@ -57,7 +58,7 @@ const Bookings = (props) => {
       <ViewTicket
         toggler={toggler}
         setModal={setModal}
-        ticket={showTicket}
+        ticketId={ticketId}
         modal={modal}
         cancelHandler={cancelHandler}
       />
@@ -89,7 +90,7 @@ const Bookings = (props) => {
                 <td className="text-center">
                   <BsFillInfoCircleFill
                     style={{ fontSize: "25px" }}
-                    onClick={() => viewTicket(ticket)}
+                    onClick={() => viewTicket(ticket._id)}
                   />
                 </td>
               </tr>

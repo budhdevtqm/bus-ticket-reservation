@@ -8,55 +8,52 @@ import { format } from "date-fns";
 import { Toaster, toast } from "react-hot-toast";
 
 const ViewTicket = (props) => {
-  const [ticket, setTicket] = useState("");
-  const [bus, setBus] = useState("");
-  const [rute, setRute] = useState("");
-  const { modal, toggler } = props;
-  const ticketId = localStorage.getItem("ticket-id");
+  const { modal, toggler, ticketId } = props;
+  const [ticket, setTicket] = useState({});
   const navigate = useNavigate();
+  const getTicketData = async (id) => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/tickets/ticket-details/${id}`
+      );
+      const {
+        _doc,
+        busNo,
+        currency,
+        date,
+        from,
+        to,
+        model,
+        payment_type,
+        startTime,
+        transactionId,
+      } = response.data.data;
 
-  const getTicket = async (id) => {
-    const response = await axios.get(
-      `${BASE_URL}/tickets/ticket/${id}`,
-      headerConfig
-    );
-    verifyStatus(response.status, navigate);
-    setTicket(response.data.data);
-    console.log(response.data.data, "----ticket-res");
-    return response.data.data;
-  };
-
-  const getBus = async (id) => {
-    const response = await axios.get(`${BASE_URL}/bus/${id}`, headerConfig);
-    verifyStatus(response.status, navigate);
-    console.log(response.data.data, "----bus-res");
-
-    setBus(response.data.bus);
-  };
-
-  const getRoute = async (id) => {
-    const response = await axios.get(
-      `${BASE_URL}/bus-route/get-route/${id}`,
-      headerConfig
-    );
-    verifyStatus(response.status, navigate);
-    console.log(response.data.data, "----rute-res");
-    setRute(response.data.data);
-  };
-
-  const getDetails = async (ticketId) => {
-    const { busId, routeId } = await getTicket(ticketId);
-    getBus(busId);
-    getRoute(routeId);
+      setTicket({
+        busNo,
+        currency,
+        date,
+        from,
+        to,
+        model,
+        payment_type,
+        startTime,
+        transactionId,
+        ..._doc,
+      });
+    } catch (error) {
+      verifyStatus(error.response.status, navigate);
+    }
   };
 
   useEffect(() => {
     if (ticketId) {
-      getDetails(ticketId);
+      getTicketData(ticketId);
     }
   }, [ticketId]);
 
   const getDate = (stamp, type) => {
+    stamp = stamp - 19800000;
     if (stamp) {
       const strArr = new Date(stamp).toString().split(" ");
       if (type === "time") {
@@ -79,38 +76,54 @@ const ViewTicket = (props) => {
       <Toaster />
       <ModalHeader
         toggle={toggler}
-      >{`${bus?.model} (${bus?.busNo})`}</ModalHeader>
+      >{`${ticket?.model} (${ticket?.busNo})`}</ModalHeader>
       <ModalBody>
-        <div className="d-flex align-items-center my-1">
-          <span style={{ width: "50%" }}>Date</span>
-          <b style={{ width: "50%" }}>{getDate(rute?.date, "date")}</b>
-        </div>
-        <div className="d-flex align-items-center  my-1">
-          <span style={{ width: "50%" }}>Time</span>
-          <b style={{ width: "50%" }}>{`[${getDate(
-            rute?.startTime,
-            "time"
-          )}] - [${getDate(rute?.endTime, "time")}]`}</b>
-        </div>
         <div className="d-flex align-items-center my-1">
           <span style={{ width: "50%" }}>Booking</span>
           <b style={{ width: "50%" }}>{getDate(ticket?.bookedOn, "full")}</b>
         </div>
-        <div className="d-flex align-items-center my-1">
-          <span style={{ width: "50%" }}>Price</span>
-          <b style={{ width: "50%" }}>{`₹ ${rute?.ticketPrice}`}</b>
-        </div>
+
         <div className="d-flex align-items-center my-1">
           <span style={{ width: "50%" }}>Seat Number</span>
           <b style={{ width: "50%" }}>{ticket?.seatNumber}</b>
         </div>
+
         <div className="d-flex align-items-center my-1">
-          <span style={{ width: "50%" }}>Journey</span>
-          <b style={{ width: "50%" }}>{`${rute?.from}  To  ${rute?.to}`}</b>
+          <span style={{ width: "50%" }}>Date & Time</span>
+          <b style={{ width: "50%" }}>{`${getDate(
+            ticket?.date,
+            "date"
+          )} [${getDate(ticket?.startTime, "time")}]`}</b>
+        </div>
+
+        <div className="d-flex align-items-center my-1">
+          <span style={{ width: "50%" }}>Rute</span>
+          <b
+            style={{ width: "50%" }}
+          >{`[${ticket?.from}] To [${ticket?.to}]`}</b>
+        </div>
+
+        <div className="d-flex align-items-center my-1">
+          <span style={{ width: "50%" }}>Assigned To</span>
+          <b style={{ width: "50%" }}>{ticket?.seaterName}</b>
+        </div>
+
+        <h4 className="bg-info text-center rounded py-1 my-2">
+          Payment Details
+        </h4>
+
+        <div className="d-flex align-items-center my-1">
+          <span style={{ width: "50%" }}>Payment type</span>
+          <b style={{ width: "50%" }}>{ticket?.payment_type}</b>
+        </div>
+
+        <div className="d-flex align-items-center my-1">
+          <span style={{ width: "50%" }}>Payment ID</span>
+          <b style={{ width: "50%" }}>{ticket?.paymentId}</b>
         </div>
       </ModalBody>
       <ModalFooter>
-        {rute?.startTime > new Date().getTime() ? (
+        {ticket?.startTime - 19800000 > new Date().getTime() ? (
           <Button
             color="danger"
             onClick={() => props.cancelHandler(ticket?._id)}

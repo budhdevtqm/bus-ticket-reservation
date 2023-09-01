@@ -4,7 +4,7 @@ require("dotenv").config({ path: "../../.env" });
 
 module.exports.addBus = async (body) => {
   const { busNo, userID, manufacturer, model, totalSeats } = body;
-  console.log(body, "body");
+
   return new Promise(async (resolve, reject) => {
     const data = {
       busNo,

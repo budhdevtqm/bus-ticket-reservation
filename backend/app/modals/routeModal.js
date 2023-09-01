@@ -2,20 +2,10 @@ const busSchema = require("../schemas/busSchema");
 const schema = require("../schemas/routeSchema");
 const ticketSchema = require("../schemas/ticketSchema");
 require("dotenv").config({ path: "../../.env" });
-const jwt = require("jsonwebtoken");
 
 module.exports.create = async (body) => {
-  const {
-    userID,
-    busId,
-    from,
-    to,
-    date,
-    startTime,
-    endTime,
-    ticketPrice,
-    permissons,
-  } = body;
+  const { userID, busId, from, to, date, startTime, endTime, ticketPrice } =
+    body;
 
   return new Promise(async (resolve, reject) => {
     const data = {

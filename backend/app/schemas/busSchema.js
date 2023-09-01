@@ -12,7 +12,7 @@ const busSchema = new mongoose.Schema(
     manufacturer: String,
   },
   {
-    collection: "busses",
+    collection: "buses",
   }
 );
 

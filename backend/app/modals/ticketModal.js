@@ -1,13 +1,12 @@
 const schema = require("../schemas/ticketSchema");
 const routeSchema = require("../schemas/routeSchema");
-const jwt = require("jsonwebtoken");
 const paymentSchema = require("../schemas/paymentSchema");
 const ticketSchema = require("../schemas/ticketSchema");
-require("dotenv").config({ path: "../../.env" });
-const stripe = require("stripe")(process.env.SECRET_KEY);
 const mailer = require("nodemailer");
 const userSchema = require("../schemas/userSchema");
 const busSchema = require("../schemas/busSchema");
+require("dotenv").config({ path: "../../.env" });
+const stripe = require("stripe")(process.env.SECRET_KEY);
 
 module.exports.getAll = async (routeId) => {
   return new Promise(async (resolve, reject) => {
@@ -59,7 +58,34 @@ module.exports.getTicket = async (ticketId) => {
   return new Promise(async (resolve, reject) => {
     try {
       const ticketData = await schema.findOne({ _id: ticketId });
-      resolve({ ok: true, data: ticketData });
+
+      const { from, to, startTime, busId, date } = await routeSchema.findOne({
+        _id: ticketData.routeId,
+      });
+
+      const { busNo, model } = await busSchema.findOne({ _id: busId });
+
+      const paymentDetails = await paymentSchema.findOne({
+        _id: ticketData.paymentId,
+      });
+
+      const { _id: transactionId, payment } = paymentDetails;
+
+      resolve({
+        ok: true,
+        data: {
+          ...ticketData,
+          from,
+          to,
+          startTime,
+          date,
+          busNo,
+          model,
+          currency: payment.currency,
+          payment_type: payment.payment_method_types[0],
+          transactionId,
+        },
+      });
     } catch (error) {
       reject({ ok: false, message: "Something went worng" });
     }
@@ -114,6 +140,8 @@ module.exports.payment = async (body) => {
         payment: paymentIntent,
       });
 
+      const { _id: paymentId } = savePayment;
+
       const { routeId } = tickets[0];
       const { startTime, date, busId } = await routeSchema.findOne({
         _id: routeId,
@@ -126,6 +154,7 @@ module.exports.payment = async (body) => {
           { _id: ticket._id },
           {
             ...ticket,
+            paymentId: paymentId.toString(),
             bookedOn: new Date().getTime(),
             booked: true,
             assignedTo: userID,

@@ -13,6 +13,7 @@ const ticketSchema = new mongoose.Schema(
     seaterName: String,
     age: Number,
     isAvailable: Boolean,
+    paymentId: String,
   },
   {
     collection: "tickets",
