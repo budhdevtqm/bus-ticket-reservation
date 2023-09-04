@@ -1,13 +1,17 @@
-import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import axios from "axios";
+import {
+  Button, Modal, ModalHeader, ModalBody, ModalFooter
+} from "reactstrap";
+import { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { BASE_URL, headerConfig } from "../../../config";
 import { verifyStatus } from "../../common/utils";
-import { useNavigate } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
 
 const ViewTicket = (props) => {
-  const { modal, toggler, ticketId } = props;
+  const {
+    modal, toggler, ticketId, cancelHandler
+  } = props;
   const [ticket, setTicket] = useState({});
   const navigate = useNavigate();
   const getTicketData = async (id) => {
@@ -24,10 +28,12 @@ const ViewTicket = (props) => {
         from,
         to,
         model,
-        payment_type,
+        payment_type: paymentType,
         startTime,
-        transactionId,
+        transactionId
       } = response.data.data;
+
+      const { _id: ID } = { ..._doc };
 
       setTicket({
         busNo,
@@ -36,10 +42,11 @@ const ViewTicket = (props) => {
         from,
         to,
         model,
-        payment_type,
+        paymentType,
         startTime,
         transactionId,
-        ..._doc,
+        ID,
+        ..._doc
       });
     } catch (error) {
       verifyStatus(error.response.status, navigate);
@@ -52,10 +59,9 @@ const ViewTicket = (props) => {
     }
   }, [ticketId]);
 
-  const getDate = (stamp, type) => {
-    stamp = stamp - 19800000;
-    if (stamp) {
-      const strArr = new Date(stamp).toString().split(" ");
+  const getDate = (timeStamp, type) => {
+    if (timeStamp) {
+      const strArr = new Date(timeStamp - 19800000).toString().split(" ");
       if (type === "time") {
         const timeString = strArr[4].split(":");
         return `${timeString[0]} : ${timeString[1]}`;
@@ -76,7 +82,11 @@ const ViewTicket = (props) => {
       <Toaster />
       <ModalHeader
         toggle={toggler}
-      >{`${ticket?.model} (${ticket?.busNo})`}</ModalHeader>
+      >
+        {
+          `${ticket?.model} (${ticket?.busNo})`
+        }
+      </ModalHeader>
       <ModalBody>
         <div className="d-flex align-items-center my-1">
           <span style={{ width: "50%" }}>Booking</span>
@@ -90,17 +100,22 @@ const ViewTicket = (props) => {
 
         <div className="d-flex align-items-center my-1">
           <span style={{ width: "50%" }}>Date & Time</span>
-          <b style={{ width: "50%" }}>{`${getDate(
-            ticket?.date,
-            "date"
-          )} [${getDate(ticket?.startTime, "time")}]`}</b>
+          <b style={{ width: "50%" }}>
+            {
+              `${getDate(ticket?.date, "date")} [${getDate(ticket?.startTime, "time")}]`
+            }
+          </b>
         </div>
 
         <div className="d-flex align-items-center my-1">
           <span style={{ width: "50%" }}>Rute</span>
           <b
             style={{ width: "50%" }}
-          >{`[${ticket?.from}] To [${ticket?.to}]`}</b>
+          >
+            {
+              `[${ticket?.from}] To [${ticket?.to}]`
+            }
+          </b>
         </div>
 
         <div className="d-flex align-items-center my-1">
@@ -114,7 +129,7 @@ const ViewTicket = (props) => {
 
         <div className="d-flex align-items-center my-1">
           <span style={{ width: "50%" }}>Payment type</span>
-          <b style={{ width: "50%" }}>{ticket?.payment_type}</b>
+          <b style={{ width: "50%" }}>{ticket?.paymentType}</b>
         </div>
 
         <div className="d-flex align-items-center my-1">
@@ -123,16 +138,18 @@ const ViewTicket = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        {ticket?.startTime - 19800000 > new Date().getTime() ? (
-          <Button
-            color="danger"
-            onClick={() => props.cancelHandler(ticket?._id)}
-          >
-            Cancel Ticket
-          </Button>
-        ) : (
-          ""
-        )}
+        {
+          ticket?.startTime && ticket.startTime - 19800000 > new Date().getTime() ? (
+            <Button
+              color="danger"
+              onClick={() => cancelHandler(ticket?.ID)}
+            >
+              Cancel Ticket
+            </Button>
+          ) : (
+            ""
+          )
+        }
         <Button color="secondary" onClick={toggler}>
           Close
         </Button>

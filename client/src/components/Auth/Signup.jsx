@@ -4,8 +4,8 @@ import { Formik, Form } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { BASE_URL } from "../../../config";
 import { toast, Toaster } from "react-hot-toast";
+import { BASE_URL } from "../../../config";
 
 const signup = yup.object().shape({
   email: yup
@@ -28,10 +28,10 @@ const signup = yup.object().shape({
     .required("Required!")
     .min(3, "Name must be of 3 chars")
     .trim("Space is not allowed")
-    .strict(true),
+    .strict(true)
 });
 
-const Signup = (props) => {
+const Signup = () => {
   const navigate = useNavigate();
   return (
     <div
@@ -45,18 +45,18 @@ const Signup = (props) => {
           initialValues={{
             name: "",
             email: "",
-            password: "",
+            password: ""
           }}
           validationSchema={signup}
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
             try {
-              const response = await axios.post(
+              await axios.post(
                 `${BASE_URL}/auth/signup`,
                 values
               );
               toast.success("Signup successfully Please Login now", {
-                position: "top-right",
+                position: "top-right"
               });
               setTimeout(() => navigate("/login"), 2000);
             } catch (er) {
@@ -64,7 +64,13 @@ const Signup = (props) => {
             }
           }}
         >
-          {({ values, errors, touched, handleBlur, handleChange }) => (
+          {({
+            values,
+            errors,
+            touched,
+            handleBlur,
+            handleChange
+          }) => (
             <Form className="d-flex align-items-center justify-content-center flex-column gap-4">
               <div
                 style={{ width: "100%" }}

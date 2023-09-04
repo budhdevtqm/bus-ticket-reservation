@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { BiCheck } from "react-icons/bi";
 
-function Seat(props) {
-  const { setSelected, booked, seatNumber, _id: id } = props;
+const Seat = (props) => {
+  const { setSelected, booked, seatNumber } = props;
   const [ticked, setTickets] = useState(false);
 
   const selectTicket = (data) => {
@@ -24,14 +24,13 @@ function Seat(props) {
 
   return (
     <div
-      className={
-        ticked
-          ? "bg-primary card rounded shadow d-flex align-items-center justify-content-center"
-          : "card rounded shadow d-flex align-items-center justify-content-center bg-secondary fs-4 text-light"
-      }
+      className={ticked
+        ? "bg-primary card rounded shadow d-flex align-items-center justify-content-center"
+        : "card rounded shadow d-flex align-items-center justify-content-center bg-secondary fs-4 text-light"}
       style={{ width: "50px", height: "50px", cursor: "pointer" }}
       title="Book Seat"
       onClick={ticked ? null : () => selectTicket(props)}
+      onKeyDown={ticked ? null : () => selectTicket(props)}
     >
       {ticked ? (
         <BiCheck style={{ fontSize: "25px", color: "white" }} />
@@ -40,6 +39,6 @@ function Seat(props) {
       )}
     </div>
   );
-}
+};
 
 export default Seat;

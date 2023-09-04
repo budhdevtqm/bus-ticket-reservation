@@ -1,7 +1,7 @@
 import React from "react";
 import BusRoutes from "../BusRoutes/BusRoutes";
 
-const Home = () => {
+const Home = (props) => {
   return (
     <section
       style={{

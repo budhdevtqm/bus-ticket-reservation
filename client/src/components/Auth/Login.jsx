@@ -3,9 +3,9 @@ import { Button, Input } from "reactstrap";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../../config";
-import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import { toast, Toaster } from "react-hot-toast";
+import { BASE_URL } from "../../../config";
 
 const loginSchema = yup.object().shape({
   email: yup
@@ -22,10 +22,10 @@ const loginSchema = yup.object().shape({
     .matches(
       /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/,
       "Length atleast 6 and inclues numbers, latters and special character"
-    ),
+    )
 });
 
-const Login = (props) => {
+const Login = () => {
   const navigate = useNavigate();
 
   return (
@@ -39,7 +39,7 @@ const Login = (props) => {
         <Formik
           initialValues={{
             email: "",
-            password: "",
+            password: ""
           }}
           validationSchema={loginSchema}
           onSubmit={async (values, { setSubmitting }) => {
@@ -55,7 +55,14 @@ const Login = (props) => {
             }
           }}
         >
-          {({ values, errors, touched, handleBlur, handleChange }) => (
+          {({
+            values,
+            errors,
+            touched,
+            handleBlur,
+            handleChange
+          }) => (
+
             <Form className="d-flex align-items-center justify-content-center flex-column gap-4">
               <div
                 style={{ width: "100%" }}

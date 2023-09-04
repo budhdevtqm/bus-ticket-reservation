@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { verifyStatus } from "../../common/utils";
 import axios from "axios";
-import { BASE_URL, headerConfig } from "../../../config";
-import { useNavigate } from "react-router-dom";
-import { Table } from "reactstrap";
-import ViewTicket from "./ViewTicket";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import { toast, Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { Table } from "reactstrap";
+import { format } from "date-fns";
+import { BASE_URL, headerConfig } from "../../../config";
+import ViewTicket from "./ViewTicket";
+import { verifyStatus } from "../../common/utils";
 
-const Bookings = (props) => {
+const Bookings = () => {
   const [tickets, setTickets] = useState([]);
   const [ticketId, setTicketId] = useState(null);
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const Bookings = (props) => {
       const response = await axios.post(
         `${BASE_URL}/tickets/cancel/${id}`,
         {
-          isCanceled: true,
+          isCanceled: true
         },
         headerConfig
       );
@@ -50,7 +51,19 @@ const Bookings = (props) => {
     }
   };
 
-  const getTimeString = (stamp) => new Date(stamp).toString().split(" ");
+  const getDateStr = (timeStamp) => {
+    if (timeStamp) {
+      return format(timeStamp - 19800000, "dd MMM yy");
+    } return "";
+  };
+
+  const getTimeString = (timeStamp) => {
+    if (timeStamp) {
+      const string = new Date(timeStamp - 19800000).toString();
+      const [hours, minutes] = string.split(" ")[4].split(":");
+      return `${hours} : ${minutes}`;
+    } return "";
+  };
 
   useEffect(() => {
     getMyTickets();
@@ -80,22 +93,28 @@ const Bookings = (props) => {
             </tr>
           </thead>
           <tbody>
-            {tickets.map((ticket, index) => (
-              <tr key={ticket._id} style={{ cursor: "pointer" }}>
+            {tickets.map(({
+              _id: id,
+              bookedOn,
+              seatNumber
+            }, index) => (
+              <tr key={id} style={{ cursor: "pointer" }}>
                 <td className="text-center">{index + 1}</td>
-                <td className="text-center">{`${
-                  getTimeString(ticket.bookedOn)[2]
-                } ${getTimeString(ticket.bookedOn)[1]} ${
-                  getTimeString(ticket.bookedOn)[3]
-                }`}</td>
-                <td className="text-center">{ticket.seatNumber}</td>
-                <td className="text-center">{`${
-                  getTimeString(ticket.bookedOn)[4].split(":")[0]
-                } : ${getTimeString(ticket.bookedOn)[4].split(":")[1]}`}</td>
+                <td className="text-center">
+                  {
+                    getDateStr(bookedOn)
+                  }
+                </td>
+                <td className="text-center">{seatNumber}</td>
+                <td className="text-center">
+                  {
+                    getTimeString(bookedOn)
+                  }
+                </td>
                 <td className="text-center">
                   <BsFillInfoCircleFill
                     style={{ fontSize: "25px" }}
-                    onClick={() => viewTicket(ticket._id)}
+                    onClick={() => viewTicket(id)}
                   />
                 </td>
               </tr>

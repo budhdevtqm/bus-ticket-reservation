@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button } from "reactstrap";
-import { Toaster, toast } from "react-hot-toast";
-import { MdMode, MdOutlineInfo, MdDelete } from "react-icons/md";
+// import { MdMode, MdOutlineInfo, MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { BASE_URL, headerConfig } from "../../../config";
+// import Swal from "sweetalert2";
 import { format } from "date-fns";
+import { BASE_URL, headerConfig } from "../../../config";
 import { verifyStatus } from "../../common/utils";
-import { BsFillArrowRightSquareFill } from "react-icons/bs";
-import Swal from "sweetalert2";
 
-function BusRoutes() {
+const BusRoutes = () => {
   const [routes, setRoutes] = useState([]);
   const navigate = useNavigate();
   const permissions = localStorage.getItem("permissions");
 
-  const goToView = (id) => {
-    localStorage.setItem("busRouteId", id);
-    navigate("/view-route");
-  };
+  // const goToView = (id) => {
+  //   localStorage.setItem("busRouteId", id);
+  //   navigate("/view-route");
+  // };
 
   const getAllRoutes = async () => {
     try {
@@ -26,8 +24,7 @@ function BusRoutes() {
         `${BASE_URL}/bus-route/get-all`,
         headerConfig
       );
-      const data = response.data.data;
-      setRoutes(data);
+      setRoutes(response.data.data);
     } catch (error) {
       verifyStatus(error.response.status, navigate);
     }
@@ -46,31 +43,31 @@ function BusRoutes() {
     decideHeading(permissions);
   }, []);
 
-  const deleteHandler = async (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const response = await axios.delete(
-            `${BASE_URL}/bus-route/${id}`,
-            headerConfig
-          );
-          getAllRoutes();
-          Swal.fire("Deleted!", "Deleted.", "success");
-        } catch (error) {
-          Swal.fire("Unable to delete!", "Something went wrong.", "error");
-          verifyStatus(error.response.status, navigate);
-        }
-      }
-    });
-  };
+  // const deleteHandler = async (id) => {
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "You won't be able to revert this!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Yes, delete it!"
+  //   }).then(async (result) => {
+  //     if (result.isConfirmed) {
+  //       try {
+  //         await axios.delete(
+  //           `${BASE_URL}/bus-route/${id}`,
+  //           headerConfig
+  //         );
+  //         getAllRoutes();
+  //         Swal.fire("Deleted!", "Deleted.", "success");
+  //       } catch (error) {
+  //         Swal.fire("Unable to delete!", "Something went wrong.", "error");
+  //         verifyStatus(error.response.status, navigate);
+  //       }
+  //     }
+  //   });
+  // };
 
   const getTime = (milliseconds) => {
     const [h, m] = new Date(milliseconds - 19800000)
@@ -80,10 +77,64 @@ function BusRoutes() {
     return `${h} : ${m}`;
   };
 
-  const goToUpdate = (id) => {
-    localStorage.setItem("routeId", id);
-    navigate("/update-route");
-  };
+  // const goToUpdate = (id) => {
+  //   localStorage.setItem("routeId", id);
+  //   navigate("/update-route");
+  // };
+
+  // const routeOptions = (permissions, startTime) => {
+  //   const adminsNavigation = (
+  //     <>
+  //       <MdOutlineInfo
+  //         style={{
+  //           fontSize: "25px",
+  //           color: "#1b1bb9",
+  //           cursor: "pointer",
+  //         }}
+  //         title="Info"
+  //         onClick={() => goToView(route._id)}
+  //       />
+
+  //       <MdMode
+  //         style={{
+  //           fontSize: "25px",
+  //           color: "green",
+  //           cursor: "pointer",
+  //         }}
+  //         title="Update"
+  //         onClick={() => goToUpdate(route._id)}
+  //       />
+  //       <MdDelete
+  //         style={{
+  //           fontSize: "25px",
+  //           color: "red",
+  //           cursor: "pointer",
+  //         }}
+  //         title="Delete"
+  //         onClick={() => deleteHandler(route._id)}
+  //       />
+  //     </>
+  //   );
+
+  //   const userNavigation = (
+  //     <MdOutlineInfo
+  //       style={{
+  //         fontSize: "25px",
+  //         color: "#1b1bb9",
+  //         cursor: "pointer",
+  //       }}
+  //       title="Info"
+  //       onClick={() => goToView(route._id)}
+  //     />
+  //   );
+
+  //   if (permissions === "user") {
+  //     if (startTime > new Date().getTime()) return userNavigation;
+  //     return <span>Expired.</span>;
+  //   }
+  //   startTime = startTime - 19800000;
+  //   return startTime > new Date().getTime();
+  // };
 
   return (
     <section style={{ width: "100%", height: "100" }}>
@@ -110,70 +161,39 @@ function BusRoutes() {
           </tr>
         </thead>
         <tbody>
-          {routes.map((route, index) => (
-            <tr key={index}>
-              <td className="text-center">{`${route.from}  [${getTime(
-                route.startTime
-              )}]`}</td>
-              <td className="text-center">{`${route.to}  [${getTime(
-                route.endTime
-              )}]`}</td>
+          {routes.map(({
+            _id: id,
+            from,
+            to,
+            startTime,
+            endTime,
+            date
+          }) => (
+            <tr key={id}>
               <td className="text-center">
-                {format(route.date, "dd  MMM  yy")}
+                {
+                  `${from}  [${getTime(startTime)}]`
+                }
+              </td>
+              <td className="text-center">
+                {
+                  `${to}  [${getTime(endTime)}]`
+                }
+              </td>
+              <td className="text-center">
+                {format(date, "dd  MMM  yy")}
               </td>
               <td>
                 <div className="d-flex align-items-center justify-content-center gap-2">
-                  {permissions === "user" ? (
-                    <BsFillArrowRightSquareFill
-                      style={{
-                        fontSize: "25px",
-                        color: "#1b1bb9",
-                        cursor: "pointer",
-                      }}
-                      title="Book Ticket"
-                      onClick={() => goToView(route._id)}
-                    />
-                  ) : (
-                    <>
-                      <MdOutlineInfo
-                        style={{
-                          fontSize: "25px",
-                          color: "#1b1bb9",
-                          cursor: "pointer",
-                        }}
-                        title="Info"
-                        onClick={() => goToView(route._id)}
-                      />
-
-                      <MdMode
-                        style={{
-                          fontSize: "25px",
-                          color: "green",
-                          cursor: "pointer",
-                        }}
-                        title="Update"
-                        onClick={() => goToUpdate(route._id)}
-                      />
-                      <MdDelete
-                        style={{
-                          fontSize: "25px",
-                          color: "red",
-                          cursor: "pointer",
-                        }}
-                        title="Delete"
-                        onClick={() => deleteHandler(route._id)}
-                      />
-                    </>
-                  )}
+                  {/* {routeOptions(permissions, route?.startTime)} */}
                 </div>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
-      <Toaster />
     </section>
   );
-}
+};
 
 export default BusRoutes;

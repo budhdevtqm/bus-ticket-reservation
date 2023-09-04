@@ -12,10 +12,10 @@ const ConfirmSeats = ({
   setSeatConfirmed,
   seatConfirmed,
   amount,
-  setAmount,
+  setAmount
 }) => {
   return (
-    <Modal isOpen={modal} toggle={toggler} fullscreen={true} scrollable={true}>
+    <Modal isOpen={modal} toggle={toggler} fullscreen scrollable>
       <ModalHeader toggle={toggler}>Confirm Seats</ModalHeader>
       <ModalBody>
         <div className="d-flex align-items-center justify-content-center">

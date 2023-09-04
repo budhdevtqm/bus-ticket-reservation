@@ -4,12 +4,11 @@ import { Button, Input } from "reactstrap";
 const SeaterForm = ({
   selectedSeats,
   setSelectedSeats,
-  setSeatConfirmed,
-  setAmount,
+  setSeatConfirmed
 }) => {
   const valuesArray = selectedSeats.map((seat, index) => ({
     [`seaterName${index}`]: "",
-    [`age${index}`]: "",
+    [`age${index}`]: ""
   }));
   const defalultValues = Object.assign({}, ...valuesArray);
   const [values, setValues] = useState(defalultValues);
@@ -20,35 +19,35 @@ const SeaterForm = ({
     setValues({ ...values, [name]: value });
   };
 
-  const validate = (values) => {
-    let errors = {};
-    const keys = Object.keys(values);
+  const validate = (inputs) => {
+    let customErrors = {};
+    const keys = Object.keys(inputs);
 
     keys.forEach((key, index) => {
       if (key.includes("seaterName")) {
-        if (values[key] === "" || values[key].trim() === "") {
-          errors[`${keys[index]}`] = "Required";
+        if (inputs[key] === "" || inputs[key].trim() === "") {
+          customErrors[`${keys[index]}`] = "Required";
         }
-        if (values[key].length < 3) {
-          errors[`${keys[index]}`] = "Name should be of 3 characters";
+        if (inputs[key].length < 3) {
+          customErrors[`${keys[index]}`] = "Name should be of 3 characters";
         }
       } else if (key.includes("age")) {
         if (
-          values[key] === 0 ||
-          values[key] === "" ||
-          values[key].trim() === ""
+          inputs[key] === 0
+          || inputs[key] === ""
+          || inputs[key].trim() === ""
         ) {
-          errors[`${keys[index]}`] = "Required";
+          customErrors[`${keys[index]}`] = "Required";
         }
-        if (isNaN(Number(values[key]))) {
-          errors[`${keys[index]}`] = "Please enter a valid age";
+        if (isNaN(Number(inputs[key]))) {
+          customErrors[`${keys[index]}`] = "Please enter a valid age";
         }
-        if (Number(values[key]) <= 3) {
-          errors[`${keys[index]}`] = "Age should be greater than 3";
+        if (Number(inputs[key]) <= 3) {
+          customErrors[`${keys[index]}`] = "Age should be greater than 3";
         }
       }
     });
-    return errors;
+    return customErrors;
   };
 
   const provideStyle = (obj) => {
@@ -113,11 +112,11 @@ const SeaterForm = ({
                   {seat.seatNumber}
                 </h5>
               </div>
-              <label>
+              <label htmlFor={`seaterName${index}`}>
                 <Input
                   type="text"
-                  name={"seaterName" + index}
-                  value={values["seaterName" + index]}
+                  name={`seaterName${index}`}
+                  value={values[`seaterName${index}`]}
                   onChange={handleChange}
                   onBlur={validate}
                   placeholder="Enter name"
@@ -131,12 +130,12 @@ const SeaterForm = ({
                   </div>
                 ) : null}
               </label>
-              <label>
+              <label htmlFor={`age${index}`}>
                 <Input
                   type="number"
-                  name={"age" + index}
+                  name={`age${index}`}
                   placeholder="Enter age"
-                  value={values["age" + index]}
+                  value={values[`age${index}`]}
                   onBlur={validate}
                   onChange={handleChange}
                 />

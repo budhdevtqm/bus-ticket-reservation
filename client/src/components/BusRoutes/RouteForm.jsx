@@ -3,11 +3,11 @@ import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { Button, Input } from "reactstrap";
 import * as yup from "yup";
-import { BASE_URL, headerConfig } from "../../../config";
 import { Toaster, toast } from "react-hot-toast";
-import { verifyStatus } from "../../common/utils";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { verifyStatus } from "../../common/utils";
+import { BASE_URL, headerConfig } from "../../../config";
 
 const routeSchema = yup.object().shape({
   busId: yup.string().required("Required"),
@@ -19,10 +19,10 @@ const routeSchema = yup.object().shape({
   date: yup
     .date()
     .min(new Date(), "Must be of upcoming days")
-    .required("Required"),
+    .required("Required")
 });
 
-function RouteForm() {
+const RouteForm = () => {
   const [formMode, setFormMode] = useState("Create");
   const [buses, setBuses] = useState([]);
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ function RouteForm() {
     startTime: "",
     endTime: "",
     totalSeats: 0,
-    ticketPrice: 0,
+    ticketPrice: 0
   });
 
   const stampToTimeString = (miliSeconds) => {
@@ -50,8 +50,7 @@ function RouteForm() {
         `${BASE_URL}/bus/my-buses`,
         headerConfig
       );
-      const data = response.data.data;
-      setBuses(data);
+      setBuses(response.data.data);
     } catch (error) {
       verifyStatus(error.response.status, navigate);
     }
@@ -63,11 +62,13 @@ function RouteForm() {
         `${BASE_URL}/bus-route/get-route/${id}`,
         headerConfig
       );
-      const data = response.data.data;
-      const startTime = stampToTimeString(data.startTime);
-      const endTime = stampToTimeString(data.endTime);
-      const date = format(data.date, "yyyy-MM-dd");
-      setFormValues({ ...data, startTime, endTime, date });
+      const { startTime: st, endTime: et, date: dt } = response.data.data;
+      const startTime = stampToTimeString(st);
+      const endTime = stampToTimeString(et);
+      const date = format(dt, "yyyy-MM-dd");
+      setFormValues({
+        startTime, endTime, date, ...response.data.data
+      });
     } catch (error) {
       verifyStatus(error.response.status, navigate);
     }
@@ -103,13 +104,15 @@ function RouteForm() {
       >
         <Formik
           initialValues={formValues}
-          enableReinitialize={true}
+          enableReinitialize
           validationSchema={routeSchema}
-          onSubmit={async (values, { setSubmitting }) => {
+          onSubmit={async (values) => {
             const date = converDateToTimeStamp(values.date);
             const startTime = convertHMtoTimeStamp(values.startTime) + date;
             const endTime = convertHMtoTimeStamp(values.endTime) + date;
-            const modifiedValues = { ...values, startTime, endTime, date };
+            const modifiedValues = {
+              ...values, startTime, endTime, date
+            };
 
             if (formMode === "Create") {
               try {
@@ -122,7 +125,7 @@ function RouteForm() {
                 navigate(-1);
               } catch (error) {
                 toast.error(error.response.data.message, {
-                  position: "top-right",
+                  position: "top-right"
                 });
               }
             }
@@ -138,18 +141,21 @@ function RouteForm() {
                 navigate(-1);
               } catch (error) {
                 toast.error(error.response.data.message, {
-                  position: "top-right",
+                  position: "top-right"
                 });
               }
             }
           }}
         >
-          {({ values, errors, touched, handleBlur, handleChange }) => (
+          {({
+            values, errors, touched, handleBlur, handleChange
+          }) => (
             <Form
               style={{ width: "100%", background: "white" }}
               className="d-flex align-items-center justify-content-center flex-column gap-4"
             >
               <label
+                htmlFor="busId"
                 style={{ width: "100%" }}
                 className="d-flex flex-column gap-1 "
               >
@@ -165,9 +171,9 @@ function RouteForm() {
                   <option disabled value="">
                     -Select-
                   </option>
-                  {buses.map((bus, index) => (
-                    <option key={index} value={bus._id}>
-                      {bus.model}
+                  {buses.map(({ _id: id, model }) => (
+                    <option key={id} value={id}>
+                      {model}
                     </option>
                   ))}
                 </Input>
@@ -186,6 +192,7 @@ function RouteForm() {
                 className="d-flex align-items-center justify-content-between"
               >
                 <label
+                  htmlFor="from"
                   style={{ width: "45%" }}
                   className="d-flex flex-column gap-1"
                 >
@@ -208,6 +215,7 @@ function RouteForm() {
                   ) : null}
                 </label>
                 <label
+                  htmlFor="to"
                   style={{ width: "45%" }}
                   className="d-flex flex-column gap-1"
                 >
@@ -232,6 +240,7 @@ function RouteForm() {
               </div>
 
               <label
+                htmlFor="ticketPrice"
                 style={{ width: "100%" }}
                 className="d-flex flex-column gap-1"
               >
@@ -259,6 +268,7 @@ function RouteForm() {
                 className="d-flex align-items-center justify-content-between"
               >
                 <label
+                  htmlFor="startTime"
                   style={{ width: "45%" }}
                   className="d-flex flex-column gap-1"
                 >
@@ -282,6 +292,7 @@ function RouteForm() {
                 </label>
 
                 <label
+                  htmlFor="endTime"
                   style={{ width: "45%" }}
                   className="d-flex flex-column gap-1"
                 >
@@ -306,6 +317,7 @@ function RouteForm() {
               </div>
 
               <label
+                htmlFor="date"
                 style={{ width: "100%" }}
                 className="d-flex flex-column gap-1"
               >
@@ -343,6 +355,6 @@ function RouteForm() {
       <Toaster />
     </section>
   );
-}
+};
 
 export default RouteForm;
