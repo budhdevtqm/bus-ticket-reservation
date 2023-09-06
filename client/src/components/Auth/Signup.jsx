@@ -1,33 +1,33 @@
-import React from 'react';
-import { Button, Input } from 'reactstrap';
-import { Formik, Form } from 'formik';
-import * as yup from 'yup';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { toast, Toaster } from 'react-hot-toast';
-import { BASE_URL } from '../../config';
+import React from "react";
+import { Button, Input } from "reactstrap";
+import { Formik, Form } from "formik";
+import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast, Toaster } from "react-hot-toast";
+import { BASE_URL } from "../../config";
 
 const signup = yup.object().shape({
   email: yup
     .string()
-    .email('Invalid Email')
-    .required('Required!')
-    .trim('Space is not allowed')
+    .email("Invalid Email")
+    .required("Required!")
+    .trim("Space is not allowed")
     .strict(true),
   password: yup
     .string()
-    .required('Required!')
-    .trim('Space is not allowed')
+    .required("Required!")
+    .trim("Space is not allowed")
     .strict(true)
     .matches(
       /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/,
-      'Length atleast 6 and inclues numbers, latters and special character',
+      "Length atleast 6 and inclues numbers, latters and special character",
     ),
   name: yup
     .string()
-    .required('Required!')
-    .min(3, 'Name must be of 3 chars')
-    .trim('Space is not allowed')
+    .required("Required!")
+    .min(3, "Name must be of 3 chars")
+    .trim("Space is not allowed")
     .strict(true),
 });
 
@@ -35,17 +35,17 @@ const Signup = () => {
   const navigate = useNavigate();
   return (
     <div
-      style={{ width: '100%', height: '100vh', background: '#8b8b8b1a' }}
+      style={{ width: "100%", height: "100vh", background: "#8b8b8b1a" }}
       className="d-flex align-items-center justify-content-center flex-column gap-4"
     >
-      <div className="bg-white p-4 rounded" style={{ width: '30%' }}>
+      <div className="bg-white p-4 rounded" style={{ width: "30%" }}>
         <h5 className="mb-4 text-center">Signup</h5>
 
         <Formik
           initialValues={{
-            name: '',
-            email: '',
-            password: '',
+            name: "",
+            email: "",
+            password: "",
           }}
           validationSchema={signup}
           onSubmit={async (values, { setSubmitting }) => {
@@ -55,12 +55,12 @@ const Signup = () => {
                 `${BASE_URL}/auth/signup`,
                 values,
               );
-              toast.success('Signup successfully Please Login now', {
-                position: 'top-right',
+              toast.success("Signup successfully Please Login now", {
+                position: "top-right",
               });
-              setTimeout(() => navigate('/login'), 2000);
+              setTimeout(() => navigate("/login"), 2000);
             } catch (er) {
-              toast.error(er.response.data.message, { position: 'top-right' });
+              toast.error(er.response.data.message, { position: "top-right" });
             }
           }}
         >
@@ -73,7 +73,7 @@ const Signup = () => {
           }) => (
             <Form className="d-flex align-items-center justify-content-center flex-column gap-4">
               <div
-                style={{ width: '100%' }}
+                style={{ width: "100%" }}
                 className="d-flex flex-column gap-1"
               >
                 <Input
@@ -87,7 +87,7 @@ const Signup = () => {
                 />
                 {errors.name && touched.name ? (
                   <p
-                    style={{ width: '100%', fontSize: '12px' }}
+                    style={{ width: "100%", fontSize: "12px" }}
                     className="text-danger text-start m-0"
                   >
                     {errors.name}
@@ -96,7 +96,7 @@ const Signup = () => {
               </div>
 
               <div
-                style={{ width: '100%' }}
+                style={{ width: "100%" }}
                 className="d-flex flex-column gap-1"
               >
                 <Input
@@ -110,7 +110,7 @@ const Signup = () => {
                 />
                 {errors.email && touched.email ? (
                   <p
-                    style={{ width: '100%', fontSize: '12px' }}
+                    style={{ width: "100%", fontSize: "12px" }}
                     className="text-danger text-start  m-0"
                   >
                     {errors.email}
@@ -119,7 +119,7 @@ const Signup = () => {
               </div>
 
               <div
-                style={{ width: '100%' }}
+                style={{ width: "100%" }}
                 className="d-flex flex-column gap-1  "
               >
                 <Input
@@ -133,7 +133,7 @@ const Signup = () => {
                 />
                 {errors.password && touched.password ? (
                   <p
-                    style={{ width: '100%', fontSize: '12px' }}
+                    style={{ width: "100%", fontSize: "12px" }}
                     className="text-danger text-start text-wrap  m-0"
                   >
                     {errors.password}
@@ -150,7 +150,7 @@ const Signup = () => {
         </Formik>
       </div>
       <div>
-        <Button onClick={() => navigate('/login')} color="link">
+        <Button onClick={() => navigate("/login")} color="link">
           Log In ?.
         </Button>
       </div>

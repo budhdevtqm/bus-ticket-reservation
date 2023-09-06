@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, Input } from 'reactstrap';
+import React, { useState } from "react";
+import { Button, Input } from "reactstrap";
 
 const SeaterForm = ({
   selectedSeats,
@@ -7,8 +7,8 @@ const SeaterForm = ({
   setSeatConfirmed,
 }) => {
   const valuesArray = selectedSeats.map((seat, index) => ({
-    [`seaterName${index}`]: '',
-    [`age${index}`]: '',
+    [`seaterName${index}`]: "",
+    [`age${index}`]: "",
   }));
   const defalultValues = Object.assign({}, ...valuesArray);
   const [values, setValues] = useState(defalultValues);
@@ -24,26 +24,26 @@ const SeaterForm = ({
     const keys = Object.keys(inputs);
 
     keys.forEach((key, index) => {
-      if (key.includes('seaterName')) {
-        if (inputs[key] === '' || inputs[key].trim() === '') {
-          customErrors[`${keys[index]}`] = 'Required';
+      if (key.includes("seaterName")) {
+        if (inputs[key] === "" || inputs[key].trim() === "") {
+          customErrors[`${keys[index]}`] = "Required";
         }
         if (inputs[key].length < 3) {
-          customErrors[`${keys[index]}`] = 'Name should be of 3 characters';
+          customErrors[`${keys[index]}`] = "Name should be of 3 characters";
         }
-      } else if (key.includes('age')) {
+      } else if (key.includes("age")) {
         if (
           inputs[key] === 0
-          || inputs[key] === ''
-          || inputs[key].trim() === ''
+          || inputs[key] === ""
+          || inputs[key].trim() === ""
         ) {
-          customErrors[`${keys[index]}`] = 'Required';
+          customErrors[`${keys[index]}`] = "Required";
         }
         if (Number.isNaN(inputs[key])) {
-          customErrors[`${keys[index]}`] = 'Please enter a valid age';
+          customErrors[`${keys[index]}`] = "Please enter a valid age";
         }
         if (Number(inputs[key]) <= 3) {
-          customErrors[`${keys[index]}`] = 'Age should be greater than 3';
+          customErrors[`${keys[index]}`] = "Age should be greater than 3";
         }
       }
     });
@@ -52,9 +52,9 @@ const SeaterForm = ({
 
   const provideStyle = (obj) => {
     if (Object.keys(obj).length > 0) {
-      return 'd-flex align-items-baseline justify-content-center';
+      return "d-flex align-items-baseline justify-content-center";
     }
-    return 'd-flex align-items-end justify-content-center';
+    return "d-flex align-items-end justify-content-center";
   };
 
   const collectValues = (num, keys, obj) => {
@@ -94,14 +94,14 @@ const SeaterForm = ({
 
     const priceArray = modifiedValues.map((items) => items.price);
     const totalAmount = priceArray.reduce((a, b) => a + b, 0);
-    localStorage.setItem('totalAmount', totalAmount);
+    localStorage.setItem("totalAmount", totalAmount);
     setSelectedSeats(modifiedValues);
     setSeatConfirmed(true);
   };
 
   return (
     <form
-      style={{ width: '100%', margin: '8px 0' }}
+      style={{ width: "100%", margin: "8px 0" }}
       className="d-flex flex-column gap-4"
       onSubmit={submitHandler}
     >
@@ -124,7 +124,7 @@ const SeaterForm = ({
               />
               {errors[`seaterName${index}`] ? (
                 <div
-                  style={{ fontSize: '13px', marginLeft: '5px' }}
+                  style={{ fontSize: "13px", marginLeft: "5px" }}
                   className="text-danger"
                 >
                   {errors[`seaterName${index}`]}
@@ -142,7 +142,7 @@ const SeaterForm = ({
               />
               {errors[`age${index}`] ? (
                 <div
-                  style={{ fontSize: '13px', marginLeft: '5px' }}
+                  style={{ fontSize: "13px", marginLeft: "5px" }}
                   className="text-danger"
                 >
                   {errors[`age${index}`]}

@@ -1,36 +1,36 @@
-import axios from 'axios';
-import React, { useState } from 'react';
-import { Button, Input } from 'reactstrap';
-import { Toaster, toast } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
-import { BASE_URL, headerConfig } from '../../config';
-import { verifyStatus } from '../../common/utils';
+import axios from "axios";
+import React, { useState } from "react";
+import { Button, Input } from "reactstrap";
+import { Toaster, toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL, headerConfig } from "../../config";
+import { verifyStatus } from "../../common/utils";
 
 const ChangePasswordForm = () => {
   const [formValues, setFormValues] = useState({
-    newPassword: '',
-    confirmPassword: '',
+    newPassword: "",
+    confirmPassword: "",
   });
   const [errors, setErrors] = useState({
-    newPassword: '',
-    confirmPassword: '',
+    newPassword: "",
+    confirmPassword: "",
   });
   const navigate = useNavigate();
 
   const validator = (values) => {
     const { newPassword, confirmPassword } = values;
-    const errorString = 'password length >= 6 and also contain letter, number and special characters';
+    const errorString = "password length >= 6 and also contain letter, number and special characters";
     const pattern = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/;
     const customErrors = {};
 
-    if (!newPassword || newPassword.trim() === '') {
-      customErrors.newPassword = 'Required';
+    if (!newPassword || newPassword.trim() === "") {
+      customErrors.newPassword = "Required";
     } else if (!pattern.test(newPassword)) {
       customErrors.newPassword = errorString;
     }
 
-    if (!confirmPassword || confirmPassword.trim() === '') {
-      customErrors.confirmPassword = 'Required';
+    if (!confirmPassword || confirmPassword.trim() === "") {
+      customErrors.confirmPassword = "Required";
       return customErrors;
     }
 
@@ -39,7 +39,7 @@ const ChangePasswordForm = () => {
       return customErrors;
     }
     if (newPassword !== confirmPassword) {
-      customErrors.confirmPassword = 'Password must be same in both fields';
+      customErrors.confirmPassword = "Password must be same in both fields";
       return customErrors;
     }
     return customErrors;
@@ -52,7 +52,7 @@ const ChangePasswordForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({ newPassword: '', confirmPassword: '' });
+    setErrors({ newPassword: "", confirmPassword: "" });
 
     const customErrors = validator(formValues);
     if (Object.keys(customErrors).length > 0) {
@@ -64,25 +64,25 @@ const ChangePasswordForm = () => {
           { password: formValues.newPassword },
           headerConfig,
         );
-        toast.success(response.data.message, { position: 'top-right' });
-        setFormValues({ newPassword: '', confirmPassword: '' });
-        setErrors({ newPassword: '', confirmPassword: '' });
+        toast.success(response.data.message, { position: "top-right" });
+        setFormValues({ newPassword: "", confirmPassword: "" });
+        setErrors({ newPassword: "", confirmPassword: "" });
       } catch (error) {
-        toast.error(error.response.data.message, { position: 'top-right' });
+        toast.error(error.response.data.message, { position: "top-right" });
         verifyStatus(error.response.status, navigate);
       }
     }
   };
 
   return (
-    <div className="my-4" style={{ width: '100%' }}>
+    <div className="my-4" style={{ width: "100%" }}>
       <Toaster />
       <form
         onSubmit={handleSubmit}
-        style={{ width: '40%' }}
+        style={{ width: "40%" }}
         className="rounded card p-4 d-flex align-items-center justift-content-center gap-4 mx-auto  "
       >
-        <label htmlFor="newPassword" style={{ width: '100%' }}>
+        <label htmlFor="newPassword" style={{ width: "100%" }}>
           New Password
           <Input
             type="password"
@@ -98,7 +98,7 @@ const ChangePasswordForm = () => {
         </label>
         <label
           htmlFor="confirmPassword"
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
         >
           Confirm Password
           <Input

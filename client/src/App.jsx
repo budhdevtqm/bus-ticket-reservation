@@ -1,21 +1,21 @@
-import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
-import { Route, Routes } from 'react-router-dom';
-import Layout from './components/layout/Layout';
-import Home from './components/Home/Home';
-import Users from './components/Users/Users';
-import User from './components/Users/User';
-import UserForm from './components/Users/UserForm';
-import Buses from './components/Buses/Buses';
-import BusForm from './components/Buses/BusForm';
-import ViewBus from './components/Buses/ViewBus';
-import RouteForm from './components/BusRoutes/RouteForm';
-import ViewRoute from './components/BusRoutes/ViewRoute';
-import Login from './components/Auth/Login';
-import Signup from './components/Auth/Signup';
-import Bookings from './components/Bookings/Bookings';
-import Profile from './components/Profile/Profile';
+import React from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import { Route, Routes } from "react-router-dom";
+import Layout from "./components/layout/Layout";
+import Home from "./components/Home/Home";
+import Users from "./components/Users/Users";
+import User from "./components/Users/User";
+import UserForm from "./components/Users/UserForm";
+import Buses from "./components/Buses/Buses";
+import BusForm from "./components/Buses/BusForm";
+import ViewBus from "./components/Buses/ViewBus";
+import RouteForm from "./components/BusRoutes/RouteForm";
+import ViewRoute from "./components/BusRoutes/ViewRoute";
+import Login from "./components/Auth/Login";
+import Signup from "./components/Auth/Signup";
+import Bookings from "./components/Bookings/Bookings";
+import Profile from "./components/Profile/Profile";
 
 const App = () => (
   <Routes>

@@ -20,7 +20,7 @@ const AllBus = () => {
     try {
       const busesResponse = await axios.get(
         `${BASE_URL}/bus/all-buses`,
-        headerConfig
+        headerConfig,
       );
       const busData = busesResponse.data.data;
       setBuses(busData);
@@ -33,7 +33,7 @@ const AllBus = () => {
     try {
       const response = await axios.get(
         `${BASE_URL}/bus/my-buses`,
-        headerConfig
+        headerConfig,
       );
       setBuses(response.data.data);
     } catch (error) {
@@ -51,9 +51,7 @@ const AllBus = () => {
     setBus({});
   };
 
-  const getRealDate = (timeStamp) => {
-    return format(timeStamp, "dd - MM - yyyy");
-  };
+  const getRealDate = (timeStamp) => format(timeStamp, "dd - MM - yyyy");
 
   const goToUpdate = (busId) => {
     localStorage.setItem("busId", busId);
@@ -68,13 +66,13 @@ const AllBus = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           await axios.delete(
             `${BASE_URL}/bus/${id}`,
-            headerConfig
+            headerConfig,
           );
           Swal.fire("Deleted!", "deleted successfully.", "success");
           if (permissions === "superAdmin") {
@@ -123,7 +121,7 @@ const AllBus = () => {
         </thead>
         <tbody>
           {buses.map(({
-            _id: id, busNo, manufacturer, model, createdAt
+            _id: id, busNo, manufacturer, model, createdAt,
           }, index) => (
             <tr key={id}>
               <td>{index + 1}</td>
@@ -137,11 +135,11 @@ const AllBus = () => {
                     style={{
                       fontSize: "22px",
                       color: "#0dcaf0",
-                      cursor: "pointer"
+                      cursor: "pointer",
                     }}
                     title="Info"
                     onClick={() => showModal({
-                      id, busNo, manufacturer, model, createdAt
+                      id, busNo, manufacturer, model, createdAt,
                     })}
                   />
 
@@ -149,7 +147,7 @@ const AllBus = () => {
                     style={{
                       fontSize: "20px",
                       color: "green",
-                      cursor: "pointer"
+                      cursor: "pointer",
                     }}
                     title="Update"
                     onClick={() => goToUpdate(id)}
@@ -158,7 +156,7 @@ const AllBus = () => {
                     style={{
                       fontSize: "20px",
                       color: "red",
-                      cursor: "pointer"
+                      cursor: "pointer",
                     }}
                     title="Delete"
                     onClick={() => deleteHandler(id)}

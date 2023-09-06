@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const Footer = () => (
   <footer className="d-flex align-items-center justify-content-center bg-white">

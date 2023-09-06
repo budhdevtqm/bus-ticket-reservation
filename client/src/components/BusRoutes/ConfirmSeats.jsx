@@ -1,7 +1,7 @@
-import React from 'react';
-import { Modal, ModalBody, ModalHeader } from 'reactstrap';
-import SeaterForm from './SeaterForm';
-import Wrapper from '../layout/CheckoutForm';
+import React from "react";
+import { Modal, ModalBody, ModalHeader } from "reactstrap";
+import SeaterForm from "./SeaterForm";
+import Wrapper from "../layout/CheckoutForm";
 
 const ConfirmSeats = ({
   modal,

@@ -27,7 +27,7 @@ const busValidationSchema = yup.object().shape({
     .required("Required")
     .min(3, "Must be of 3 Characters")
     .trim("Space is not allowed")
-    .strict(true)
+    .strict(true),
 });
 
 const BusForm = () => {
@@ -37,7 +37,7 @@ const BusForm = () => {
     busNo: "",
     manufacturer: "",
     model: "",
-    totalSeats: ""
+    totalSeats: "",
   });
 
   const busId = localStorage.getItem("busId");
@@ -64,7 +64,7 @@ const BusForm = () => {
         width: "100%",
         height: "100%",
         overflowX: "hidden",
-        overflowY: "scroll"
+        overflowY: "scroll",
       }}
       className="d-flex flex-column"
     >
@@ -87,16 +87,16 @@ const BusForm = () => {
                 const response = await axios.post(
                   `${BASE_URL}/bus/add-bus`,
                   values,
-                  headerConfig
+                  headerConfig,
                 );
 
                 toast.success(response.data.message, {
-                  position: "top-right"
+                  position: "top-right",
                 });
                 navigate(-1);
               } catch (error) {
                 toast.error(error.response.data.message, {
-                  position: "top-right"
+                  position: "top-right",
                 });
                 verifyStatus(error.response.status, navigate);
               }
@@ -106,15 +106,15 @@ const BusForm = () => {
                 const response = await axios.put(
                   `${BASE_URL}/bus/update/${busId}`,
                   values,
-                  headerConfig
+                  headerConfig,
                 );
                 toast.success(response.data.message, {
-                  position: "top-right"
+                  position: "top-right",
                 });
                 navigate(-1);
               } catch (error) {
                 toast.error(error.response.data.message, {
-                  position: "top-right"
+                  position: "top-right",
                 });
                 verifyStatus(error.response.status, navigate);
               }
@@ -124,8 +124,8 @@ const BusForm = () => {
           {
             (
               {
-                values, errors, touched, handleBlur, handleChange
-              }
+                values, errors, touched, handleBlur, handleChange,
+              },
             ) => (
               <Form
                 style={{ width: "100%", background: "white" }}

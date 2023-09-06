@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { BsFillInfoCircleFill } from 'react-icons/bs';
-import { toast, Toaster } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
-import { Table } from 'reactstrap';
-import { format } from 'date-fns';
-import { BASE_URL, headerConfig } from '../../config';
-import ViewTicket from './ViewTicket';
-import { verifyStatus } from '../../common/utils';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { BsFillInfoCircleFill } from "react-icons/bs";
+import { toast, Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { Table } from "reactstrap";
+import { format } from "date-fns";
+import { BASE_URL, headerConfig } from "../../config";
+import ViewTicket from "./ViewTicket";
+import { verifyStatus } from "../../common/utils";
 
 const Bookings = () => {
   const [tickets, setTickets] = useState([]);
@@ -44,34 +44,34 @@ const Bookings = () => {
       );
       setModal(false);
       getMyTickets();
-      toast.success(response.data.message, { position: 'top-right' });
+      toast.success(response.data.message, { position: "top-right" });
     } catch (error) {
       verifyStatus(error.response.status, navigate);
-      toast.error(error.response.data.message, { position: 'top-right' });
+      toast.error(error.response.data.message, { position: "top-right" });
     }
   };
 
   const getDateStr = (timeStamp) => {
     if (timeStamp) {
-      return format(timeStamp - 19800000, 'dd MMM yy');
-    } return '';
+      return format(timeStamp - 19800000, "dd MMM yy");
+    } return "";
   };
 
   const getTimeString = (timeStamp) => {
     if (timeStamp) {
       const string = new Date(timeStamp).toString();
-      const [hours, minutes] = string.split(' ')[4].split(':');
+      const [hours, minutes] = string.split(" ")[4].split(":");
       return `${hours} : ${minutes}`;
-    } return '';
+    } return "";
   };
 
   useEffect(() => {
     getMyTickets();
-    localStorage.removeItem('ticket-id');
+    localStorage.removeItem("ticket-id");
   }, []);
 
   return (
-    <section className="p-4" style={{ width: '100%', height: '100%' }}>
+    <section className="p-4" style={{ width: "100%", height: "100%" }}>
       <Toaster />
       <ViewTicket
         toggler={toggler}
@@ -98,7 +98,7 @@ const Bookings = () => {
               bookedOn,
               seatNumber,
             }, index) => (
-              <tr key={id} style={{ cursor: 'pointer' }}>
+              <tr key={id} style={{ cursor: "pointer" }}>
                 <td className="text-center">{index + 1}</td>
                 <td className="text-center">
                   {
@@ -113,7 +113,7 @@ const Bookings = () => {
                 </td>
                 <td className="text-center">
                   <BsFillInfoCircleFill
-                    style={{ fontSize: '25px' }}
+                    style={{ fontSize: "25px" }}
                     onClick={() => viewTicket(id)}
                   />
                 </td>

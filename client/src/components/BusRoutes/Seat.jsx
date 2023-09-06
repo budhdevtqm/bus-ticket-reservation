@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BiCheck } from 'react-icons/bi';
+import React, { useState } from "react";
+import { BiCheck } from "react-icons/bi";
 
 const Seat = (props) => {
   const {
@@ -19,7 +19,7 @@ const Seat = (props) => {
     return (
       <div
         className="card rounded shadow d-flex align-items-center justify-content-center bg-danger"
-        style={{ width: '50px', height: '50px', cursor: 'not-allowed' }}
+        style={{ width: "50px", height: "50px", cursor: "not-allowed" }}
         title="Booked"
       >
         {seatNumber}
@@ -30,15 +30,15 @@ const Seat = (props) => {
   return (
     <div
       className={ticked
-        ? 'bg-primary card rounded shadow d-flex align-items-center justify-content-center'
-        : 'card rounded shadow d-flex align-items-center justify-content-center bg-secondary fs-4 text-light'}
-      style={{ width: '50px', height: '50px', cursor: 'pointer' }}
+        ? "bg-primary card rounded shadow d-flex align-items-center justify-content-center"
+        : "card rounded shadow d-flex align-items-center justify-content-center bg-secondary fs-4 text-light"}
+      style={{ width: "50px", height: "50px", cursor: "pointer" }}
       title="Book Seat"
       onClick={ticked ? null : () => selectTicket(data)}
       onKeyDown={ticked ? null : () => selectTicket(data)}
     >
       {ticked ? (
-        <BiCheck style={{ fontSize: '25px', color: 'white' }} />
+        <BiCheck style={{ fontSize: "25px", color: "white" }} />
       ) : (
         seatNumber
       )}

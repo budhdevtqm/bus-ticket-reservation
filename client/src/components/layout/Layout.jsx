@@ -1,8 +1,8 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import './layout.css';
-import Header from './Header';
-import Footer from './Footer';
+import React from "react";
+import { Outlet } from "react-router-dom";
+import "./layout.css";
+import Header from "./Header";
+import Footer from "./Footer";
 
 const Layout = () => (
   <div className="layout-wrapper">

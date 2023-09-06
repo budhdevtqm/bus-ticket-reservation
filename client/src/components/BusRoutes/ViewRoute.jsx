@@ -1,12 +1,12 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BiSolidBus } from 'react-icons/bi';
-import { Button } from 'reactstrap';
-import { BASE_URL, headerConfig } from '../../config';
-import { verifyStatus } from '../../common/utils';
-import Seat from './Seat';
-import ConfirmSeats from './ConfirmSeats';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { BiSolidBus } from "react-icons/bi";
+import { Button } from "reactstrap";
+import { BASE_URL, headerConfig } from "../../config";
+import { verifyStatus } from "../../common/utils";
+import Seat from "./Seat";
+import ConfirmSeats from "./ConfirmSeats";
 
 const ViewRoute = () => {
   const [busDeatils, setBusDetails] = useState({});
@@ -15,7 +15,7 @@ const ViewRoute = () => {
   const [tickets, setTickets] = useState([]);
   const [seatConfirmed, setSeatConfirmed] = useState(false);
   const [amount, setAmount] = useState(0);
-  const routeId = localStorage.getItem('busRouteId');
+  const routeId = localStorage.getItem("busRouteId");
   const navigate = useNavigate();
   const [modal, setModal] = useState(false);
 
@@ -65,7 +65,7 @@ const ViewRoute = () => {
   }, [selected]);
 
   return (
-    <section style={{ width: '100%', height: '100%', overflowY: 'scroll' }}>
+    <section style={{ width: "100%", height: "100%", overflowY: "scroll" }}>
       <ConfirmSeats
         toggler={toggler}
         modal={modal}
@@ -81,13 +81,13 @@ const ViewRoute = () => {
       <div className="d-flex flex-column p-4">
         <h4>Book Ticket</h4>
 
-        <div style={{ width: '100%' }} className="my-4 card p-4 color-danger">
+        <div style={{ width: "100%" }} className="my-4 card p-4 color-danger">
           <div className="d-flex">
             <div
-              style={{ width: '40%' }}
+              style={{ width: "40%" }}
               className="d-flex align-items-center justify-content-center flex-column"
             >
-              <BiSolidBus style={{ fontSize: '300px', color: 'dodgerblue' }} />
+              <BiSolidBus style={{ fontSize: "300px", color: "dodgerblue" }} />
               <b className="rounded p-3 bg-warning">
                 {
                   busDeatils.busNo
@@ -95,7 +95,7 @@ const ViewRoute = () => {
               </b>
             </div>
             <div
-              style={{ width: '60%' }}
+              style={{ width: "60%" }}
               className="d-flex aign-items-center flex-wrap gap-4"
             >
               {tickets.map(({
@@ -121,10 +121,10 @@ const ViewRoute = () => {
             <Button
               onClick={confirmSeats}
               disabled={selectedSeats.length <= 0 ?? !selectedSeats.length <= 0}
-              style={{ cursor: selectedSeats.length <= 0 ? 'not-allowed' : '' }}
-              color={selectedSeats.length > 0 ? 'success' : 'danger'}
+              style={{ cursor: selectedSeats.length <= 0 ? "not-allowed" : "" }}
+              color={selectedSeats.length > 0 ? "success" : "danger"}
             >
-              {selectedSeats.length > 0 ? 'Book' : 'Select'}
+              {selectedSeats.length > 0 ? "Book" : "Select"}
             </Button>
           </div>
         )}

@@ -1,43 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { Button } from 'reactstrap';
+import React, { useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Button } from "reactstrap";
 
 const Header = () => {
   const [links, setLinks] = useState([]);
   const navigate = useNavigate();
-  const permissions = localStorage.getItem('permissions');
+  const permissions = localStorage.getItem("permissions");
 
   const logoutUser = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('permissions');
-    localStorage.removeItem('totalAmount');
-    localStorage.removeItem('busRouteId');
-    navigate('/login');
+    localStorage.removeItem("token");
+    localStorage.removeItem("permissions");
+    localStorage.removeItem("totalAmount");
+    localStorage.removeItem("busRouteId");
+    navigate("/login");
   };
 
   const ignoreRoutes = (userPermissions) => {
     let array;
     switch (userPermissions) {
-      case 'admin':
+      case "admin":
         setLinks([
-          { label: 'Dashboard', path: '/home' },
-          { label: 'My Bus', path: '/buses' },
-          { label: 'Profile', path: '/profile' },
+          { label: "Dashboard", path: "/home" },
+          { label: "My Bus", path: "/buses" },
+          { label: "Profile", path: "/profile" },
         ]);
         break;
-      case 'superAdmin':
+      case "superAdmin":
         setLinks([
-          { label: 'Routes', path: '/home' },
-          { label: 'Buses', path: '/buses' },
-          { label: 'Users', path: '/users' },
-          { label: 'Profile', path: '/profile' },
+          { label: "Routes", path: "/home" },
+          { label: "Buses", path: "/buses" },
+          { label: "Users", path: "/users" },
+          { label: "Profile", path: "/profile" },
         ]);
         break;
       default:
         setLinks([
-          { label: 'Routes', path: '/home' },
-          { label: 'Bookings', path: '/bookings' },
-          { label: 'Profile', path: '/profile' },
+          { label: "Routes", path: "/home" },
+          { label: "Bookings", path: "/bookings" },
+          { label: "Profile", path: "/profile" },
         ]);
         break;
     }
@@ -52,14 +52,14 @@ const Header = () => {
 
   return (
     <div
-      style={{ width: '100%' }}
+      style={{ width: "100%" }}
       className="px-4 d-flex aligns-item-center justify-content-between"
     >
       <span>
         <img
           src="public/images/images.jpeg"
           alt="Logo"
-          style={{ width: '65px' }}
+          style={{ width: "65px" }}
         />
       </span>
       <div className=" d-flex align-items-center justify-content-between gap-8">

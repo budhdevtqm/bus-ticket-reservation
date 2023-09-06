@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { BASE_URL, headerConfig } from '../../config';
-import { verifyStatus } from '../../common/utils';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL, headerConfig } from "../../config";
+import { verifyStatus } from "../../common/utils";
 
 const UserInfo = () => {
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,9 +25,9 @@ const UserInfo = () => {
   }, []);
 
   return (
-    <div style={{ width: '100%' }} className="p-4 my-4">
+    <div style={{ width: "100%" }} className="p-4 my-4">
       <div
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
         className="d-flex px-4 align-items-center justify-content-between"
       >
         <h4>

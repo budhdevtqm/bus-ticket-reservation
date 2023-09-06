@@ -10,13 +10,11 @@ const ViewBus = ({ modal, bus, closeModal }) => {
     createdBy,
     createdAt,
     updatedAt,
-    totalSeats
+    totalSeats,
   } = bus;
   const permissions = localStorage.getItem("permissions");
 
-  const getRealDate = (timeStamp) => {
-    return format(timeStamp, "dd  MMM  yyyy");
-  };
+  const getRealDate = (timeStamp) => format(timeStamp, "dd  MMM  yyyy");
 
   return (
     <div>

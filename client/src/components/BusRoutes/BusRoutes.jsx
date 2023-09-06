@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Button } from 'reactstrap';
-import { MdMode, MdOutlineInfo, MdDelete } from 'react-icons/md';
-import { BsFillArrowUpRightSquareFill } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Swal from 'sweetalert2';
-import { format } from 'date-fns';
-import { BASE_URL, headerConfig } from '../../config';
-import { verifyStatus } from '../../common/utils';
+import React, { useEffect, useState } from "react";
+import { Table, Button } from "reactstrap";
+import { MdMode, MdOutlineInfo, MdDelete } from "react-icons/md";
+import { BsFillArrowUpRightSquareFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { format } from "date-fns";
+import { BASE_URL, headerConfig } from "../../config";
+import { verifyStatus } from "../../common/utils";
 
 const BusRoutes = () => {
   const [routes, setRoutes] = useState([]);
   const navigate = useNavigate();
-  const permissions = localStorage.getItem('permissions');
+  const permissions = localStorage.getItem("permissions");
 
   const goToView = (id) => {
-    localStorage.setItem('busRouteId', id);
-    navigate('/view-route');
+    localStorage.setItem("busRouteId", id);
+    navigate("/view-route");
   };
 
   const getAllRoutes = async () => {
@@ -32,27 +32,27 @@ const BusRoutes = () => {
   };
 
   const decideHeading = (role) => {
-    if (role === 'user') return 'Bus Routes';
-    if (role === 'admin') return 'My Routes';
-    return 'All Routes';
+    if (role === "user") return "Bus Routes";
+    if (role === "admin") return "My Routes";
+    return "All Routes";
   };
 
   useEffect(() => {
     getAllRoutes();
-    localStorage.removeItem('routeId');
-    localStorage.removeItem('busRouteId');
+    localStorage.removeItem("routeId");
+    localStorage.removeItem("busRouteId");
     decideHeading(permissions);
   }, []);
 
   const deleteHandler = async (id) => {
     Swal.fire({
-      title: 'Are you sure?',
+      title: "Are you sure?",
       text: "You won't be able to revert this!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -61,9 +61,9 @@ const BusRoutes = () => {
             headerConfig,
           );
           getAllRoutes();
-          Swal.fire('Deleted!', 'Deleted.', 'success');
+          Swal.fire("Deleted!", "Deleted.", "success");
         } catch (error) {
-          Swal.fire('Unable to delete!', 'Something went wrong.', 'error');
+          Swal.fire("Unable to delete!", "Something went wrong.", "error");
           verifyStatus(error.response.status, navigate);
         }
       }
@@ -73,14 +73,14 @@ const BusRoutes = () => {
   const getTime = (milliseconds) => {
     const [h, m] = new Date(milliseconds - 19800000)
       .toString()
-      .split(' ')[4]
-      .split(':');
+      .split(" ")[4]
+      .split(":");
     return `${h} : ${m}`;
   };
 
   const goToUpdate = (id) => {
-    localStorage.setItem('routeId', id);
-    navigate('/update-route');
+    localStorage.setItem("routeId", id);
+    navigate("/update-route");
   };
 
   const routeOptions = (role, startTime, id) => {
@@ -88,9 +88,9 @@ const BusRoutes = () => {
       <>
         <MdOutlineInfo
           style={{
-            fontSize: '25px',
-            color: '#1b1bb9',
-            cursor: 'pointer',
+            fontSize: "25px",
+            color: "#1b1bb9",
+            cursor: "pointer",
           }}
           title="Info"
           onClick={() => goToView(id)}
@@ -98,18 +98,18 @@ const BusRoutes = () => {
 
         <MdMode
           style={{
-            fontSize: '25px',
-            color: 'green',
-            cursor: 'pointer',
+            fontSize: "25px",
+            color: "green",
+            cursor: "pointer",
           }}
           title="Update"
           onClick={() => goToUpdate(id)}
         />
         <MdDelete
           style={{
-            fontSize: '25px',
-            color: 'red',
-            cursor: 'pointer',
+            fontSize: "25px",
+            color: "red",
+            cursor: "pointer",
           }}
           title="Delete"
           onClick={() => deleteHandler(id)}
@@ -120,16 +120,16 @@ const BusRoutes = () => {
     const userNavigation = (
       <BsFillArrowUpRightSquareFill
         style={{
-          fontSize: '25px',
-          color: '#1b1bb9',
-          cursor: 'pointer',
+          fontSize: "25px",
+          color: "#1b1bb9",
+          cursor: "pointer",
         }}
         title="Info"
         onClick={() => goToView(id)}
       />
     );
 
-    if (role === 'user') {
+    if (role === "user") {
       if (startTime - 19800000 > new Date().getTime()) return userNavigation;
       return <span className="text-danger font-weight-bold">Expired</span>;
     }
@@ -138,15 +138,15 @@ const BusRoutes = () => {
   };
 
   return (
-    <section style={{ width: '100%', height: '100' }}>
+    <section style={{ width: "100%", height: "100" }}>
       <div className="d-flex align-items-center justify-content-between my-4">
         <h4>{decideHeading(permissions)}</h4>
-        {permissions !== 'user' && (
+        {permissions !== "user" && (
           <Button
             color="info"
             outline
             size="sm"
-            onClick={() => navigate('/add-route')}
+            onClick={() => navigate("/add-route")}
           >
             Add Route
           </Button>
@@ -182,7 +182,7 @@ const BusRoutes = () => {
                 }
               </td>
               <td className="text-center">
-                {format(date, 'dd  MMM  yy')}
+                {format(date, "dd  MMM  yy")}
               </td>
               <td>
                 <div className="d-flex align-items-center justify-content-center gap-2">
