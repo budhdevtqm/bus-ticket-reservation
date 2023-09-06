@@ -146,16 +146,18 @@ module.exports.payment = async (body) => {
 
       const { _id: paymentId } = savePayment;
 
+      
       const { routeId } = tickets[0];
-      const { startTime, date, busId, endTime } = await routeSchema.findOne({
+      const  { startTime, date, busId, endTime } = await routeSchema.findOne({
         _id: routeId,
       });
+
 
       const { busNo } = await busSchema.findOne({ _id: busId });
 
       const updateTickets = await tickets.map(async (ticket) => {
         const updating = await ticketSchema.findOneAndUpdate(
-          { _id: ticket._id },
+          { _id: ticket.ticketId },
           {
             ...ticket,
             paymentId: paymentId.toString(),
@@ -197,7 +199,7 @@ module.exports.payment = async (body) => {
         
         Ticket Details: 
         Quantity: ${ticketIds.length}
-        Ticket ID: ${ticketIds}
+        Ticket ID: ${ticketIds.join(" , ")}
         Bus No. : ${busNo}
         Seats: ${seatNumber.join(" ,")}
         
@@ -226,6 +228,7 @@ module.exports.payment = async (body) => {
         clientSecret: paymentIntent.client_secret,
       });
     } catch (error) {
+      console.log(error,"errror")
       reject({ ok: false, message: error.message });
     }
   });

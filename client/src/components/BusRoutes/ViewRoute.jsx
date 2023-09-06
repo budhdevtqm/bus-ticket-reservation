@@ -1,21 +1,21 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { BASE_URL, headerConfig } from "../../../config";
-import { verifyStatus } from "../../common/utils";
-import { useNavigate } from "react-router-dom";
-import { BiSolidBus } from "react-icons/bi";
-import Seat from "./Seat";
-import { Button } from "reactstrap";
-import ConfirmSeats from "./ConfirmSeats";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { BiSolidBus } from 'react-icons/bi';
+import { Button } from 'reactstrap';
+import { BASE_URL, headerConfig } from '../../config';
+import { verifyStatus } from '../../common/utils';
+import Seat from './Seat';
+import ConfirmSeats from './ConfirmSeats';
 
-function ViewRoute() {
+const ViewRoute = () => {
   const [busDeatils, setBusDetails] = useState({});
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [selected, setSelected] = useState({});
   const [tickets, setTickets] = useState([]);
   const [seatConfirmed, setSeatConfirmed] = useState(false);
   const [amount, setAmount] = useState(0);
-  const routeId = localStorage.getItem("busRouteId");
+  const routeId = localStorage.getItem('busRouteId');
   const navigate = useNavigate();
   const [modal, setModal] = useState(false);
 
@@ -25,7 +25,7 @@ function ViewRoute() {
     try {
       const response = await axios.get(
         `${BASE_URL}/bus-route/get-route/${id}`,
-        headerConfig
+        headerConfig,
       );
       const { busId } = response.data.data;
       const busInfo = await axios.get(`${BASE_URL}/bus/${busId}`, headerConfig);
@@ -34,7 +34,7 @@ function ViewRoute() {
 
       const ticketResponse = await axios.get(
         `${BASE_URL}/tickets/${routeId}`,
-        headerConfig
+        headerConfig,
       );
       const allTickets = ticketResponse.data.data;
       setTickets(allTickets);
@@ -47,7 +47,7 @@ function ViewRoute() {
     if (routeId) {
       getRouteDetails(routeId);
     } else {
-      navigate("/");
+      navigate(window.location.origin);
     }
   }, []);
 
@@ -65,7 +65,7 @@ function ViewRoute() {
   }, [selected]);
 
   return (
-    <section style={{ width: "100%", height: "100%", overflowY: "scroll" }}>
+    <section style={{ width: '100%', height: '100%', overflowY: 'scroll' }}>
       <ConfirmSeats
         toggler={toggler}
         modal={modal}
@@ -81,23 +81,33 @@ function ViewRoute() {
       <div className="d-flex flex-column p-4">
         <h4>Book Ticket</h4>
 
-        <div style={{ width: "100%" }} className="my-4 card p-4 color-danger">
+        <div style={{ width: '100%' }} className="my-4 card p-4 color-danger">
           <div className="d-flex">
             <div
-              style={{ width: "40%" }}
+              style={{ width: '40%' }}
               className="d-flex align-items-center justify-content-center flex-column"
             >
-              <BiSolidBus style={{ fontSize: "300px", color: "dodgerblue" }} />
-              <b className="rounded p-3 bg-warning"> {busDeatils.busNo}</b>
+              <BiSolidBus style={{ fontSize: '300px', color: 'dodgerblue' }} />
+              <b className="rounded p-3 bg-warning">
+                {
+                  busDeatils.busNo
+                }
+              </b>
             </div>
             <div
-              style={{ width: "60%" }}
+              style={{ width: '60%' }}
               className="d-flex aign-items-center flex-wrap gap-4"
             >
-              {tickets.map((ticket) => (
+              {tickets.map(({
+                _id: id, booked, seatNumber, price, routeId: ruteId,
+              }) => (
                 <Seat
-                  key={ticket._id}
-                  {...ticket}
+                  key={id}
+                  price={price}
+                  routeId={ruteId}
+                  booked={booked}
+                  ticketId={id}
+                  seatNumber={seatNumber}
                   setSelected={setSelected}
                   selected={selected}
                 />
@@ -110,17 +120,17 @@ function ViewRoute() {
           <div className="d-flex align-items-center justify-content-end">
             <Button
               onClick={confirmSeats}
-              disabled={selectedSeats.length <= 0 ? true : false}
-              style={{ cursor: selectedSeats.length <= 0 ? "not-allowed" : "" }}
-              color={selectedSeats.length > 0 ? "success" : "danger"}
+              disabled={selectedSeats.length <= 0 ?? !selectedSeats.length <= 0}
+              style={{ cursor: selectedSeats.length <= 0 ? 'not-allowed' : '' }}
+              color={selectedSeats.length > 0 ? 'success' : 'danger'}
             >
-              {selectedSeats.length > 0 ? "Book" : "Select"}
+              {selectedSeats.length > 0 ? 'Book' : 'Select'}
             </Button>
           </div>
         )}
       </div>
     </section>
   );
-}
+};
 
 export default ViewRoute;

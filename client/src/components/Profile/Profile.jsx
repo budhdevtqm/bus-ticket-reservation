@@ -1,24 +1,22 @@
-import React from "react";
-import ChangePasswordForm from "./ChangePasswordForm";
-import UserInfo from "./UserInfo";
+import React from 'react';
+import ChangePasswordForm from './ChangePasswordForm';
+import UserInfo from './UserInfo';
 
-function Profile() {
-  return (
-    <section
-      style={{
-        width: "100%",
-        height: "100%",
-      }}
+const Profile = () => (
+  <section
+    style={{
+      width: '100%',
+      height: '100%',
+    }}
+  >
+    <div
+      style={{ width: '100%' }}
+      className="d-flex align-items-center justify-content-center flex-column"
     >
-      <div
-        style={{ width: "100%" }}
-        className="d-flex align-items-center justify-content-center flex-column"
-      >
-        <UserInfo />
-        <ChangePasswordForm />
-      </div>
-    </section>
-  );
-}
+      <UserInfo />
+      <ChangePasswordForm />
+    </div>
+  </section>
+);
 
 export default Profile;

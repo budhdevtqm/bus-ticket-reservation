@@ -1,47 +1,48 @@
-import axios from "axios";
-import React, { useState } from "react";
-import { Button, Input } from "reactstrap";
-import { BASE_URL, headerConfig } from "../../../config";
-import { verifyStatus } from "../../common/utils";
-import { useNavigate } from "react-router-dom";
-import { Toaster, toast } from "react-hot-toast";
+import axios from 'axios';
+import React, { useState } from 'react';
+import { Button, Input } from 'reactstrap';
+import { Toaster, toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { BASE_URL, headerConfig } from '../../config';
+import { verifyStatus } from '../../common/utils';
 
-export default function ChangePasswordForm(props) {
+const ChangePasswordForm = () => {
   const [formValues, setFormValues] = useState({
-    newPassword: "",
-    confirmPassword: "",
+    newPassword: '',
+    confirmPassword: '',
   });
   const [errors, setErrors] = useState({
-    newPassword: "",
-    confirmPassword: "",
+    newPassword: '',
+    confirmPassword: '',
   });
   const navigate = useNavigate();
 
   const validator = (values) => {
     const { newPassword, confirmPassword } = values;
-    let errorString =
-      "password length >= 6 and also contain letter, number and special characters";
-    let pattern = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/;
-    let errors = {};
+    const errorString = 'password length >= 6 and also contain letter, number and special characters';
+    const pattern = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/;
+    const customErrors = {};
 
-    if (!newPassword || newPassword.trim() === "") {
-      errors.newPassword = "Required";
+    if (!newPassword || newPassword.trim() === '') {
+      customErrors.newPassword = 'Required';
     } else if (!pattern.test(newPassword)) {
-      errors.newPassword = errorString;
+      customErrors.newPassword = errorString;
     }
 
-    if (!confirmPassword || confirmPassword.trim() === "") {
-      errors.confirmPassword = "Required";
-      return errors;
-    } else if (!pattern.test(confirmPassword)) {
-      errors.confirmPassword = errorString;
-      return errors;
+    if (!confirmPassword || confirmPassword.trim() === '') {
+      customErrors.confirmPassword = 'Required';
+      return customErrors;
+    }
+
+    if (!pattern.test(confirmPassword)) {
+      customErrors.confirmPassword = errorString;
+      return customErrors;
     }
     if (newPassword !== confirmPassword) {
-      errors.confirmPassword = "Password must be same in both fields";
-      return errors;
+      customErrors.confirmPassword = 'Password must be same in both fields';
+      return customErrors;
     }
-    return errors;
+    return customErrors;
   };
 
   const handleChange = (e) => {
@@ -51,38 +52,37 @@ export default function ChangePasswordForm(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({ newPassword: "", confirmPassword: "" });
+    setErrors({ newPassword: '', confirmPassword: '' });
 
-    const errors = validator(formValues);
-    if (Object.keys(errors).length > 0) {
-      setErrors(errors);
-      return;
+    const customErrors = validator(formValues);
+    if (Object.keys(customErrors).length > 0) {
+      setErrors(customErrors);
     } else {
       try {
         const response = await axios.put(
           `${BASE_URL}/users/change-password`,
           { password: formValues.newPassword },
-          headerConfig
+          headerConfig,
         );
-        toast.success(response.data.message, { position: "top-right" });
-        setFormValues({ newPassword: "", confirmPassword: "" });
-        setErrors({ newPassword: "", confirmPassword: "" });
+        toast.success(response.data.message, { position: 'top-right' });
+        setFormValues({ newPassword: '', confirmPassword: '' });
+        setErrors({ newPassword: '', confirmPassword: '' });
       } catch (error) {
-        toast.error(error.response.data.message, { position: "top-right" });
+        toast.error(error.response.data.message, { position: 'top-right' });
         verifyStatus(error.response.status, navigate);
       }
     }
   };
 
   return (
-    <div className="my-4" style={{ width: "100%" }}>
+    <div className="my-4" style={{ width: '100%' }}>
       <Toaster />
       <form
         onSubmit={handleSubmit}
-        style={{ width: "40%" }}
+        style={{ width: '40%' }}
         className="rounded card p-4 d-flex align-items-center justift-content-center gap-4 mx-auto  "
       >
-        <label style={{ width: "100%" }}>
+        <label htmlFor="newPassword" style={{ width: '100%' }}>
           New Password
           <Input
             type="password"
@@ -96,7 +96,10 @@ export default function ChangePasswordForm(props) {
             </div>
           )}
         </label>
-        <label style={{ width: "100%" }}>
+        <label
+          htmlFor="confirmPassword"
+          style={{ width: '100%' }}
+        >
           Confirm Password
           <Input
             type="password"
@@ -116,4 +119,6 @@ export default function ChangePasswordForm(props) {
       </form>
     </div>
   );
-}
+};
+
+export default ChangePasswordForm;

@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
-  Button, Modal, ModalHeader, ModalBody, ModalFooter
-} from "reactstrap";
-import { Toaster } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import { BASE_URL, headerConfig } from "../../../config";
-import { verifyStatus } from "../../common/utils";
+  Button, Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
+import { Toaster } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { BASE_URL, headerConfig } from '../../config';
+import { verifyStatus } from '../../common/utils';
 
 const ViewTicket = (props) => {
   const {
-    modal, toggler, ticketId, cancelHandler
+    modal, toggler, ticketId, cancelHandler,
   } = props;
   const [ticket, setTicket] = useState({});
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const ViewTicket = (props) => {
     try {
       const response = await axios.get(
         `${BASE_URL}/tickets/ticket-details/${id}`,
-        headerConfig
+        headerConfig,
       );
       const {
         _doc,
@@ -30,7 +30,7 @@ const ViewTicket = (props) => {
         model,
         payment_type: paymentType,
         startTime,
-        transactionId
+        transactionId,
       } = response.data.data;
 
       const { _id: ID } = { ..._doc };
@@ -46,7 +46,7 @@ const ViewTicket = (props) => {
         startTime,
         transactionId,
         ID,
-        ..._doc
+        ..._doc,
       });
     } catch (error) {
       verifyStatus(error.response.status, navigate);
@@ -61,20 +61,20 @@ const ViewTicket = (props) => {
 
   const getDate = (timeStamp, type) => {
     if (timeStamp) {
-      const strArr = new Date(timeStamp - 19800000).toString().split(" ");
-      if (type === "time") {
-        const timeString = strArr[4].split(":");
+      const strArr = new Date(timeStamp - 19800000).toString().split(' ');
+      if (type === 'time') {
+        const timeString = strArr[4].split(':');
         return `${timeString[0]} : ${timeString[1]}`;
       }
-      if (type === "date") {
+      if (type === 'date') {
         return `${strArr[2]} ${strArr[1]} ${strArr[3]}`;
       }
-      if (type === "full") {
-        const timeString = strArr[4].split(":");
+      if (type === 'full') {
+        const timeString = strArr[4].split(':');
         return `${strArr[2]} ${strArr[1]} ${strArr[3]} [${timeString[0]} : ${timeString[1]}]`;
       }
     }
-    return "";
+    return '';
   };
 
   return (
@@ -89,28 +89,28 @@ const ViewTicket = (props) => {
       </ModalHeader>
       <ModalBody>
         <div className="d-flex align-items-center my-1">
-          <span style={{ width: "50%" }}>Booking</span>
-          <b style={{ width: "50%" }}>{getDate(ticket?.bookedOn, "full")}</b>
+          <span style={{ width: '50%' }}>Booking</span>
+          <b style={{ width: '50%' }}>{getDate(ticket?.bookedOn, 'full')}</b>
         </div>
 
         <div className="d-flex align-items-center my-1">
-          <span style={{ width: "50%" }}>Seat Number</span>
-          <b style={{ width: "50%" }}>{ticket?.seatNumber}</b>
+          <span style={{ width: '50%' }}>Seat Number</span>
+          <b style={{ width: '50%' }}>{ticket?.seatNumber}</b>
         </div>
 
         <div className="d-flex align-items-center my-1">
-          <span style={{ width: "50%" }}>Date & Time</span>
-          <b style={{ width: "50%" }}>
+          <span style={{ width: '50%' }}>Date & Time</span>
+          <b style={{ width: '50%' }}>
             {
-              `${getDate(ticket?.date, "date")} [${getDate(ticket?.startTime, "time")}]`
+              `${getDate(ticket?.date, 'date')} [${getDate(ticket?.startTime, 'time')}]`
             }
           </b>
         </div>
 
         <div className="d-flex align-items-center my-1">
-          <span style={{ width: "50%" }}>Rute</span>
+          <span style={{ width: '50%' }}>Rute</span>
           <b
-            style={{ width: "50%" }}
+            style={{ width: '50%' }}
           >
             {
               `[${ticket?.from}] To [${ticket?.to}]`
@@ -119,8 +119,8 @@ const ViewTicket = (props) => {
         </div>
 
         <div className="d-flex align-items-center my-1">
-          <span style={{ width: "50%" }}>Assigned To</span>
-          <b style={{ width: "50%" }}>{ticket?.seaterName}</b>
+          <span style={{ width: '50%' }}>Assigned To</span>
+          <b style={{ width: '50%' }}>{ticket?.seaterName}</b>
         </div>
 
         <h4 className="bg-info text-center rounded py-1 my-2">
@@ -128,13 +128,13 @@ const ViewTicket = (props) => {
         </h4>
 
         <div className="d-flex align-items-center my-1">
-          <span style={{ width: "50%" }}>Payment type</span>
-          <b style={{ width: "50%" }}>{ticket?.paymentType}</b>
+          <span style={{ width: '50%' }}>Payment type</span>
+          <b style={{ width: '50%' }}>{ticket?.paymentType}</b>
         </div>
 
         <div className="d-flex align-items-center my-1">
-          <span style={{ width: "50%" }}>Payment ID</span>
-          <b style={{ width: "50%" }}>{ticket?.paymentId}</b>
+          <span style={{ width: '50%' }}>Payment ID</span>
+          <b style={{ width: '50%' }}>{ticket?.paymentId}</b>
         </div>
       </ModalBody>
       <ModalFooter>
@@ -147,7 +147,7 @@ const ViewTicket = (props) => {
               Cancel Ticket
             </Button>
           ) : (
-            ""
+            ''
           )
         }
         <Button color="secondary" onClick={toggler}>

@@ -3,13 +3,13 @@ import { Table } from "reactstrap";
 import { MdMode, MdOutlineInfo, MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { BASE_URL, headerConfig } from "../../../config";
 import { format } from "date-fns";
+import Swal from "sweetalert2";
+import { BASE_URL, headerConfig } from "../../config";
 import ViewBus from "./ViewBus";
 import { verifyStatus } from "../../common/utils";
-import Swal from "sweetalert2";
 
-function AllBus() {
+const AllBus = () => {
   const permissions = localStorage.getItem("permissions");
   const navigate = useNavigate();
   const [buses, setBuses] = useState([]);
@@ -35,15 +35,14 @@ function AllBus() {
         `${BASE_URL}/bus/my-buses`,
         headerConfig
       );
-      const data = response.data.data;
-      setBuses(data);
+      setBuses(response.data.data);
     } catch (error) {
       verifyStatus(error.response.status, navigate);
     }
   };
 
-  const showModal = (bus) => {
-    setBus(bus);
+  const showModal = (modalData) => {
+    setBus(modalData);
     setModal(true);
   };
 
@@ -69,11 +68,11 @@ function AllBus() {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Yes, delete it!"
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await axios.delete(
+          await axios.delete(
             `${BASE_URL}/bus/${id}`,
             headerConfig
           );
@@ -123,42 +122,46 @@ function AllBus() {
           </tr>
         </thead>
         <tbody>
-          {buses.map((bus, index) => (
-            <tr key={index}>
+          {buses.map(({
+            _id: id, busNo, manufacturer, model, createdAt
+          }, index) => (
+            <tr key={id}>
               <td>{index + 1}</td>
-              <td>{bus.busNo}</td>
-              <td>{bus.manufacturer}</td>
-              <td>{bus.model}</td>
-              <td>{getRealDate(bus.createdAt)}</td>
+              <td>{busNo}</td>
+              <td>{manufacturer}</td>
+              <td>{model}</td>
+              <td>{getRealDate(createdAt)}</td>
               <td>
                 <div className="d-flex align-items-center justify-content-start gap-2">
                   <MdOutlineInfo
                     style={{
                       fontSize: "22px",
                       color: "#0dcaf0",
-                      cursor: "pointer",
+                      cursor: "pointer"
                     }}
                     title="Info"
-                    onClick={() => showModal(bus)}
+                    onClick={() => showModal({
+                      id, busNo, manufacturer, model, createdAt
+                    })}
                   />
 
                   <MdMode
                     style={{
                       fontSize: "20px",
                       color: "green",
-                      cursor: "pointer",
+                      cursor: "pointer"
                     }}
                     title="Update"
-                    onClick={() => goToUpdate(bus._id)}
+                    onClick={() => goToUpdate(id)}
                   />
                   <MdDelete
                     style={{
                       fontSize: "20px",
                       color: "red",
-                      cursor: "pointer",
+                      cursor: "pointer"
                     }}
                     title="Delete"
-                    onClick={() => deleteHandler(bus._id)}
+                    onClick={() => deleteHandler(id)}
                   />
                 </div>
               </td>
@@ -168,6 +171,6 @@ function AllBus() {
       </Table>
     </div>
   );
-}
+};
 
 export default AllBus;

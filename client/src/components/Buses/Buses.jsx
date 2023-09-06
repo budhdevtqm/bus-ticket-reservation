@@ -1,9 +1,9 @@
 import React from "react";
-import AllBus from "./AllBus";
 import { Button } from "reactstrap";
 import { useNavigate } from "react-router-dom";
+import AllBus from "./AllBus";
 
-function Buses() {
+const Buses = () => {
   const user = localStorage.getItem("permissions");
   const navigate = useNavigate();
 
@@ -11,12 +11,16 @@ function Buses() {
     <section
       style={{
         width: "100%",
-        height: "100%",
+        height: "100%"
       }}
       className="p-4"
     >
       <div className="d-flex align-items-center justify-content-between my-4">
-        <h4> {user === "admin" ? "My Buses" : "All Buses"}</h4>
+        <h4>
+          {
+            user === "admin" ? "My Buses" : "All Buses"
+          }
+        </h4>
         <Button
           color="info"
           outline
@@ -31,6 +35,6 @@ function Buses() {
       </div>
     </section>
   );
-}
+};
 
 export default Buses;

@@ -1,54 +1,54 @@
-import axios from "axios";
-import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
-import { Button, Input } from "reactstrap";
-import * as yup from "yup";
-import { Toaster, toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import { format } from "date-fns";
-import { verifyStatus } from "../../common/utils";
-import { BASE_URL, headerConfig } from "../../../config";
+import axios from 'axios';
+import { Form, Formik } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { Button, Input } from 'reactstrap';
+import * as yup from 'yup';
+import { Toaster, toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
+import { verifyStatus } from '../../common/utils';
+import { BASE_URL, headerConfig } from '../../config';
 
 const routeSchema = yup.object().shape({
-  busId: yup.string().required("Required"),
-  from: yup.string().required("Required").min(3, "Must be of 3 letters!"),
-  to: yup.string().required("Required").min(3, "Must be of 3 letters!"),
-  startTime: yup.string().required("Required"),
-  endTime: yup.string().required("Required"),
-  ticketPrice: yup.number().required("Required").min(1, "Must be > 0"),
+  busId: yup.string().required('Required'),
+  from: yup.string().required('Required').min(3, 'Must be of 3 letters!'),
+  to: yup.string().required('Required').min(3, 'Must be of 3 letters!'),
+  startTime: yup.string().required('Required'),
+  endTime: yup.string().required('Required'),
+  ticketPrice: yup.number().required('Required').min(1, 'Must be > 0'),
   date: yup
     .date()
-    .min(new Date(), "Must be of upcoming days")
-    .required("Required")
+    .min(new Date(), 'Must be of upcoming days')
+    .required('Required'),
 });
 
 const RouteForm = () => {
-  const [formMode, setFormMode] = useState("Create");
+  const [formMode, setFormMode] = useState('Create');
   const [buses, setBuses] = useState([]);
   const navigate = useNavigate();
   const [formValues, setFormValues] = useState({
-    busId: "",
-    from: "",
-    to: "",
+    busId: '',
+    from: '',
+    to: '',
     date: 0,
-    startTime: "",
-    endTime: "",
+    startTime: '',
+    endTime: '',
     totalSeats: 0,
-    ticketPrice: 0
+    ticketPrice: 0,
   });
 
   const stampToTimeString = (miliSeconds) => {
-    const [h, m] = new Date(miliSeconds).toString().split(" ")[4].split(":");
+    const [h, m] = new Date(miliSeconds).toString().split(' ')[4].split(':');
     return `${h}:${m}`;
   };
 
-  const routeId = localStorage.getItem("routeId");
+  const routeId = localStorage.getItem('routeId');
 
   const getMyBuses = async () => {
     try {
       const response = await axios.get(
         `${BASE_URL}/bus/my-buses`,
-        headerConfig
+        headerConfig,
       );
       setBuses(response.data.data);
     } catch (error) {
@@ -60,14 +60,14 @@ const RouteForm = () => {
     try {
       const response = await axios.get(
         `${BASE_URL}/bus-route/get-route/${id}`,
-        headerConfig
+        headerConfig,
       );
       const { startTime: st, endTime: et, date: dt } = response.data.data;
       const startTime = stampToTimeString(st);
       const endTime = stampToTimeString(et);
-      const date = format(dt, "yyyy-MM-dd");
+      const date = format(dt, 'yyyy-MM-dd');
       setFormValues({
-        startTime, endTime, date, ...response.data.data
+        startTime, endTime, date, ...response.data.data,
       });
     } catch (error) {
       verifyStatus(error.response.status, navigate);
@@ -81,25 +81,25 @@ const RouteForm = () => {
   useEffect(() => {
     if (routeId) {
       getRouteDetails(routeId);
-      setFormMode("Update");
+      setFormMode('Update');
     }
   }, []);
 
   const converDateToTimeStamp = (date) => new Date(date).getTime();
   const convertHMtoTimeStamp = (string) => {
-    const splited = string.split(":");
+    const splited = string.split(':');
     const [hours, minutes] = splited;
     return +hours * 3600000 + +minutes * 60000;
   };
 
   return (
-    <section style={{ width: "100%" }} className="d-flex  flex-column py-4">
+    <section style={{ width: '100%' }} className="d-flex  flex-column py-4">
       <h4 className="p-2 mx-4 my-2" color="info">
         {`${formMode} Route`}
       </h4>
 
       <div
-        style={{ width: "50%", background: "white" }}
+        style={{ width: '50%', background: 'white' }}
         className="d-flex align-items-center flex-column mx-auto my-auto p-4 rounded"
       >
         <Formik
@@ -111,52 +111,52 @@ const RouteForm = () => {
             const startTime = convertHMtoTimeStamp(values.startTime) + date;
             const endTime = convertHMtoTimeStamp(values.endTime) + date;
             const modifiedValues = {
-              ...values, startTime, endTime, date
+              ...values, startTime, endTime, date,
             };
 
-            if (formMode === "Create") {
+            if (formMode === 'Create') {
               try {
                 const response = await axios.post(
                   `${BASE_URL}/bus-route/create`,
                   modifiedValues,
-                  headerConfig
+                  headerConfig,
                 );
-                toast.success(response.data.message, { position: "top-right" });
+                toast.success(response.data.message, { position: 'top-right' });
                 navigate(-1);
               } catch (error) {
                 toast.error(error.response.data.message, {
-                  position: "top-right"
+                  position: 'top-right',
                 });
               }
             }
 
-            if (formMode === "Update") {
+            if (formMode === 'Update') {
               try {
                 const response = await axios.put(
                   `${BASE_URL}/bus-route/update/${routeId}`,
                   modifiedValues,
-                  headerConfig
+                  headerConfig,
                 );
-                toast.success(response.data.message, { position: "top-right" });
+                toast.success(response.data.message, { position: 'top-right' });
                 navigate(-1);
               } catch (error) {
                 toast.error(error.response.data.message, {
-                  position: "top-right"
+                  position: 'top-right',
                 });
               }
             }
           }}
         >
           {({
-            values, errors, touched, handleBlur, handleChange
+            values, errors, touched, handleBlur, handleChange,
           }) => (
             <Form
-              style={{ width: "100%", background: "white" }}
+              style={{ width: '100%', background: 'white' }}
               className="d-flex align-items-center justify-content-center flex-column gap-4"
             >
               <label
                 htmlFor="busId"
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
                 className="d-flex flex-column gap-1 "
               >
                 Choose Bus
@@ -179,7 +179,7 @@ const RouteForm = () => {
                 </Input>
                 {errors.busId && touched.busId ? (
                   <p
-                    style={{ width: "100%", fontSize: "12px" }}
+                    style={{ width: '100%', fontSize: '12px' }}
                     className="text-danger text-start text-wrap  m-0"
                   >
                     {errors.busId}
@@ -188,12 +188,12 @@ const RouteForm = () => {
               </label>
 
               <div
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
                 className="d-flex align-items-center justify-content-between"
               >
                 <label
                   htmlFor="from"
-                  style={{ width: "45%" }}
+                  style={{ width: '45%' }}
                   className="d-flex flex-column gap-1"
                 >
                   From
@@ -207,7 +207,7 @@ const RouteForm = () => {
                   />
                   {errors.from && touched.from ? (
                     <p
-                      style={{ width: "100%", fontSize: "12px" }}
+                      style={{ width: '100%', fontSize: '12px' }}
                       className="text-danger text-start m-0"
                     >
                       {errors.from}
@@ -216,7 +216,7 @@ const RouteForm = () => {
                 </label>
                 <label
                   htmlFor="to"
-                  style={{ width: "45%" }}
+                  style={{ width: '45%' }}
                   className="d-flex flex-column gap-1"
                 >
                   To
@@ -230,7 +230,7 @@ const RouteForm = () => {
                   />
                   {errors.to && touched.to ? (
                     <p
-                      style={{ width: "100%", fontSize: "12px" }}
+                      style={{ width: '100%', fontSize: '12px' }}
                       className="text-danger text-start m-0"
                     >
                       {errors.to}
@@ -241,7 +241,7 @@ const RouteForm = () => {
 
               <label
                 htmlFor="ticketPrice"
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
                 className="d-flex flex-column gap-1"
               >
                 Ticket Price (₹)
@@ -255,7 +255,7 @@ const RouteForm = () => {
                 />
                 {errors.ticketPrice && touched.ticketPrice ? (
                   <p
-                    style={{ width: "100%", fontSize: "12px" }}
+                    style={{ width: '100%', fontSize: '12px' }}
                     className="text-danger text-start m-0"
                   >
                     {errors.ticketPrice}
@@ -264,12 +264,12 @@ const RouteForm = () => {
               </label>
 
               <div
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
                 className="d-flex align-items-center justify-content-between"
               >
                 <label
                   htmlFor="startTime"
-                  style={{ width: "45%" }}
+                  style={{ width: '45%' }}
                   className="d-flex flex-column gap-1"
                 >
                   Start Time
@@ -283,7 +283,7 @@ const RouteForm = () => {
                   />
                   {errors.startTime && touched.startTime ? (
                     <p
-                      style={{ width: "100%", fontSize: "12px" }}
+                      style={{ width: '100%', fontSize: '12px' }}
                       className="text-danger text-start m-0"
                     >
                       {errors.startTime}
@@ -293,7 +293,7 @@ const RouteForm = () => {
 
                 <label
                   htmlFor="endTime"
-                  style={{ width: "45%" }}
+                  style={{ width: '45%' }}
                   className="d-flex flex-column gap-1"
                 >
                   End Time
@@ -307,7 +307,7 @@ const RouteForm = () => {
                   />
                   {errors.endTime && touched.endTime ? (
                     <p
-                      style={{ width: "100%", fontSize: "12px" }}
+                      style={{ width: '100%', fontSize: '12px' }}
                       className="text-danger text-start m-0"
                     >
                       {errors.endTime}
@@ -318,7 +318,7 @@ const RouteForm = () => {
 
               <label
                 htmlFor="date"
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
                 className="d-flex flex-column gap-1"
               >
                 Date
@@ -332,7 +332,7 @@ const RouteForm = () => {
                 />
                 {errors.date && touched.date ? (
                   <p
-                    style={{ width: "100%", fontSize: "12px" }}
+                    style={{ width: '100%', fontSize: '12px' }}
                     className="text-danger text-start m-0"
                   >
                     {errors.date}
@@ -341,7 +341,7 @@ const RouteForm = () => {
               </label>
               <div>
                 <Button
-                  style={{ width: "200px" }}
+                  style={{ width: '200px' }}
                   color="primary"
                   type="submit"
                 >

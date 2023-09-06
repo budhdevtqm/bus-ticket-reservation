@@ -1,21 +1,21 @@
-import axios from "axios";
-import React, { useCallback, useEffect, useState } from "react";
-import { Modal, ModalBody, ModalHeader } from "reactstrap";
-import { BASE_URL, headerConfig } from "../../../config";
-import { useNavigate } from "react-router-dom";
-import { verifyStatus } from "../../common/utils";
+import axios from 'axios';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Modal, ModalBody, ModalHeader } from 'reactstrap';
+import { useNavigate } from 'react-router-dom';
+import { BASE_URL, headerConfig } from '../../config';
+import { verifyStatus } from '../../common/utils';
 
 const User = ({ modal, toggler }) => {
-  const [user, setUser] = useState("");
-  const userId = localStorage.getItem("userId");
+  const [user, setUser] = useState('');
+  const userId = localStorage.getItem('userId');
   const navigate = useNavigate();
 
   const getDate = (timestamp) => {
     if (timestamp) {
-      const string = new Date(timestamp).toString().split(" ");
+      const string = new Date(timestamp).toString().split(' ');
       return `${string[2]} ${string[1]} ${string[3]}`;
     }
-    return "";
+    return '';
   };
 
   const navigateCb = useCallback(navigate, []);
@@ -25,7 +25,7 @@ const User = ({ modal, toggler }) => {
       try {
         const response = await axios.get(
           `${BASE_URL}/users/get-user/${id}`,
-          headerConfig
+          headerConfig,
         );
         setUser(response.data.data);
       } catch (error) {
@@ -42,21 +42,21 @@ const User = ({ modal, toggler }) => {
       <ModalHeader toggle={toggler}>User Information</ModalHeader>
       <ModalBody>
         <div className="d-flex flex-row my-4">
-          <span style={{ width: "50%" }}>Full Name</span>
-          <b style={{ width: "50%" }}>{user.name}</b>
+          <span style={{ width: '50%' }}>Full Name</span>
+          <b style={{ width: '50%' }}>{user.name}</b>
         </div>
         <div className="d-flex flex-row my-4">
-          <span style={{ width: "50%" }}>Email</span>
-          <b style={{ width: "50%" }}>{user.email}</b>
+          <span style={{ width: '50%' }}>Email</span>
+          <b style={{ width: '50%' }}>{user.email}</b>
         </div>
         <div className="d-flex flex-row my-4">
-          <span style={{ width: "50%" }}>Joined On</span>
-          <b style={{ width: "50%" }}>{getDate(user.createdAt)}</b>
+          <span style={{ width: '50%' }}>Joined On</span>
+          <b style={{ width: '50%' }}>{getDate(user.createdAt)}</b>
         </div>
         <div className="d-flex flex-row my-4">
-          <span style={{ width: "50%" }}>Last Updated</span>
-          <b style={{ width: "50%" }}>
-            {user.updatedAt ? getDate(user.updatedAt) : "N/A"}
+          <span style={{ width: '50%' }}>Last Updated</span>
+          <b style={{ width: '50%' }}>
+            {user.updatedAt ? getDate(user.updatedAt) : 'N/A'}
           </b>
         </div>
       </ModalBody>

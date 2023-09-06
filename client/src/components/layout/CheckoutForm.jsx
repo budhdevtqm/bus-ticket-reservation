@@ -1,25 +1,24 @@
-import React, { useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
+import React, { useState } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
 import {
   PaymentElement,
   Elements,
   useStripe,
   useElements,
-} from "@stripe/react-stripe-js";
-import { Button } from "reactstrap";
-import axios from "axios";
-import { BASE_URL, headerConfig } from "../../../config";
-import { toast } from "react-hot-toast";
-const stripeKey = import.meta.env.VITE_PUBLIC_KEY;
+} from '@stripe/react-stripe-js';
+import { Button } from 'reactstrap';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import { BASE_URL, headerConfig } from '../../config';
 
-const stripePromise = loadStripe(stripeKey);
+const stripePromise = loadStripe('pk_test_51Ni8QKSCTH8hN1ApcaWIX7ejucWbSbhKiQixuBSixaYY8Y7JqddeZYgNwfBPjTtfLDwy3Yzh2ByWpio08FokXhjs00i94xHh38');
 
 const options = {
-  mode: "payment",
-  amount: Number(localStorage.getItem("totalAmount")),
-  currency: "inr",
+  mode: 'payment',
+  amount: Number(localStorage.getItem('totalAmount')) || 0,
+  currency: 'inr',
   appearance: {
-    type: "accordion",
+    type: 'accordion',
     defaultCollapsed: false,
     radios: true,
     spacedAccordionItems: false,
@@ -46,10 +45,10 @@ const CheckoutForm = ({ selectedSeats }) => {
     const response = await axios.post(
       `${BASE_URL}/tickets/ticket-payment`,
       {
-        amount: localStorage.getItem("totalAmount"),
+        amount: localStorage.getItem('totalAmount'),
         tickets: selectedSeats,
       },
-      headerConfig
+      headerConfig,
     );
 
     const { clientSecret } = await response.data;
@@ -58,25 +57,26 @@ const CheckoutForm = ({ selectedSeats }) => {
       elements,
       clientSecret,
       confirmParams: {
-        return_url: "http://localhost:5173/view-route",
+        return_url: `${window.location.href}`,
       },
     });
 
     if (error) {
+      console.log(error, 'error-strip');
       setErrorMessage(error.message);
-      toast.success(error.message, { position: "top-right" });
+      toast.success(error.message, { position: 'top-right' });
     } else {
-      toast.success("Ticket Booked Successfully.", { position: "top-right" });
+      toast.success('Ticket Booked Successfully.', { position: 'top-right' });
     }
   };
 
   return (
     <form
-      style={{ width: "100vw" }}
+      style={{ width: '100vw' }}
       onSubmit={handleSubmit}
       className="my-4 d-flex align-items-center justify-content-center flex-column gap-4 card p-4"
     >
-      <PaymentElement className="mx-auto" style={{ width: "60%" }} />
+      <PaymentElement className="mx-auto" style={{ width: '60%' }} />
       <Button color="primary" type="submit" disabled={!stripe || !elements}>
         Pay
       </Button>
@@ -85,12 +85,10 @@ const CheckoutForm = ({ selectedSeats }) => {
   );
 };
 
-const Wrapper = ({ selectedSeats }) => {
-  return (
-    <Elements stripe={stripePromise} options={options}>
-      <CheckoutForm selectedSeats={selectedSeats} />
-    </Elements>
-  );
-};
+const Wrapper = ({ selectedSeats }) => (
+  <Elements stripe={stripePromise} options={options}>
+    <CheckoutForm selectedSeats={selectedSeats} />
+  </Elements>
+);
 
 export default Wrapper;

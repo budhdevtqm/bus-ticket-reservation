@@ -10,7 +10,7 @@ const ViewBus = ({ modal, bus, closeModal }) => {
     createdBy,
     createdAt,
     updatedAt,
-    totalSeats,
+    totalSeats
   } = bus;
   const permissions = localStorage.getItem("permissions");
 

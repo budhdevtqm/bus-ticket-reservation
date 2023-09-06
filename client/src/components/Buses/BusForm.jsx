@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Formik, Form } from "formik";
 import { Input, Button } from "reactstrap";
 import { toast, Toaster } from "react-hot-toast";
-import { BASE_URL, headerConfig } from "../../../config";
 import * as yup from "yup";
 import axios from "axios";
-import { verifyStatus } from "../../common/utils";
 import { useNavigate } from "react-router-dom";
+import { verifyStatus } from "../../common/utils";
+import { BASE_URL, headerConfig } from "../../config";
 
 const busValidationSchema = yup.object().shape({
   busNo: yup
@@ -27,17 +27,17 @@ const busValidationSchema = yup.object().shape({
     .required("Required")
     .min(3, "Must be of 3 Characters")
     .trim("Space is not allowed")
-    .strict(true),
+    .strict(true)
 });
 
-const BusForm = (props) => {
+const BusForm = () => {
   const [formMode, setFormMode] = useState("Create");
   const navigate = useNavigate();
   const [formValues, setFormValues] = useState({
     busNo: "",
     manufacturer: "",
     model: "",
-    totalSeats: "",
+    totalSeats: ""
   });
 
   const busId = localStorage.getItem("busId");
@@ -45,7 +45,6 @@ const BusForm = (props) => {
   const getBusDetails = async (id) => {
     try {
       const response = await axios.get(`${BASE_URL}/bus/${id}`, headerConfig);
-      const data = response.data.bus;
       setFormValues(response.data.bus);
     } catch (error) {
       verifyStatus(error.response.status, navigate);
@@ -65,7 +64,7 @@ const BusForm = (props) => {
         width: "100%",
         height: "100%",
         overflowX: "hidden",
-        overflowY: "scroll",
+        overflowY: "scroll"
       }}
       className="d-flex flex-column"
     >
@@ -79,7 +78,7 @@ const BusForm = (props) => {
       >
         <Formik
           initialValues={formValues}
-          enableReinitialize={true}
+          enableReinitialize
           validationSchema={busValidationSchema}
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
@@ -92,12 +91,12 @@ const BusForm = (props) => {
                 );
 
                 toast.success(response.data.message, {
-                  position: "top-right",
+                  position: "top-right"
                 });
                 navigate(-1);
               } catch (error) {
                 toast.error(error.response.data.message, {
-                  position: "top-right",
+                  position: "top-right"
                 });
                 verifyStatus(error.response.status, navigate);
               }
@@ -110,126 +109,136 @@ const BusForm = (props) => {
                   headerConfig
                 );
                 toast.success(response.data.message, {
-                  position: "top-right",
+                  position: "top-right"
                 });
                 navigate(-1);
               } catch (error) {
                 toast.error(error.response.data.message, {
-                  position: "top-right",
+                  position: "top-right"
                 });
                 verifyStatus(error.response.status, navigate);
               }
             }
           }}
         >
-          {({ values, errors, touched, handleBlur, handleChange }) => (
-            <Form
-              style={{ width: "100%", background: "white" }}
-              className="d-flex align-items-center justify-content-center flex-column gap-4"
-            >
-              <label
-                style={{ width: "100%" }}
-                className="d-flex flex-column gap-1"
+          {
+            (
+              {
+                values, errors, touched, handleBlur, handleChange
+              }
+            ) => (
+              <Form
+                style={{ width: "100%", background: "white" }}
+                className="d-flex align-items-center justify-content-center flex-column gap-4"
               >
-                Bus Number
-                <Input
-                  bsSize="sm"
-                  type="text"
-                  name="busNo"
-                  value={values.busNo}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-                {errors.busNo && touched.busNo ? (
-                  <p
-                    style={{ width: "100%", fontSize: "12px" }}
-                    className="text-danger text-start m-0"
-                  >
-                    {errors.busNo}
-                  </p>
-                ) : null}
-              </label>
-
-              <label
-                style={{ width: "100%" }}
-                className="d-flex flex-column gap-1"
-              >
-                Bus Manufacturer Company
-                <Input
-                  bsSize="sm"
-                  type="text"
-                  name="manufacturer"
-                  value={values.manufacturer}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-                {errors.manufacturer && touched.manufacturer ? (
-                  <p
-                    style={{ width: "100%", fontSize: "12px" }}
-                    className="text-danger text-start  m-0"
-                  >
-                    {errors.manufacturer}
-                  </p>
-                ) : null}
-              </label>
-              <label
-                style={{ width: "100%" }}
-                className="d-flex flex-column gap-1"
-              >
-                Bus Model
-                <Input
-                  bsSize="sm"
-                  type="text"
-                  name="model"
-                  value={values.model}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-                {errors.model && touched.model ? (
-                  <p
-                    style={{ width: "100%", fontSize: "12px" }}
-                    className="text-danger text-start  m-0"
-                  >
-                    {errors.model}
-                  </p>
-                ) : null}
-              </label>
-              <label
-                style={{ width: "100%" }}
-                className="d-flex flex-column gap-1"
-              >
-                Total Seats
-                <Input
-                  bsSize="sm"
-                  type="number"
-                  name="totalSeats"
-                  value={values.totalSeats}
-                  onBlur={handleBlur}
-                  disabled={formMode === "Update" ? true : false}
-                  onChange={handleChange}
-                />
-                {errors.totalSeats && touched.totalSeats ? (
-                  <p
-                    style={{ width: "100%", fontSize: "12px" }}
-                    className="text-danger text-start m-0"
-                  >
-                    {errors.totalSeats}
-                  </p>
-                ) : null}
-              </label>
-
-              <div className="d-flex align-items-center justify-content-end">
-                <Button
-                  size="sm"
-                  type="submit"
-                  color="primary"
-                  style={{ width: "150px" }}
+                <label
+                  htmlFor="busNo"
+                  style={{ width: "100%" }}
+                  className="d-flex flex-column gap-1"
                 >
-                  {formMode}
-                </Button>
-              </div>
-            </Form>
-          )}
+                  Bus Number
+                  <Input
+                    bsSize="sm"
+                    type="text"
+                    name="busNo"
+                    value={values.busNo}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {errors.busNo && touched.busNo ? (
+                    <p
+                      style={{ width: "100%", fontSize: "12px" }}
+                      className="text-danger text-start m-0"
+                    >
+                      {errors.busNo}
+                    </p>
+                  ) : null}
+                </label>
+
+                <label
+                  htmlFor="manufacturer"
+                  style={{ width: "100%" }}
+                  className="d-flex flex-column gap-1"
+                >
+                  Bus Manufacturer Company
+                  <Input
+                    bsSize="sm"
+                    type="text"
+                    name="manufacturer"
+                    value={values.manufacturer}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {errors.manufacturer && touched.manufacturer ? (
+                    <p
+                      style={{ width: "100%", fontSize: "12px" }}
+                      className="text-danger text-start  m-0"
+                    >
+                      {errors.manufacturer}
+                    </p>
+                  ) : null}
+                </label>
+                <label
+                  htmlFor="model"
+                  style={{ width: "100%" }}
+                  className="d-flex flex-column gap-1"
+                >
+                  Bus Model
+                  <Input
+                    bsSize="sm"
+                    type="text"
+                    name="model"
+                    value={values.model}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {errors.model && touched.model ? (
+                    <p
+                      style={{ width: "100%", fontSize: "12px" }}
+                      className="text-danger text-start  m-0"
+                    >
+                      {errors.model}
+                    </p>
+                  ) : null}
+                </label>
+                <label
+                  htmlFor="totalSeats"
+                  style={{ width: "100%" }}
+                  className="d-flex flex-column gap-1"
+                >
+                  Total Seats
+                  <Input
+                    bsSize="sm"
+                    type="number"
+                    name="totalSeats"
+                    value={values.totalSeats}
+                    onBlur={handleBlur}
+                    disabled={formMode === "Update" ?? false}
+                    onChange={handleChange}
+                  />
+                  {errors.totalSeats && touched.totalSeats ? (
+                    <p
+                      style={{ width: "100%", fontSize: "12px" }}
+                      className="text-danger text-start m-0"
+                    >
+                      {errors.totalSeats}
+                    </p>
+                  ) : null}
+                </label>
+
+                <div className="d-flex align-items-center justify-content-end">
+                  <Button
+                    size="sm"
+                    type="submit"
+                    color="primary"
+                    style={{ width: "150px" }}
+                  >
+                    {formMode}
+                  </Button>
+                </div>
+              </Form>
+            )
+          }
         </Formik>
       </div>
 

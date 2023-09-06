@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Table, Button, Badge } from "reactstrap";
-import { MdMode, MdOutlineInfo, MdDelete } from "react-icons/md";
-import axios from "axios";
-import { BASE_URL, headerConfig } from "../../../config";
-import { useNavigate } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
-import { verifyStatus } from "../../common/utils";
-import User from "./User";
-import Swal from "sweetalert2";
+import React, { useEffect, useState } from 'react';
+import { Table, Button, Badge } from 'reactstrap';
+import { MdMode, MdOutlineInfo, MdDelete } from 'react-icons/md';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import Swal from 'sweetalert2';
+import { BASE_URL, headerConfig } from '../../config';
+import { verifyStatus } from '../../common/utils';
+import User from './User';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -17,22 +17,21 @@ const Users = () => {
   const toggler = () => setModal(!modal);
 
   const chip = (permissions) => {
-    if (permissions === "user") {
+    if (permissions === 'user') {
       return <Badge color="dark">{permissions.toUpperCase()}</Badge>;
     }
-    if (permissions === "admin") {
+    if (permissions === 'admin') {
       return <Badge color="secondary">{permissions.toUpperCase()}</Badge>;
     }
-    if (permissions === "superAdmin") {
-      return <Badge color="primary">{permissions.toUpperCase()}</Badge>;
-    }
+
+    return <Badge color="primary">{permissions.toUpperCase()}</Badge>;
   };
 
   const getUsers = async () => {
     try {
       const response = await axios.get(
         `${BASE_URL}/users/get-all`,
-        headerConfig
+        headerConfig,
       );
       setUsers(response.data.data);
     } catch (error) {
@@ -41,49 +40,49 @@ const Users = () => {
   };
 
   const goToUpdate = (id) => {
-    localStorage.setItem("userId", id);
-    navigate("/update-user");
+    localStorage.setItem('userId', id);
+    navigate('/update-user');
   };
 
   useEffect(() => {
     getUsers();
-    localStorage.removeItem("userId");
+    localStorage.removeItem('userId');
   }, []);
 
   const deleteHandler = async (userId) => {
     Swal.fire({
-      title: "Are you sure?",
+      title: 'Are you sure?',
       text: "You won't be able to revert this!",
-      icon: "warning",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           await axios.delete(`${BASE_URL}/users/${userId}`, headerConfig);
-          Swal.fire("Deleted!", "user successfully deleted.", "success");
+          Swal.fire('Deleted!', 'user successfully deleted.', 'success');
           getUsers();
         } catch (error) {
-          Swal.fire("Oops!", "Something went wrong.", "error");
+          Swal.fire('Oops!', 'Something went wrong.', 'error');
         }
       }
     });
   };
 
   const viewUserHandler = (id) => {
-    localStorage.setItem("userId", id);
+    localStorage.setItem('userId', id);
     setModal(true);
   };
 
   return (
     <section
       style={{
-        width: "100%",
-        height: "100%",
-        overflowX: "hidden",
-        overflowY: "scroll",
+        width: '100%',
+        height: '100%',
+        overflowX: 'hidden',
+        overflowY: 'scroll',
       }}
       className="p-4"
     >
@@ -94,7 +93,7 @@ const Users = () => {
           color="info"
           outline
           size="sm"
-          onClick={() => navigate("/create-user")}
+          onClick={() => navigate('/create-user')}
         >
           Create
         </Button>
@@ -111,41 +110,43 @@ const Users = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
-              <tr key={index}>
+            {users.map(({
+              _id: id, name, email, permissions,
+            }, index) => (
+              <tr key={id}>
                 <td className="text-center">{index + 1}</td>
-                <td className="text-center">{user.name}</td>
-                <td className="text-center">{user.email}</td>
-                <td className="text-center">{chip(user.permissions)}</td>
+                <td className="text-center">{name}</td>
+                <td className="text-center">{email}</td>
+                <td className="text-center">{chip(permissions)}</td>
                 <td>
                   <div className="d-flex align-items-center justify-content-start gap-2">
                     <MdOutlineInfo
                       style={{
-                        fontSize: "22px",
-                        color: "#0dcaf0",
-                        cursor: "pointer",
+                        fontSize: '22px',
+                        color: '#0dcaf0',
+                        cursor: 'pointer',
                       }}
                       title="Info"
-                      onClick={() => viewUserHandler(user._id)}
+                      onClick={() => viewUserHandler(id)}
                     />
 
                     <MdMode
                       style={{
-                        fontSize: "20px",
-                        color: "green",
-                        cursor: "pointer",
+                        fontSize: '20px',
+                        color: 'green',
+                        cursor: 'pointer',
                       }}
                       title="Update"
-                      onClick={() => goToUpdate(user._id)}
+                      onClick={() => goToUpdate(id)}
                     />
                     <MdDelete
                       style={{
-                        fontSize: "20px",
-                        color: "red",
-                        cursor: "pointer",
+                        fontSize: '20px',
+                        color: 'red',
+                        cursor: 'pointer',
                       }}
                       title="Delete"
-                      onClick={() => deleteHandler(user._id)}
+                      onClick={() => deleteHandler(id)}
                     />
                   </div>
                 </td>
