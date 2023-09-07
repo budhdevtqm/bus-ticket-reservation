@@ -3,8 +3,8 @@ import { Button, Input } from "reactstrap";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
+import axios from "axios";
 import { BASE_URL } from "../../config";
 
 const loginSchema = yup.object().shape({
