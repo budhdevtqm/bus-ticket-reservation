@@ -72,6 +72,7 @@ const Login = () => {
                   bsSize="sm"
                   type="text"
                   name="email"
+                  data-testid="input-email"
                   placeholder="Email"
                   value={values.email}
                   onBlur={handleBlur}

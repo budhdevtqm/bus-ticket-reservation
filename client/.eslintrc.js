@@ -17,6 +17,7 @@ module.exports = {
       },
     },
   ],
+  ignorePatterns: ["node_modules/", "__tests__/"],
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
