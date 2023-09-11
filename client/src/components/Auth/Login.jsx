@@ -4,7 +4,7 @@ import { Formik, Form } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
-import axios from "axios";
+// import axios from "axios";
 import { BASE_URL } from "../../config";
 
 const loginSchema = yup.object().shape({
@@ -45,12 +45,20 @@ const Login = () => {
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
             try {
-              const res = await axios.post(`${BASE_URL}/auth/login`, values);
+              const res = await fetch(`${BASE_URL}/auth/login`, {
+                method: "POST",
+                body: JSON.stringify(values),
+                headers: {
+                  "Content-type": "application/json; charset=UTF-8",
+                },
+              });
+              console.log(res, "res----");
               toast.success(res.data.message, { position: "top-right" });
               localStorage.setItem("token", res.data.token);
               localStorage.setItem("permissions", res.data.permissions);
               window.location.assign(window.location.origin);
             } catch (er) {
+              console.log("eer", er);
               toast.error(er.response.data.message, { position: "top-right" });
             }
           }}
@@ -63,7 +71,7 @@ const Login = () => {
             handleChange,
           }) => (
 
-            <Form className="d-flex align-items-center justify-content-center flex-column gap-4">
+            <Form className="d-flex align-items-center justify-content-center flex-column gap-4" data-testid="login-form">
               <div
                 style={{ width: "100%" }}
                 className="d-flex flex-column gap-1"
@@ -100,6 +108,7 @@ const Login = () => {
                   value={values.password}
                   onBlur={handleBlur}
                   onChange={handleChange}
+                  data-testid="input-password"
                 />
                 {errors.password && touched.password ? (
                   <p
@@ -111,7 +120,7 @@ const Login = () => {
                 ) : null}
               </div>
               <div className="d-flex align-items-center justify-content-center">
-                <Button size="sm" type="submit" color="primary">
+                <Button size="sm" type="submit" color="primary" data-testid="login-btn">
                   LogIn
                 </Button>
               </div>
