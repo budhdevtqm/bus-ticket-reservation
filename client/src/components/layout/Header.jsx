@@ -57,7 +57,7 @@ const Header = () => {
     >
       <span>
         <img
-          src="public/images/images.jpeg"
+          src="/images/images.jpeg"
           alt="Logo"
           style={{ width: "65px" }}
         />

@@ -19,6 +19,8 @@ function isValidPassword(password) {
   return passwordRegex.test(password);
 }
 
+const mockFn = jest.fn();
+
 describe("Signup component", () => {
 
   render(
@@ -55,8 +57,30 @@ describe("Signup component", () => {
     expect(isValidPassword(passwordElement.value)).toBe(true);
   })
 
-  it("signup button", async () => {
+  it("signup button", () => {
     act(() => fireEvent.click(submitBtnElement))
     expect(fireEvent.click(submitBtnElement)).toBeTruthy();
   });
+
+  it("signup success", async () => {
+    mockFn.mockResolvedValue(
+      { status: 201, ok: true, message: "Signup successfully, please login." }
+    );
+
+    act(() => {
+      fireEvent.change(nameElement, { target: { value: "User Name" } })
+      fireEvent.change(emailElement, { target: { value: "test@example.com" } });
+      fireEvent.change(passwordElement, { target: { value: "Abc@123" } });
+    });
+
+    try {
+      await mockFn("/signup", { name: nameElement.value, email: emailElement.value, password: passwordElement.value })
+
+      expect(mockFn).toBeCalled();
+      setTimeout(() => expect(location.pathname).toBe("/login"), 2000)
+    } catch (error) {
+      throw new Error('An unexpected promise rejection occurred: ' + error.message);
+    }
+  });
+
 });

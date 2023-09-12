@@ -4,7 +4,7 @@ import { Formik, Form } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
-// import axios from "axios";
+import axios from "axios";
 import { BASE_URL } from "../../config";
 
 const loginSchema = yup.object().shape({
@@ -16,7 +16,6 @@ const loginSchema = yup.object().shape({
     .required("Required!"),
   password: yup
     .string()
-
     .required("Required!")
     .strict(true)
     .matches(
@@ -45,21 +44,21 @@ const Login = () => {
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
             try {
-              const res = await fetch(`${BASE_URL}/auth/login`, {
-                method: "POST",
-                body: JSON.stringify(values),
-                headers: {
-                  "Content-type": "application/json; charset=UTF-8",
-                },
-              });
-              console.log(res, "res----");
-              toast.success(res.data.message, { position: "top-right" });
-              localStorage.setItem("token", res.data.token);
-              localStorage.setItem("permissions", res.data.permissions);
-              window.location.assign(window.location.origin);
-            } catch (er) {
-              console.log("eer", er);
-              toast.error(er.response.data.message, { position: "top-right" });
+              const res = await axios.post(`${BASE_URL}/auth/login`, values);
+              if (res.data) {
+                toast.success(res.data.message, { position: "top-right" });
+                localStorage.setItem("token", res.data.token);
+                localStorage.setItem("permissions", res.data.permissions);
+                setTimeout(() => window.location.assign(window.location.origin), 1000);
+              } else {
+                toast.error("Unexpected response format", { position: "top-right" });
+              }
+            } catch (err) {
+              if (err.response && err.response.data) {
+                toast.error(err.response.data.message, { position: "top-right" });
+              } else {
+                toast.error("An error occurred", { position: "top-right" });
+              }
             }
           }}
         >
