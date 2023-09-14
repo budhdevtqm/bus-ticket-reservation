@@ -49,7 +49,7 @@ const Login = () => {
               toast.success(res.data.message, { position: "top-right" });
               localStorage.setItem("token", res.data.token);
               localStorage.setItem("permissions", res.data.permissions);
-              window.location.assign(window.location.origin);
+              setTimeout(() => window.location.assign(window.location.origin), 500);
             } catch (er) {
               toast.error(er.response.data.message, { position: "top-right" });
             }
