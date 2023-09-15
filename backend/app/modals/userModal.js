@@ -71,7 +71,7 @@ module.exports.login = async (values) => {
     if (!matchPassword)
       return reject({ ok: false, message: "Invalid password" });
 
-    const token = jwt.sign({ userId: userId }, secretKey, { expiresIn: "1h" });
+    const token = jwt.sign({ userId: userId }, secretKey, { expiresIn: "1m" });
 
     resolve({
       ok: true,

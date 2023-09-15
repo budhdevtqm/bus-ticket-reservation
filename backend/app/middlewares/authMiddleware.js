@@ -5,7 +5,7 @@ const userSchema = require("../schemas/userSchema");
 module.exports.auth = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
-  if (token == null || token == undefined) return res.status(401);
+  if (token == null || token == undefined) return res.status(401).json({ ok: false, message: "Invalid Token" });
   try {
     const verify = await jwt.verify(token, process.env.JWT_PRIVATE);
     const { userId } = verify;
