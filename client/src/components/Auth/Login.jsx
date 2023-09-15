@@ -3,13 +3,10 @@ import { Button, Input } from "reactstrap";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-// import axios from "axios";
-import { toast, Toaster } from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
+import { Toaster } from "react-hot-toast";
+import { useDispatch } from "react-redux";
 import { loginAsync } from "../../Redux/slices/authSlice";
-
-// useSelector;
-// import { BASE_URL } from "../../config";
+import { notification } from "../../common/utils";
 
 const loginSchema = yup.object().shape({
   email: yup
@@ -33,25 +30,23 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // const token = localStorage.getItem("token");
-  const { error } = useSelector((state) => state.auth);
-
-  // useEffect(() => {
-  //   if (token) {
-  //     window.location.assign(window.location.origin);
-  //   }
-  // }, [token]);
-
-  // useEffect(() => {
-  //   localStorage.removeItem("token");
-  //   localStorage.removeItem("permissions");
-  // }, []);
+  const submitHandler = async (values) => {
+    const { payload } = await dispatch(loginAsync(values));
+    if (typeof payload === "string") {
+      notification("error", payload);
+    } else {
+      notification("success", payload.message);
+      setTimeout(() => window.location.assign(window.location.origin), 500);
+    }
+  };
 
   useEffect(() => {
-    if (error) {
-      toast.error(error, { position: "top-right" });
+    const token = localStorage.getItem("token");
+    const permissions = localStorage.getItem("permissions");
+    if (token && permissions) {
+      navigate("/");
     }
-  }, [error]);
+  }, []);
 
   return (
     <div
@@ -69,21 +64,7 @@ const Login = () => {
           validationSchema={loginSchema}
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
-            try {
-              debugger;
-              dispatch(loginAsync(values));
-            } catch (er) {
-              console.log("err23232323", er);
-            }
-            // try {
-            //   const res = await axios.post(`${BASE_URL}/auth/login`, values);
-            //   toast.success(res.data.message, { position: "top-right" });
-            //   localStorage.setItem("token", res.data.token);
-            //   localStorage.setItem("permissions", res.data.permissions);
-            //   setTimeout(() => window.location.assign(window.location.origin), 500);
-            // } catch (er) {
-            //   toast.error(er.response.data.message, { position: "top-right" });
-            // }
+            submitHandler({ email: values.email, password: values.password });
           }}
         >
           {({

@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Input } from "reactstrap";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { toast, Toaster } from "react-hot-toast";
-import { BASE_URL } from "../../config";
+import { Toaster } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { signupAsync } from "../../Redux/slices/authSlice";
+import { notification } from "../../common/utils";
 
 const signup = yup.object().shape({
   email: yup
@@ -33,6 +34,26 @@ const signup = yup.object().shape({
 
 const Signup = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const submitHandler = async (values) => {
+    const { payload } = await dispatch(signupAsync(values));
+    if (typeof payload === "string") {
+      notification("error", payload);
+    } else {
+      notification("success", payload.message);
+      setTimeout(() => navigate("/login"), 1000);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const permissions = localStorage.getItem("permissions");
+    if (token && permissions) {
+      navigate("/");
+    }
+  }, []);
+
   return (
     <div
       style={{ width: "100%", height: "100vh", background: "#8b8b8b1a" }}
@@ -50,18 +71,8 @@ const Signup = () => {
           validationSchema={signup}
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
-            try {
-              await axios.post(
-                `${BASE_URL}/auth/signup`,
-                values,
-              );
-              toast.success("Signup successfully Please Login now", {
-                position: "top-right",
-              });
-              setTimeout(() => navigate("/login"), 2000);
-            } catch (er) {
-              toast.error(er.response.data.message, { position: "top-right" });
-            }
+            const { name, email, password } = values;
+            submitHandler({ name, email, password });
           }}
         >
           {({

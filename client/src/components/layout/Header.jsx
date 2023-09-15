@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "reactstrap";
+import { useDispatch } from "react-redux";
+import { logout } from "../../Redux/slices/authSlice";
 
 const Header = () => {
   const [links, setLinks] = useState([]);
   const navigate = useNavigate();
   const permissions = localStorage.getItem("permissions");
+  const dispatch = useDispatch();
 
   const logoutUser = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("permissions");
-    localStorage.removeItem("totalAmount");
-    localStorage.removeItem("busRouteId");
+    dispatch(logout());
     navigate("/login");
   };
 
@@ -57,7 +57,7 @@ const Header = () => {
     >
       <span>
         <img
-          src="public/images/images.jpeg"
+          src="/images/images.jpeg"
           alt="Logo"
           style={{ width: "65px" }}
         />
