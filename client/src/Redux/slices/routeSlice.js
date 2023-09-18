@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { handleFetch } from "./commonThunks";
+import { handleFetch, handleCreate } from "./commonThunks";
 
 const routeSlice = createSlice({
   name: "routes",
@@ -17,27 +17,25 @@ const routeSlice = createSlice({
       .addCase(handleFetch.fulfilled, (state, { payload }) => ({
         ...state,
         loading: false,
-        routes: payload.data.data,
+        routes: payload.data,
       }))
-      .addCase(handleFetch.rejected, (state, { payload }) => {
-        console.log("-payload-", payload);
-        return {
-          ...state,
-          loading: false,
-        };
-      });
+      .addCase(handleFetch.rejected, (state) => ({
+        ...state,
+        loading: false,
+        routes: [],
+      }));
+
+    builder.addCase(handleCreate.pending, (state) => ({
+      ...state,
+      loading: true,
+    })).addCase(handleCreate.fulfilled, (state) => ({
+      ...state,
+      loading: false,
+    })).addCase(handleCreate.rejected, (state) => ({
+      ...state,
+      loading: false,
+    }));
   },
 });
 
 export default routeSlice.reducer;
-
-// export const getAllRoutes = () => crea
-// teAsyncThunk(("/get-all-routes", async ({ returnWithValue }) => {
-//   try {
-//     const response = await axios.get(`${BASE_URL}/bus-route/get-all`, headerConfig);
-//     console.log(response, "-----respone-slice");
-//     return response.data;
-//   } catch (error) {
-//     return returnWithValue(error.response.data.message);
-//   }
-// }));

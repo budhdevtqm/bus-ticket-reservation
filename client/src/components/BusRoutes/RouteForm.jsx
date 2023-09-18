@@ -6,8 +6,10 @@ import * as yup from "yup";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { useDispatch } from "react-redux";
 import { verifyStatus } from "../../common/utils";
 import { BASE_URL, headerConfig } from "../../config";
+import { handleCreate } from "../../Redux/slices/commonThunks";
 
 const routeSchema = yup.object().shape({
   busId: yup.string().required("Required"),
@@ -26,6 +28,7 @@ const RouteForm = () => {
   const [formMode, setFormMode] = useState("Create");
   const [buses, setBuses] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formValues, setFormValues] = useState({
     busId: "",
     from: "",
@@ -116,17 +119,23 @@ const RouteForm = () => {
 
             if (formMode === "Create") {
               try {
-                const response = await axios.post(
-                  `${BASE_URL}/bus-route/create`,
-                  modifiedValues,
-                  headerConfig,
-                );
-                toast.success(response.data.message, { position: "top-right" });
-                navigate(-1);
+                const response = await dispatch(handleCreate({ path: "/bus-route/create", values: modifiedValues }));
+                if (response.type === "/create/rejected") {
+                  console.log(response, "------");
+                }
+                console.log(response, "000000000000000");
+                // const response = await axios.post(
+                //   `${BASE_URL}/bus-route/create`,
+                //   modifiedValues,
+                //   headerConfig,
+                // );
+                // toast.success(response.data.message, { position: "top-right" });
+                // navigate(-1);
               } catch (error) {
-                toast.error(error.response.data.message, {
-                  position: "top-right",
-                });
+                console.log(error, "----err");
+                // toast.error(error.response.data.message, {
+                //   position: "top-right",
+                // });
               }
             }
 

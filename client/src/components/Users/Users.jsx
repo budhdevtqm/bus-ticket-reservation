@@ -5,37 +5,40 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Swal from "sweetalert2";
+import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL, headerConfig } from "../../config";
-import { verifyStatus } from "../../common/utils";
 import User from "./User";
+import { handleFetch } from "../../Redux/slices/commonThunks";
+import { verifyStatus } from "../../common/utils";
 
 const Users = () => {
-  const [users, setUsers] = useState([]);
-  const [modal, setModal] = useState(false);
-  const navigate = useNavigate();
+  const { users } = useSelector((state) => state.users);
+  const { routes } = useSelector((state) => state.routes);
 
+  const [modal, setModal] = useState(false);
+
+  console.log(routes, "-routes-users");
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const toggler = () => setModal(!modal);
 
   const chip = (permissions) => {
     if (permissions === "user") {
-      return <Badge color="dark">{permissions.toUpperCase()}</Badge>;
+      return <Badge color="dark">{permissions}</Badge>;
     }
     if (permissions === "admin") {
-      return <Badge color="secondary">{permissions.toUpperCase()}</Badge>;
+      return <Badge color="secondary">{permissions}</Badge>;
     }
 
-    return <Badge color="primary">{permissions.toUpperCase()}</Badge>;
+    return <Badge color="primary">{permissions}</Badge>;
   };
 
   const getUsers = async () => {
-    try {
-      const response = await axios.get(
-        `${BASE_URL}/users/get-all`,
-        headerConfig,
-      );
-      setUsers(response.data.data);
-    } catch (error) {
-      verifyStatus(error.response.status, navigate);
+    const response = await dispatch(handleFetch("/users/get-all"));
+    if (response.type === "/fetch/rejected") {
+      console.log(response, "fetch/rejected");
+      verifyStatus(response.payload.response.status, navigate);
     }
   };
 
@@ -110,7 +113,7 @@ const Users = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map(({
+            {users.length > 0 && users.map(({
               _id: id, name, email, permissions,
             }, index) => (
               <tr key={id}>

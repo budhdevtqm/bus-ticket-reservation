@@ -6,10 +6,8 @@ export const handleCreate = createAsyncThunk("/create", async (data, { rejectWit
   const { path, values } = data;
   try {
     const response = await axios.post(`${BASE_URL}${path}`, values, headerConfig);
-    console.log(response, "response handleCreate");
     return response;
   } catch (error) {
-    console.log(error, "handleCreate error");
     return rejectWithValue(error.response.data.message);
   }
 });
@@ -17,11 +15,9 @@ export const handleCreate = createAsyncThunk("/create", async (data, { rejectWit
 export const handleDelete = createAsyncThunk("/delete", async (path, { rejectWithValue }) => {
   try {
     const response = await axios.delete(`${BASE_URL}${path}`, headerConfig);
-    console.log(response, "response handleDelete");
     return response;
   } catch (error) {
-    console.log(error, "----error handleDelete");
-    return rejectWithValue(error.response.data.message);
+    return rejectWithValue(error);
   }
 });
 
@@ -42,7 +38,6 @@ export const handleFetch = createAsyncThunk("/fetch", async (path, { rejectWithV
     const response = await axios.get(`${BASE_URL}${path}`, headerConfig);
     return response.data;
   } catch (error) {
-    console.log(error, "--er");
     return rejectWithValue(error);
   }
 });
