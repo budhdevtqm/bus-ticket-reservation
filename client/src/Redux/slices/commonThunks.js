@@ -41,3 +41,13 @@ export const handleFetch = createAsyncThunk("/fetch", async (path, { rejectWithV
     return rejectWithValue(error);
   }
 });
+
+export const fetchSingle = createAsyncThunk("/fetchById", async (path, { rejectWithValue }) => {
+  try {
+    const response = await axios.get(`${BASE_URL}${path}`, headerConfig);
+    console.log(response.data, "---response");
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});

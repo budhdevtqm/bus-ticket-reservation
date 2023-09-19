@@ -13,11 +13,8 @@ import { verifyStatus } from "../../common/utils";
 
 const Users = () => {
   const { users } = useSelector((state) => state.users);
-  const { routes } = useSelector((state) => state.routes);
 
   const [modal, setModal] = useState(false);
-
-  console.log(routes, "-routes-users");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -37,7 +34,6 @@ const Users = () => {
   const getUsers = async () => {
     const response = await dispatch(handleFetch("/users/get-all"));
     if (response.type === "/fetch/rejected") {
-      console.log(response, "fetch/rejected");
       verifyStatus(response.payload.response.status, navigate);
     }
   };

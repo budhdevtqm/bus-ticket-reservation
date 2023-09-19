@@ -36,6 +36,7 @@ module.exports.authSuperAdmin = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
   const verify = await jwt.verify(token, process.env.JWT_PRIVATE);
+  console.log(verify,"--verify");
   const { userId } = verify;
   const user = await userSchema.findOne({ _id: userId });
 

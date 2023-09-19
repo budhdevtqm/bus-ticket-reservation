@@ -51,14 +51,49 @@ export const getTime = (milliseconds) => {
 export const getDate = (milliseconds) => {
   const dateString = new Date(milliseconds - 19800000).toLocaleDateString();
   const [date, month, year] = dateString.split("/");
-  console.log(dateString, "date-str");
+  let m = "";
 
-  // switch (key) {
-  //   case value:
-  //     break;
-  //   default:
-  //     break;
-  // }
+  switch (Number(month)) {
+    case 1:
+      m = "Jan";
+      break;
+    case 2:
+      m = "Feb";
+      break;
+    case 3:
+      m = "Mar";
+      break;
+    case 4:
+      m = "Apr";
+      break;
+    case 5:
+      m = "May";
+      break;
+    case 6:
+      m = "Jun";
+      break;
+    case 7:
+      m = "Jul";
+      break;
+    case 8:
+      m = "Aug";
+      break;
+    case 9:
+      m = "Sep";
+      break;
+    case 10:
+      m = "Oct";
+      break;
+    case 11:
+      m = "Nov";
+      break;
+    case 12:
+      m = "Dec";
+      break;
+    default:
+      m = "";
+      break;
+  }
 
-  return `${date} `;
+  return `${m} ${date}, ${year}`;
 };

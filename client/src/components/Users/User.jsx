@@ -1,36 +1,34 @@
-import axios from "axios";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Modal, ModalBody, ModalHeader } from "reactstrap";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL, headerConfig } from "../../config";
-import { verifyStatus } from "../../common/utils";
+import { useDispatch, useSelector } from "react-redux";
+// import { getDate, verifyStatus } from "../../common/utils";
+import { handleFetch } from "../../Redux/slices/commonThunks";
 
 const User = ({ modal, toggler }) => {
-  const [user, setUser] = useState("");
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const getDate = (timestamp) => {
-    if (timestamp) {
-      const string = new Date(timestamp).toString().split(" ");
-      return `${string[2]} ${string[1]} ${string[3]}`;
-    }
-    return "";
-  };
+  const { user } = useSelector((state) => state.users);
+  console.log(user, "---");
 
   const navigateCb = useCallback(navigate, []);
 
   useEffect(() => {
     const getUser = async (id) => {
-      try {
-        const response = await axios.get(
-          `${BASE_URL}/users/get-user/${id}`,
-          headerConfig,
-        );
-        setUser(response.data.data);
-      } catch (error) {
-        verifyStatus(error.response.status, navigateCb);
-      }
+      const response = await dispatch(handleFetch(`/users/get-user/${id}`));
+      console.log(response, "-");
+      // if (response.type === "")
+      // try {
+      //   const response = await axios.get(
+      //     `${BASE_URL}/users/get-user/${id}`,
+      //     headerConfig,
+      //   );
+      //   setUser(response.data.data);
+      // } catch (error) {
+      //   verifyStatus(error.response.status, navigateCb);
+      // }
     };
 
     if (userId) {
@@ -41,7 +39,7 @@ const User = ({ modal, toggler }) => {
     <Modal isOpen={modal} toggle={toggler}>
       <ModalHeader toggle={toggler}>User Information</ModalHeader>
       <ModalBody>
-        <div className="d-flex flex-row my-4">
+        {/* <div className="d-flex flex-row my-4">
           <span style={{ width: "50%" }}>Full Name</span>
           <b style={{ width: "50%" }}>{user.name}</b>
         </div>
@@ -58,7 +56,7 @@ const User = ({ modal, toggler }) => {
           <b style={{ width: "50%" }}>
             {user.updatedAt ? getDate(user.updatedAt) : "N/A"}
           </b>
-        </div>
+        </div> */}
       </ModalBody>
     </Modal>
   );
